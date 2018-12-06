@@ -84,10 +84,6 @@
     <div id="app">
         @auth
 
-        @php
-        $hora = new DateTime(Auth::user()->horaEnvio);
-        @endphp
-
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="background: lightblue; padding: 0px">
 
             <span class="col-md-10" style="white-space: nowrap;"> Usuário Logado: <strong style="text-transform:capitalize;"> {{Auth::user()->name}} </strong> </span>
@@ -133,10 +129,20 @@
                                   <a class="nav-link" href="/publicacao/apagadas">Apagadas <span class="sr-only">(current)</span></a>
                               </li>
 
-                              <li class="nav-item active">
-                                  <a class="nav-link" href="#">Faturas <span class="sr-only">(current)</span></a>
-                              </li>
-
+                              @can('administrador', Auth::user())
+                                 <li class="nav-item active">
+                                    <div class="dropdown nav-item" >
+                                        <a style="background-color: transparent; border-color:transparent; color:black;" class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          Faturas
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                          <a class="dropdown-item" href="#">Listar</a>
+                                          <a class="dropdown-item" href="#">Cadastrar</a>
+                                          <a class="dropdown-item" href="#">Configurações</a>
+                                        </div>
+                                    </div>
+                                 </li>
+                              @endcan
                     </ul>
 
                     @can('administrador', Auth::user())
@@ -150,7 +156,7 @@
                               <a class="dropdown-item" href="/caderno/listar">Caderno</a>
                               <a class="dropdown-item" href="/tipodocumento/listar">Tipo Documento</a>
                               <a class="dropdown-item" href="/diariodata/listar">Datas Diários Oficiais</a>
-                              <a class="dropdown-item" href="/diasnaouteis/listar">Dias Não Úteis</a>
+                              <a class="dropdown-item" href="/diasnaouteis/listar">Feriados/Pontos Facultativos</a>
                             </div>
                         </div>
                     @endcan

@@ -46,7 +46,7 @@
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 <div>
-                                        <p>Protocolo: <strong>{{$publicacao->protocolo}}{{$publicacao->protocoloAno}} </strong></p>
+                                        <p>Protocolo: <strong>{{$publicacao->protocoloCompleto}} </strong></p>
                                 </div>
 
                                 <div>
@@ -121,7 +121,7 @@
                             @if ($publicacao->usuarioIDApagou == null)
                             <br>
                                 <div class="col-md-12">
-                                <a href="/publicacao/download/{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" class="btn btn-success" style="width:110px">Download</a>
+                                <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" style="width:110px">Download</a>
                                 </div>
                             @endif
 
@@ -138,7 +138,7 @@
                                     @php
                                         $modalAceitar = true;
                                     @endphp
-                                    <button style="width:75px; background-color:teal;" class="btn btn-success" data-toggle="modal" data-target="#modalAceitar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}">Aceitar</button>
+                                    <button style="width:75px; background-color:teal;" class="btn btn-success" data-toggle="modal" data-target="#modalAceitar{{$publicacao->protocoloCompleto}}">Aceitar</button>
                                 @endif
 
 
@@ -146,7 +146,7 @@
                                     @php
                                         $modalRejeitar = true;
                                     @endphp
-                                    <button style="width:75px;" class="btn btn-danger" data-toggle="modal" data-target="#modalRejeitar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" >Rejeitar</button>
+                                    <button style="width:75px;" class="btn btn-danger" data-toggle="modal" data-target="#modalRejeitar{{$publicacao->protocoloCompleto}}" >Rejeitar</button>
                                 @endif
 
 
@@ -173,10 +173,9 @@
 @if ($modalAceitar)
         <form id="formAceitar" action="/publicacao/aceitar" method="POST">
             @csrf
-            <input type="hidden" name="protocolo" value="{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}">
+            <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao Aceita --}}
-            <input type="hidden" name="situacaoID" value="3">
-            <div class='modal fade' id="modalAceitar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" role='dialog'>
+            <div class='modal fade' id="modalAceitar{{$publicacao->protocoloCompleto}}" role='dialog'>
                     <div class='modal-dialog row justify-content-center'>
                         <div class="modal-content">
                                 <div class="modal-header">
@@ -185,7 +184,7 @@
                                 <div class="modal-body">
 
                                     <p> Segue protocolo de publicação:</p>
-                                    <p> <b> {{$publicacao->protocolo}}{{$publicacao->protocoloAno}} </b> </p>
+                                    <p> <b> {{$publicacao->protocoloCompleto}} </b> </p>
 
                                     <p> Ao realizar esta ação o usuário que enviou a publicação não poderá mais edita-la!</p>
                                     <p><strong>Deseja realmente Aceitar?</strong></p>
@@ -215,10 +214,9 @@
 @if ($modalRejeitar)
         <form id="formRejeitar" action="/publicacao/rejeitar" method="POST">
             @csrf
-            <input type="hidden" name="protocolo" value="{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}">
+            <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao Aceita --}}
-            <input type="hidden" name="situacaoID" value="5">
-            <div class='modal fade' id="modalRejeitar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" role='dialog'>
+            <div class='modal fade' id="modalRejeitar{{$publicacao->protocoloCompleto}}" role='dialog'>
                     <div class='modal-dialog row justify-content-center'>
                         <div class="modal-content">
                                 <div class="modal-header">
@@ -227,7 +225,7 @@
                                 <div class="modal-body">
 
                                     <p> Segue protocolo de publicação:</p>
-                                    <p> <b> {{$publicacao->protocolo}}{{$publicacao->protocoloAno}} </b> </p>
+                                    <p> <b> {{$publicacao->protocoloCompleto}} </b> </p>
 
                                     <p> <strong> Descreva o Motivo: </strong> </p>
                                     <textarea name="descricao" cols="60" rows="4" class="form-control" placeholder="Entre com a descrição!" style="resize: none;" value="{{old('descricao')}}" required></textarea>

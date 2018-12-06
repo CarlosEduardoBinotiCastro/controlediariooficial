@@ -85,7 +85,7 @@
                                                 <p> Segue protocolos dos pedidos de publicações para este diário: </p>
 
                                                 @foreach ($publicacoes as $item)
-                                                    <span> <i>{{$item->protocolo}}{{$item->protocoloAno}}</i> <strong> / </strong> </span>
+                                                    <span> <i>{{$item->protocoloCompleto}}</i> <strong> / </strong> </span>
                                                 @endforeach
 
                                                 <br><br>

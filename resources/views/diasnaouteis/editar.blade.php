@@ -20,7 +20,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"> {{ __('Editar Dia Não Útil') }}</div>
+                <div class="card-header"> {{ __('Editar Feriados / Pontos Facultativos') }}</div>
 
                 <div class="card-body">
                     <form id='formEditar' method="POST" action="{{ url("/diasnaouteis/salvar") }}" enctype="multipart/form-data" >

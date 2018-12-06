@@ -41,7 +41,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Dias Não Úteis </strong> </h4>  <a style="margin-left:auto" href='/diasnaouteis/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Feriados / Pontos Facultativos </strong> </h4>  <a style="margin-left:auto" href='/diasnaouteis/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 

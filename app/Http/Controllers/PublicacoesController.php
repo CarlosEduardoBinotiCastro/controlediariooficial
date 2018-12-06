@@ -84,13 +84,8 @@ class PublicacoesController extends Controller
         }
 
         if($protocolo != null && $protocolo != "tudo"){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
-
-                $publicacoes->where('protocolo', '=', $protocoloNumero);
-                $publicacoes->where('protocoloAno', '=', $protocoloAno);
-
+            if(strlen($protocolo) > 7){
+                $publicacoes->where('protocoloCompleto', '=', $protocolo);
             }else{
                 $publicacoes->where('protocolo', '=', null);
             }
@@ -140,13 +135,8 @@ class PublicacoesController extends Controller
         }
 
         if($protocolo != null && $protocolo != "tudo"){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
-
-                $publicacoes->where('protocolo', '=', $protocoloNumero);
-                $publicacoes->where('protocoloAno', '=', $protocoloAno);
-
+            if(strlen($protocolo) > 7){
+                $publicacoes->where('protocoloCompleto', '=', $protocolo);
             }else{
                 $publicacoes->where('protocolo', '=', null);
             }
@@ -292,9 +282,8 @@ class PublicacoesController extends Controller
                 if(isset($request->protocolo)){
 
                     if($request->protocolo!= null){
-                        if(strlen($request->protocolo) > 4){
-                            $protocoloAno = substr($request->protocolo,(strlen($request->protocolo)-4),strlen($request->protocolo));
-                            $protocoloNumero = substr($request->protocolo, 0, (strlen($request->protocolo)-4));
+                        if(strlen($request->protocolo) > 7){
+                            $protocoloCompleto = $request->protocolo;
                         }else{
                             return redirect()->back()->with('erro', "Protocolo invalido!")->withInput();
                         }
@@ -315,9 +304,9 @@ class PublicacoesController extends Controller
                         if(!isset($request->manterArquivo)){
                             $this->fileName =  Auth::user()->id.date('Y-m-d-H-i-s').".".pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
                             $request->arquivo->storeAs("", $this->fileName);
-                            DB::table('publicacao')->where('protocolo', '=', $protocoloNumero)->where('protocoloAno', '=', $protocoloAno)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao]);
+                            DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao]);
                         }else{
-                            DB::table('publicacao')->where('protocolo', '=', $protocoloNumero)->where('protocoloAno', '=', $protocoloAno)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao]);
+                            DB::table('publicacao')->where('protocolo', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao]);
                         }
                         DB::commit();
                         Session::forget('protocoloEditar');
@@ -372,7 +361,7 @@ class PublicacoesController extends Controller
             $protocolo++;
             $this->verificaProtocolo($protocolo, $request);
         }else {
-            DB::table('publicacao')->insert(['situacaoID' => 4, 'cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'protocolo' => $protocolo, 'protocoloAno' => date('Y')]);
+            DB::table('publicacao')->insert(['situacaoID' => 4, 'cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'PUB']);
             DB::commit();
         }
     }
@@ -436,56 +425,15 @@ class PublicacoesController extends Controller
         // fim da verificação do lado do servidor
     }
 
-    public function deletar(Request $request){
 
-        $permitido = false;
-
-        $protocolo = $request->protocolo;
-        $protocoloAno = $request->protocoloAno;
-
-        $publicacao = Publicacao::orderBy('dataEnvio');
-        $publicacoes->join('diariodata', 'diariodata.diarioDataID', 'publicacao.diarioDataID');
-        $publicacoes->join('situacao', 'situacao.situacaoID', 'publicacao.situacaoID');
-        $publicacao =  $publicacao->where('protocolo', '=', $protocolo)->where('protocoloAno', '=', $protocoloAno)->first();
-
-
-        if(Auth::user()->id == $publicacao->usuarioID){
-            $permitido = true;
-        }else{
-            if(Gate::allows('administrador', Auth::user())){
-                $permitido = true;
-            }
-        }
-
-        if($permitido){
-            return redirect()->back()->with('erro', "Você não tem permissão para fazer esta ação!")->withInput();
-        }
-
-        if($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita"){
-            return redirect()->back()->with('erro', "Sua publicação foi aceita ou publicada! Para apagar entre em contato com XXXXXXX.")->withInput();
-        }
-
-        if($publicacao->diarioData >= date('Y-m-d') ){
-            return redirect()->back()->with('erro', "Impossível Apagar, pois a data deste diário ja passou!")->withInput();
-        }
-
-        if(file_exists(storage_path("app/".$publicacao->arquivo))){
-            Storage::delete([$publicacao->arquivo]);
-        }
-
-        $publicacao = Publicacao::orderBy('dataEnvio');
-        $publicacao->where('protocolo', '=', $protocolo)->where('protocoloAno', '=', $protocoloAno)->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id, 'dataApagada' => date('Y-m-d H:i:s')]);
-
-    }
 
     public function editar($protocolo){
 
         if($protocolo != null){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
+            if(strlen($protocolo) > 7){
+                $protocoloCompleto = $protocolo;
             }else{
-                $publicacoes->where('protocolo', '=', null);
+                $protocoloCompleto = null;
             }
         }
 
@@ -494,8 +442,7 @@ class PublicacoesController extends Controller
         // Verifica se essa publicação foi apagada
 
         $usuarioIDApagou = Publicacao::orderBy('protocoloAno', 'desc');
-        $usuarioIDApagou->where('protocolo', '=', $protocoloNumero);
-        $usuarioIDApagou->where('protocoloAno', '=', $protocoloAno);
+        $usuarioIDApagou->where('protocoloCompleto', '=', $protocoloCompleto);
         $usuarioIDApagou = $usuarioIDApagou->first();
 
 
@@ -519,8 +466,7 @@ class PublicacoesController extends Controller
             $publicacao->join('situacao', 'situacao.situacaoID', 'publicacao.situacaoID');
             $publicacao->join('caderno', 'caderno.cadernoID', 'publicacao.cadernoID');
             $publicacao->join('tipodocumento', 'tipodocumento.tipoID', 'publicacao.tipoID');
-            $publicacao->where('protocolo', '=', $protocoloNumero);
-            $publicacao->where('protocoloAno', '=', $protocoloAno);
+            $publicacao->where('protocoloCompleto', '=', $protocoloCompleto);
             if($usuarioIDApagou->usuarioIDApagou != null){
                 $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'apagado.name as nomeUsuarioApagado');
             }else{
@@ -602,19 +548,17 @@ class PublicacoesController extends Controller
 
     public function ver($protocolo){
         if($protocolo != null){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
+            if(strlen($protocolo) > 7){
+                $protocoloCompleto = $protocolo;
             }else{
-                $publicacoes->where('protocolo', '=', null);
+                $protocoloCompleto = null;
             }
         }
 
         // Verifica se essa publicação foi apagada
 
         $usuarioIDApagou = Publicacao::orderBy('protocoloAno', 'desc');
-        $usuarioIDApagou->where('protocolo', '=', $protocoloNumero);
-        $usuarioIDApagou->where('protocoloAno', '=', $protocoloAno);
+        $usuarioIDApagou->where('protocoloCompleto', '=', $protocoloCompleto);
         $usuarioIDApagou = $usuarioIDApagou->first();
 
 
@@ -639,8 +583,7 @@ class PublicacoesController extends Controller
             $publicacao->join('caderno', 'caderno.cadernoID', 'publicacao.cadernoID');
             $publicacao->join('tipodocumento', 'tipodocumento.tipoID', 'publicacao.tipoID');
             $publicacao->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'criado.orgaoID');
-            $publicacao->where('protocolo', '=', $protocoloNumero);
-            $publicacao->where('protocoloAno', '=', $protocoloAno);
+            $publicacao->where('protocoloCompleto', '=', $protocoloCompleto);
             if($usuarioIDApagou->usuarioIDApagou != null){
                 $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'apagado.name as nomeUsuarioApagado', 'orgaorequisitante.orgaoNome');
             }else{
@@ -673,19 +616,21 @@ class PublicacoesController extends Controller
         $publicacao->join('diariodata', 'diariodata.diarioDataID', 'publicacao.diarioDataID');
 
         if($protocolo != null){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
-                $publicacao->where('protocolo', '=', $protocoloNumero);
-                $publicacao->where('protocoloAno', '=', $protocoloAno);
+            if(strlen($protocolo) > 7){
+                $publicacao->where('protocoloCompleto', '=', $protocolo);
             }else{
-                $publicacoes->where('protocolo', '=', null);
+                $publicacao->where('protocolo', '=', null);
             }
         }else{
-            $publicacoes->where('protocolo', '=', null);
+            $publicacao->where('protocolo', '=', null);
         }
 
         $publicacao = $publicacao->first();
+
+        if($publicacao == null){
+
+            return redirect()->back()->with('erro', 'Protocolo não encontrado!');
+        }
 
         if($publicacao->usuarioIDApagou != null){
             return redirect()->back()->with('erro', 'Arquivo não encontrado!');
@@ -716,11 +661,8 @@ class PublicacoesController extends Controller
         $publicacao = Publicacao::orderBy('protocoloAno', 'desc');
 
         if($protocolo != null){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
-                $publicacao->where('protocolo', '=', $protocoloNumero);
-                $publicacao->where('protocoloAno', '=', $protocoloAno);
+            if(strlen($protocolo) > 7){
+                $publicacao->where('protocoloCompleto', '=', $protocolo);
             }else{
                 return redirect()->back()->with(['erro' => 'Publicação não encontrada!']);
             }
@@ -728,7 +670,7 @@ class PublicacoesController extends Controller
             return redirect()->back()->with(['erro' => 'Publicação não encontrada!']);
         }
 
-        $publicacao->update(['situacaoID' => $request->situacaoID]);
+        $publicacao->update(['situacaoID' => 3]);
         return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Publicação Aceita!');
     }
 
@@ -740,11 +682,8 @@ class PublicacoesController extends Controller
         $publicacao = Publicacao::orderBy('protocoloAno', 'desc');
 
         if($protocolo != null){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
-                $publicacao->where('protocolo', '=', $protocoloNumero);
-                $publicacao->where('protocoloAno', '=', $protocoloAno);
+            if(strlen($protocolo) > 7){
+                $publicacao->where('protocoloCompleto', '=', $protocolo);
             }else{
                 return redirect()->back()->with('erro', 'Publicação não encontrada!');
             }
@@ -758,7 +697,7 @@ class PublicacoesController extends Controller
             Storage::delete([$request->arquivo]);
         }
 
-        $publicacao->update(['situacaoID' => $request->situacaoID, 'usuarioIDApagou' => Auth::user()->id, 'dataApagada' => date('Y-m-d H:i:s')]);
+        $publicacao->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id, 'dataApagada' => date('Y-m-d H:i:s')]);
         return redirect()->back()->with('sucesso', 'Publicação Apagada!');
 
     }
@@ -769,11 +708,8 @@ class PublicacoesController extends Controller
         $publicacao = Publicacao::orderBy('protocoloAno', 'desc');
 
         if($protocolo != null){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
-                $publicacao->where('protocolo', '=', $protocoloNumero);
-                $publicacao->where('protocoloAno', '=', $protocoloAno);
+            if(strlen($protocolo) > 7){
+                $publicacao->where('protocoloCompleto', '=', $protocolo);
             }else{
                 return redirect()->back()->with('erro', 'Publicação não encontrada!');
             }
@@ -781,7 +717,7 @@ class PublicacoesController extends Controller
             return redirect()->back()->with('erro', 'Publicação não encontrada!');
         }
 
-        $publicacao->update(['situacaoID' => $request->situacaoID]);
+        $publicacao->update(['situacaoID' => 1]);
         return redirect()->back()->with('sucesso', 'Publicação Publicada!');
     }
 
@@ -793,11 +729,8 @@ class PublicacoesController extends Controller
         $publicacao = Publicacao::orderBy('protocoloAno', 'desc');
 
         if($protocolo != null){
-            if(strlen($protocolo) > 4){
-                $protocoloAno = substr($protocolo,(strlen($protocolo)-4),strlen($protocolo));
-                $protocoloNumero = substr($protocolo, 0, (strlen($protocolo)-4));
-                $publicacao->where('protocolo', '=', $protocoloNumero);
-                $publicacao->where('protocoloAno', '=', $protocoloAno);
+            if(strlen($protocolo) > 7){
+                $publicacao->where('protocoloCompleto', '=', $protocolo);
             }else{
                 return redirect()->back()->with(['erro' => 'Publicação não encontrada!']);
             }
@@ -809,7 +742,7 @@ class PublicacoesController extends Controller
             return redirect()->back()->with(['erro' => 'Tamanho da descrição excedida!']);
         }
 
-        $publicacao->update(['situacaoID' => $request->situacaoID, 'rejeitadaDescricao' => $request->descricao]);
+        $publicacao->update(['situacaoID' => 5, 'rejeitadaDescricao' => $request->descricao]);
         return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Publicação Rejeitada!');
     }
 }

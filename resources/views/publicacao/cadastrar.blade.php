@@ -119,7 +119,7 @@
                                 </div>
                                 <div class="col-md-4" id="divLabel">
                                     <br>
-                                    <Strong><span style="color:red; white-space:nowrap;" id="labelText">Ecolha um Diário!</span></Strong>
+                                    <Strong><span style="color:red; white-space:nowrap;" id="labelText">Escolha um Diário!</span></Strong>
 
                                 </div>
 

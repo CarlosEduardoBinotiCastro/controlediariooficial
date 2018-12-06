@@ -25,7 +25,7 @@
                     <div class="card-header"> <strong> {{ __('EDITAR Publicação') }} </strong> </div>
                     <form id="form" action="/publicacao/salvar" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="protocolo" value="{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}">
+                    <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
                     <div class="card-body">
                             <div id="divLimite" style="display:none;">
 
@@ -36,7 +36,7 @@
                             <div class=" row col-md-12">
                                 <div class="col-md-6">
                                     <div>
-                                            <p>Protocolo: <strong>{{$publicacao->protocolo}}{{$publicacao->protocoloAno}} </strong></p>
+                                            <p>Protocolo: <strong>{{$publicacao->protocoloCompleto}} </strong></p>
                                     </div>
 
                                     <div>
@@ -139,7 +139,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <a href="/publicacao/download/{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" class="btn btn-success" style="width:110px">Download</a>
+                                        <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" style="width:110px">Download</a>
                                     </div>
                             </div>
 

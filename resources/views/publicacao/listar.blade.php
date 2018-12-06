@@ -22,7 +22,7 @@
         <div class="col-md-8 offset-md-2">
             @if(session()->has('erro'))
                 <br>
-                <div class="form-group row mb-0 alert alert-success" style="font-size:20px">
+                <div class="form-group row mb-0 alert alert-danger" style="font-size:20px">
                     {{ session()->get('erro') }}
                 </div>
             @endif
@@ -154,7 +154,7 @@
 
          <tr>
 
-            <td>{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}</td>
+            <td>{{$publicacao->protocoloCompleto}}</td>
             <td>N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</td>
             <td> {{$publicacao->orgaoNome}}</td>
             <td> {{$dataEnviado}} </td>
@@ -162,19 +162,19 @@
             <td> {{$publicacao->situacaoNome}} </td>
 
             <td style="white-space:nowrap;">
-                <a href='/publicacao/ver/{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}' class="btn btn-dark" style="width:75px">Ver</a>
+                <a href='/publicacao/ver/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
 
             {{-- Verifica se o usuario é administrador e se não for, verifica se a situação permita ele editar --}}
 
             @if (Gate::allows('administrador', Auth::user()))
                 @if ($publicacao->situacaoNome == "Apagada" || date('Y-m-d') >= $publicacao->diarioData)
                 @else
-                     <a href='/publicacao/editar/{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}' class="btn btn-primary" style="width:75px">Editar</a>
+                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:75px">Editar</a>
                 @endif
             @else
                 @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" ||  date('Y-m-d') >= $publicacao->diarioData)
                 @else
-                     <a href='/publicacao/editar/{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}' class="btn btn-primary" style="width:75px">Editar</a>
+                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:75px">Editar</a>
                 @endif
             @endif
 
@@ -184,7 +184,7 @@
                 @php
                     $modalApagar = true;
                 @endphp
-                <button class="btn btn-danger" data-toggle="modal" data-target="#modalApagar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" style="width:75px">Apagar</button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#modalApagar{{$publicacao->protocoloCompleto}}" style="width:75px">Apagar</button>
             @endif
 
             {{-- Verifica se é administrador e se pode publicar o arquivo --}}
@@ -193,7 +193,7 @@
                     @php
                         $modalPublicar = true;
                     @endphp
-                    <button class="btn btn-success" data-toggle="modal" data-target="#modalPublicar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" style="width:75px">Publicar</button>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#modalPublicar{{$publicacao->protocoloCompleto}}" style="width:75px">Publicar</button>
 
             @endif
 
@@ -204,11 +204,10 @@
         @if ($modalApagar)
         <form action="/publicacao/apagar" method="POST">
             @csrf
-            <input type="hidden" name="protocolo" value="{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}">
+            <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao Apagada --}}
-            <input type="hidden" name="situacaoID" value="2">
             <input type="hidden" name="arquivo" value="{{$publicacao->arquivo}}">
-            <div class='modal fade' id="modalApagar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" role='dialog'>
+            <div class='modal fade' id="modalApagar{{$publicacao->protocoloCompleto}}" role='dialog'>
                     <div class='modal-dialog row justify-content-center'>
                         <div class="modal-content">
                                 <div class="modal-header">
@@ -244,10 +243,9 @@
         @if ($modalPublicar)
         <form action="/publicacao/publicar" method="POST">
             @csrf
-            <input type="hidden" name="protocolo" value="{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}">
+            <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao publicada --}}
-            <input type="hidden" name="situacaoID" value="1">
-            <div class='modal fade' id="modalPublicar{{$publicacao->protocolo}}{{$publicacao->protocoloAno}}" role='dialog'>
+            <div class='modal fade' id="modalPublicar{{$publicacao->protocoloCompleto}}" role='dialog'>
                     <div class='modal-dialog row justify-content-center'>
                         <div class="modal-content">
                                 <div class="modal-header">
@@ -256,7 +254,7 @@
                                 <div class="modal-body">
 
                                     <p> Segue protocolo de publicação:</p>
-                                    <p> <b> {{$publicacao->protocolo}}{{$publicacao->protocoloAno}} </b> </p>
+                                    <p> <b> {{$publicacao->protocoloCompleto}} </b> </p>
 
                                     <p> Ao realizar esta ação o usuário que enviou a publicação não poderá mais edita-la!</p>
 

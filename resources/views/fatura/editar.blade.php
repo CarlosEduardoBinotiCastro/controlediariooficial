@@ -14,47 +14,56 @@
             </div>
 </div>
 
-<br>
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"> {{ __('Cadastrar Feriados / Pontos Facultativos') }}</div>
+                <div class="card-header"> {{ __('Configurações Fatura') }}</div>
 
                 <div class="card-body">
-                    <form id='formEditar' method="POST" action="{{ url("/diasnaouteis/salvar") }}" enctype="multipart/form-data" >
+                    <form id='formEditar' method="POST" action="{{ url("/fatura/salvarConfig") }}" enctype="multipart/form-data" >
                         @csrf
 
+                        <input type="hidden" value="{{$config->configID}}" name="configID">
+
                         <div class="form-group row">
-                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Descrição') }}</label>
+                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Valor Coluna') }}</label>
 
                             <div class="col-md-6">
-                                <input id="descricao" type="text" class="form-control{{ $errors->has('descricao') ? ' is-invalid' : '' }}" name="diaDescricao" value="" placeholder="descrição do dia" required autofocus>
+                                <input id="valorColuna" type="text" class="form-control{{ $errors->has('valorColuna') ? ' is-invalid' : '' }}" name="valorColuna" value="{{ $config->valorColuna }}" placeholder="Valor Coluna" required autofocus>
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('Data') }}</label>
-                            <div class="col-md-6">
-                                <input id="diaNaoUtilData" type="date" class="form-control" name="diaNaoUtilData" value="" min="" required>
-                            </div>
-                        </div>
                         <br>
+
+                        <div class="form-group row">
+                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Largura Coluna (centimetros)') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="largura" type="text" class="form-control{{ $errors->has('largura') ? ' is-invalid' : '' }}" name="largura" value="{{ $config->largura }}" placeholder="Largura Coluna" required autofocus>
+                            </div>
+                        </div>
+
+                        <br>
+
 
                         <div>
                             <div style="float: left;" class="offset-md-4">
                                 <div>
-                                    <input type="submit" value="Confirmar Cadastrar" class="btn btn-primary"  id="btnCadastrar">
+
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ __('Salvar Configuração') }}
+                                    </button>
+
                                 </div>
                             </div>
                             <div style="float: left; margin-left:2%;">
-                                <button type="button" class="btn btn-primary" id="btnVoltar">
+                                <a style="color: white;" class="btn btn-primary" id="btnVoltar">
                                     Voltar
-                                </button>
+                                </a>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -79,8 +88,9 @@
             errorClass: "my-error-class"
         });
 
-        var today = new Date().toISOString().split('T')[0];
-        document.getElementsByName("diaNaoUtilData")[0].setAttribute('min', today);
+        $( "#btnEditar" ).click(function() {
+            $( "#formEditar" ).submit();
+        });
 
     });
 </script>
