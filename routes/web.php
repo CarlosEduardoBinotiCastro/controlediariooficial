@@ -12,6 +12,7 @@
 |
 */
 
+
 // rotas misc
 
 Route::get('/carregando', function(){
@@ -136,3 +137,21 @@ Route::group(['prefix' => 'publicacao'], function () {
     Route::post('/rejeitar', 'PublicacoesController@rejeitar');
 });
 
+
+// Rotas Relacionadas com Faturas
+
+Route::group(['prefix' => 'fatura'], function () {
+    Route::get('/gerarTemplate', 'PhpWordController@criarTemplate');
+
+    Route::get('/configuracao', 'FaturaController@carregarConfiguracao');
+    Route::post('/salvarConfiguracao', 'FaturaController@salvarConfiguracao');
+
+    Route::get('/cadastrar', 'FaturaController@cadastrar');
+});
+
+
+// Rotas Relacionadas com SubCategoria
+
+Route::group(['prefix' => 'subcategoria'], function () {
+    Route::get('/listar', 'SubCategoriaController@listar');
+});

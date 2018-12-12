@@ -136,9 +136,9 @@
                                           Faturas
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                          <a class="dropdown-item" href="#">Listar</a>
-                                          <a class="dropdown-item" href="#">Cadastrar</a>
-                                          <a class="dropdown-item" href="#">Configurações</a>
+                                          <a class="dropdown-item" href="/exibirWord">Listar</a>
+                                          <a class="dropdown-item" href="/fatura/cadastrar">Cadastrar</a>
+                                          <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
                                         </div>
                                     </div>
                                  </li>
@@ -155,6 +155,7 @@
                               <a class="dropdown-item" href="/orgaorequisitante/listar">Órgão Requisitante</a>
                               <a class="dropdown-item" href="/caderno/listar">Caderno</a>
                               <a class="dropdown-item" href="/tipodocumento/listar">Tipo Documento</a>
+                              <a class="dropdown-item" href="/subcategoria/listar">Sub-Categorias</a>
                               <a class="dropdown-item" href="/diariodata/listar">Datas Diários Oficiais</a>
                               <a class="dropdown-item" href="/diasnaouteis/listar">Feriados/Pontos Facultativos</a>
                             </div>

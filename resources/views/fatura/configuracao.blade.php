@@ -22,13 +22,13 @@
                 <div class="card-header"> {{ __('Configurações Fatura') }}</div>
 
                 <div class="card-body">
-                    <form id='formEditar' method="POST" action="{{ url("/fatura/salvarConfig") }}" enctype="multipart/form-data" >
+                    <form id='formEditar' method="POST" action="{{ url("/fatura/salvarConfiguracao") }}" enctype="multipart/form-data" >
                         @csrf
 
                         <input type="hidden" value="{{$config->configID}}" name="configID">
 
                         <div class="form-group row">
-                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Valor Coluna') }}</label>
+                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Valor Coluna (reais)') }}</label>
 
                             <div class="col-md-6">
                                 <input id="valorColuna" type="text" class="form-control{{ $errors->has('valorColuna') ? ' is-invalid' : '' }}" name="valorColuna" value="{{ $config->valorColuna }}" placeholder="Valor Coluna" required autofocus>

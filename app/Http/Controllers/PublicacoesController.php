@@ -210,6 +210,7 @@ class PublicacoesController extends Controller
 
 
     public function cadastrar(){
+
         $usuarioCaderno = DB::table('usuariocaderno')->join('caderno', 'caderno.cadernoID', 'usuariocaderno.cadernoID')->where('usuarioID', '=', Auth::user()->id)->select('caderno.*')->get();
         $horaEnvio = Auth::user()->horaEnvio;
         $documentos = TipoDocumento::orderBy('tipoDocumento');
