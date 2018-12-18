@@ -13,40 +13,46 @@
             @endif
             </div>
 </div>
+
 <br>
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"> {{ __('Cadastrar Diário Oficial') }}</div>
+                <div class="card-header"> {{ __('Cadastrar Subcategoria') }}</div>
 
                 <div class="card-body">
-                    <form id='form' method="POST" action="{{ url("/diariodata/salvar") }}" enctype="multipart/form-data" >
+                    <form id='form' method="POST" action="{{ url("/subcategoria/salvar") }}" enctype="multipart/form-data" >
                         @csrf
 
                         <div class="form-group row">
-                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Número') }}</label>
+                            <label for="tipoDocumento" class="col-md-4 col-form-label text-md-right">{{ __('Nome') }}</label>
 
                             <div class="col-md-6">
-                                <input id="numero" type="text" class="form-control{{ $errors->has('numero') ? ' is-invalid' : '' }}" name="numeroDiario" value="{{ old('numeroDiario') }}" placeholder="número do diário" required autofocus>
+                                <input id="subcategoriaNome" type="text" class="form-control{{ $errors->has('tipoDocumento') ? ' is-invalid' : '' }}" name="subcategoriaNome" value="{{ old('subcategoriaNome') }}" placeholder="nome da subcategoria" required autofocus>
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('Data Publicação') }}</label>
-                            <div class="col-md-6">
-                                <input id="diarioData" type="date" class="form-control" name="diarioData" value="{{ old('telefone') }}" min="" required>
-                            </div>
-                        </div>
                         <br>
 
+                        <div class="form-group row">
+                        <label for="users" class="col-md-4 col-form-label text-md-right">{{ __('Tipo Documento') }}</label>
+                        <div class="col-md-6">
+                                <select name="tipoID" id="tipoID" class="form-control">
+                                        @foreach($documentos as $documento)
+                                        <option value="{{ $documento->tipoID }}">{{ $documento->tipoDocumento }}</option>
+                                        @endforeach
+                                </select>
+                        </div>
+
+                        </div>
 
                         <div>
                             <div style="float: left;" class="offset-md-4">
                                 <div>
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Cadastrar Diario') }}
+                                        {{ __('Cadastrar Subcategoria') }}
                                     </button>
                                 </div>
                             </div>
@@ -68,25 +74,20 @@
 @endauth
 
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript">
 
     $(document).ready(function($) {
-
-        $("#btnVoltar").click(function(){
-            window.history.back();
-        });
 
         $('#form').validate({
             errorClass: "my-error-class"
         });
 
-        var today = new Date().toISOString().split('T')[0];
+        $("#btnVoltar").click(function(){
+            window.history.back();
+        });
 
-        var date =  today.split('-');
-
-        document.getElementsByName("diarioData")[0].setAttribute('min', date[0]+'-'+date[1]+'-'+(parseInt(date[2])+1).toString());
-
+        $('#tipoID').select2();
     });
 </script>
 

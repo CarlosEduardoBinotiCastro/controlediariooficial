@@ -29,14 +29,14 @@
                                 <br>
                         </div>
 
-                    <form id='form' method="POST" action="{{ url("/fatura/salvar") }}" enctype="multipart/form-data" >
+                    <form id='form' method="POST" action="{{ url("/fatura/formatar") }}" enctype="multipart/form-data" >
                         @csrf
 
                         <div class="form-group row">
                             <label for="requisitante" class="col-md-4 col-form-label text-md-right">{{ __('Requisitante') }}</label>
 
                             <div class="col-md-6">
-                                <input id="requisitante" type="text" class="form-control{{ $errors->has('requisitante') ? ' is-invalid' : '' }}" name="requisitante" value="{{ old('requisitante') }}" placeholder="nome do requisitante" required autofocus>
+                                <input  id="requisitante" type="text" class="form-control{{ $errors->has('requisitante') ? ' is-invalid' : '' }}" name="requisitante" value="{{ old('requisitante') }}" placeholder="nome do requisitante" required autofocus>
                             </div>
                         </div>
 
@@ -44,7 +44,7 @@
                             <label for="empresa" class="col-md-4 col-form-label text-md-right">{{ __('Empresa') }}</label>
 
                             <div class="col-md-6">
-                                <input id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }}" name="empresa" value="{{ old('empresa') }}" placeholder="nome da empresa" required autofocus>
+                                <input  id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }}" name="empresa" value="{{ old('empresa') }}" placeholder="nome da empresa" required autofocus>
                             </div>
                         </div>
 
@@ -52,21 +52,21 @@
                             <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }}</label>
 
                             <div class="col-md-2">
-                                <select class="custom-select mr-sm-2" name="tipoDoc" id="tipoDoc">
+                                <select  class="custom-select mr-sm-2" name="tipoDoc" id="tipoDoc">
                                 <option slected value="CPF">CPF</option>
                                 <option value="RG">CNPJ</option>
                                 </select>
                             </div>
 
                             <div class="col-md-4">
-                                <input id="numeroDoc" type="text" class="form-control" name="cpfcnpj" required>
+                                <input  id="numeroDoc" type="text" class="form-control" name="cpfCnpj" required>
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('Observação') }}</label>
+                            <label for="observacao" class="col-md-4 col-form-label text-md-right">{{ __('Observação') }}</label>
                             <div class="col-md-6">
-                                <textarea name="descricao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{old('observacao')}}" required></textarea>
+                                <textarea  name="observacao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{old('observacao')}}" required></textarea>
                             </div>
                         </div>
                         <br>
@@ -87,6 +87,32 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+
+                            <label for="tipoID" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }}</label>
+
+                            <div class="col-md-6">
+                                <select  class="custom-select mr-sm-2" name="tipoID" id="tipoID" onchange="carregarSubcategorias()">
+                                <option slected value="">Selecione o Documento</option>
+                                    @foreach ($documentos as $item)
+                                        <option value="{{$item->tipoID}}"> {{$item->tipoDocumento}} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row">
+
+                            <label for="subcategoriaID" class="col-md-4 col-form-label text-md-right">{{ __('Subcategoria') }}</label>
+
+                            <div class="col-md-6">
+                                <select  class="custom-select mr-sm-2" name="subcategoriaID" id="subcategoriaID">
+                                    <option slected value="">Selecione a Subcategoria</option>
+                                </select>
+                            </div>
+
+                        </div>
 
 
                         {{-- Escolher o Diário --}}
@@ -95,23 +121,36 @@
                                 $diariosDatas = json_decode($diarioDatas);
                             @endphp
                                 <label for="diario" class="col-md-4 col-form-label text-md-right">{{ __('Diário') }}</label>
-                                <select id="diario" class="custom-select col-md-6" name="diarioDataID" required onchange="dataLimite()">
-                                        <option slected value=""> Escolha o Diário </option>
-                                        @foreach ($diariosDatas as $item)
-                                            @php
-                                                $data = new DateTime($item->diarioData);
-                                                $data = $data->format('d/m/Y');
-                                            @endphp
-                                            <option  value="{{$item->diarioDataID}} "> N°{{$item->numeroDiario}} Data: {{$data}} </option>
-                                        @endforeach
-                                </select>
+                                <div class="col-md-6">
+                                    <select id="diario" class="custom-select  mr-sm-2" name="diarioDataID" required onchange="dataLimite()">
+                                            <option slected value=""> Escolha o Diário </option>
+                                            @foreach ($diariosDatas as $item)
+                                                @php
+                                                    $data = new DateTime($item->diarioData);
+                                                    $data = $data->format('d/m/Y');
+                                                @endphp
+                                                <option  value="{{$item->diarioDataID}} "> N°{{$item->numeroDiario}} Data: {{$data}} </option>
+                                            @endforeach
+                                    </select>
+                                </div>
                             </div>
 
                             <br>
-                                <div class="form-group row offset-md-6">
-                                    <a href="/fatura/gerarTemplate" class="btn btn-primary">Template</a><a style="color:red;" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle fa-2x"></i></a>
-                                </div>
+
+                            <div class="col-md-6 offset-md-4">
+
+                                    <div class="col-md-12" style="text-align:justify;">
+                                            <input id="termo" type="checkbox" name="termos" value="concordo" > <strong> Aceito e me responsabilizo pelos termos contidos na <a href="http://ioes.dio.es.gov.br/js/tinymce/plugins/responsivefilemanager/source/Instru%C3%A7%C3%A3o%20Normativa%20001-2016.pdf" style="color:blue;">Instrução Normativa DIO/ES nº 001/2016</a> , publicada no D.O. do dia 02 de Maio de 2016. </strong>
+                                        </div>
+
+                            </div>
+
+
                             <br>
+                                <div class="form-group row offset-md-6">
+                                    <a href="/fatura/gerarTemplate" class="btn btn-primary">Template</a><a style="color:red; margin-left:2%" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle fa-2x"></i></a>
+                                </div>
+
 
                             <div class=" row col-md-8 offset-md-2">
 
@@ -188,7 +227,11 @@
         $("#numeroDoc").attr('maxlength',11);
         $("#numeroDoc").mask('000.000.000-00', {reverse: true});
 
+        $("#termo").prop('checked', false);
+        $("#btnEnviar").prop('disabled', true);
+
         var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
+        var subcategorias = <?php  echo $subcategorias; ?>;
 
         $(document).on('change','#tipoDoc',function(){
         if($("#tipoDoc").val() == 'CPF'){
@@ -203,12 +246,31 @@
         }
         });
 
+         carregarSubcategorias = function(){
+            var selected = $("#tipoID").val();
+
+            if(selected != ""){
+
+                $("#subcategoriaID").empty();
+                $("#subcategoriaID").append('<option selected value="">Escolha a Subcategoria</option>');
+
+                subcategorias.forEach(element => {
+
+                    if(element.tipoID == selected){
+                        $("#subcategoriaID").append('<option value="'+element.subcategoriaID+'">'+element.subcategoriaNome+'</option>');
+                    }
+                });
+            }else{
+                $("#documentoSelect").empty();
+                $("#documentoSelect").append('<option selected value="">Escolha a Subcategoria</option>');
+            }
+        }
+
         $("#form" ).submit(function( event ) {
             if($("#form").valid()){
                 $("#numeroDoc").unmask();
             }
         });
-
 
         dataLimite = function(){
              if(!$("#diario").val() == ""){
@@ -274,6 +336,13 @@
 
          }
 
+         $("#termo").click(function () {
+            if($("#btnEnviar").is(":disabled")){
+                $("#btnEnviar").attr('disabled', false);
+            }else{
+                $("#btnEnviar").attr('disabled', true);
+            }
+        });
 
     });
 </script>

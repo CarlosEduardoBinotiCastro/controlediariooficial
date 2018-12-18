@@ -147,6 +147,10 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::post('/salvarConfiguracao', 'FaturaController@salvarConfiguracao');
 
     Route::get('/cadastrar', 'FaturaController@cadastrar');
+    Route::post('/salvar', 'FaturaController@salvar');
+    Route::post('/formatar', 'FaturaController@formatar');
+
+    Route::get('/downloadTemp/{arquivoFormatadoTemp}', 'FaturaController@downloadTemp');
 });
 
 
@@ -154,4 +158,8 @@ Route::group(['prefix' => 'fatura'], function () {
 
 Route::group(['prefix' => 'subcategoria'], function () {
     Route::get('/listar', 'SubCategoriaController@listar');
+    Route::get('/cadastrar', 'SubCategoriaController@cadastrar');
+    Route::get('/deletar/{subcategoriaID}', 'SubCategoriaController@deletar');
+    Route::get('/editar/{subcategoriaID}', 'SubCategoriaController@editar');
+    Route::post('/salvar', 'SubCategoriaController@salvar');
 });

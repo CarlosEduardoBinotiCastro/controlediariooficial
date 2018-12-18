@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use PhpOffice\PhpWord\Style\Language;
 
 class PhpWordController extends Controller
 {
@@ -10,11 +11,14 @@ class PhpWordController extends Controller
 
 public function criarTemplate(){
     $wordTest = new \PhpOffice\PhpWord\PhpWord();
+    // $wordTest->getSettings()->setThemeFontLang(new Language(Language::FR_BE));
 
     $newSection = $wordTest->addSection();
+    $titulo = "Escreva seu titulo";
+    $desc1 = "Escreva Aqui o conteúdo de forma corrida, sem delimitações de margem e caixas de texto, utilizando caracteres remetentes a linguagem portuguesa. Ao copiar colar textos com muitos paragrafos, verifique se o texto segue os pafrões do template.";
 
-    $desc1 = "Escreva Aqui o conteúdo de forma corrida, sem delimitações de margem e caixas de texto.";
-
+    $newSection->addText($titulo, array('bold' => true));
+    $newSection->addText("");
     $newSection->addText($desc1);
 
     $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($wordTest, "Word2007");

@@ -28,7 +28,7 @@
                         <input type="hidden" value="{{$config->configID}}" name="configID">
 
                         <div class="form-group row">
-                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Valor Coluna (reais)') }}</label>
+                            <label for="valorColuna" class="col-md-4 col-form-label text-md-right">{{ __('Valor Coluna (reais)') }}</label>
 
                             <div class="col-md-6">
                                 <input id="valorColuna" type="text" class="form-control{{ $errors->has('valorColuna') ? ' is-invalid' : '' }}" name="valorColuna" value="{{ $config->valorColuna }}" placeholder="Valor Coluna" required autofocus>
@@ -38,7 +38,7 @@
                         <br>
 
                         <div class="form-group row">
-                            <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Largura Coluna (centimetros)') }}</label>
+                            <label for="largura" class="col-md-4 col-form-label text-md-right">{{ __('Largura Coluna (centimetros)') }}</label>
 
                             <div class="col-md-6">
                                 <input id="largura" type="text" class="form-control{{ $errors->has('largura') ? ' is-invalid' : '' }}" name="largura" value="{{ $config->largura }}" placeholder="Largura Coluna" required autofocus>
@@ -47,6 +47,20 @@
 
                         <br>
 
+                        <div class="form-group row">
+
+
+                                <label for="cadernoID" class="col-md-4 col-form-label text-md-right">{{ __('Caderno Das Faturas') }}</label>
+                                <select class="custom-select col-md-6" name="cadernoID" id="cadernoID" required>
+                                        <option slected value=""> Escolha o Caderno </option>
+                                        @foreach ($cadernos as $item)
+                                            <option @if ($item->cadernoID == $config->cadernoID) selected @endif value=" {{$item->cadernoID}} "> {{$item->cadernoNome}} </option>
+                                        @endforeach
+                                </select>
+
+                        </div>
+
+                        <br>
 
                         <div>
                             <div style="float: left;" class="offset-md-4">

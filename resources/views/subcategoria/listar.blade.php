@@ -70,8 +70,8 @@
 
             <td>{{$subcategoria->subcategoriaNome}}</td>
             <td>{{$subcategoria->tipoDocumento}}</td>
-            <td> <a href='/subcategoria/editar/{{$diario->diarioDataID}}' class="btn btn-primary">Editar</a> </td>
-            <td> <a href='/subcategoria/deletar/{{$diario->diarioDataID}}' class="btn btn-danger">Deletar</a> </td>
+            <td> <a href='/subcategoria/editar/{{$subcategoria->subcategoriaID}}' class="btn btn-primary">Editar</a> </td>
+            <td> <a href='/subcategoria/deletar/{{$subcategoria->subcategoriaID}}' class="btn btn-danger">Deletar</a> </td>
         </tr>
 
          @endforeach
