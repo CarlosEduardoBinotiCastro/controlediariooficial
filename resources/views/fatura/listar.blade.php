@@ -159,10 +159,10 @@
 
                                     <a href='/fatura/ver/{{$fatura->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
 
-                                    @if ($fatura->situacaoNome == "Apagada" || date('Y-m-d') >= $fatura->diarioData)
+                                    {{-- @if ($fatura->situacaoNome == "Apagada" || date('Y-m-d') >= $fatura->diarioData)
                                     @else
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#modalEditar{{$fatura->protocoloCompleto}}" style="width:75px">Editar</button>
-                                    @endif
+                                    @endif --}}
 
                                     @if ($fatura->diarioData <= date('Y-m-d') && $fatura->situacaoNome != "Publicada" && $fatura->situacaoNome != "Apagada" && $fatura->situacaoNome == "Aceita")
                                         @php

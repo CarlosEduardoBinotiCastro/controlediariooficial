@@ -35,9 +35,10 @@
                                 <input class="form-control col-md-6" type="date" name="dataFinal" value="{{ date('Y-m-d') }}" required>
                             </div>
 
-                            <div class="form-group row offset-md-2 col-md-8">
-                                <select class="custom-select" name="situacao" >
-                                        <option slected value="tudo">Situação</option>
+                            <div class="form-group row offset-md-2 ">
+                                <label class="col-md-3 text-md-right">Situação</label>
+                                <select class="custom-select col-md-6" name="situacao" >
+                                        <option slected value="tudo">Todos</option>
                                         <option  value="Aceita-Publicada">Aceita e Publicada</option>
                                     @foreach ($situacoes as $situacao)
                                         <option value=" {{$situacao->situacaoNome}} "> {{$situacao->situacaoNome}} </option>
@@ -75,6 +76,7 @@
                             <thead>
                                 <th>Subcategoria</th>
                                 <th>Quantidade de Faturas</th>
+                                <th>Valor Das Faturas</th>
 
                             </thead>
 
@@ -85,6 +87,7 @@
                                 <tr>
                                     <td>{{$sub->subcategoriaNome}}</td>
                                     <td>{{$sub->quantidade}}</td>
+                                    <td>{{$sub->total}}</td>
                                 </tr>
 
                                 @endforeach

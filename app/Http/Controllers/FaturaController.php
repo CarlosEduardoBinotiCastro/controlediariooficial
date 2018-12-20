@@ -1035,6 +1035,7 @@ class FaturaController extends Controller
             $subcategorias = SubCategoria::orderBy('subcategoriaNome');
             $subcategorias->join('fatura', 'fatura.subcategoriaID', 'subcategoria.subcategoriaID');
             $subcategorias->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+            $subcategorias->selectRaw('SUM(fatura.valor) as total');
             $subcategorias->selectRaw('COUNT(*) as quantidade, subcategoria.subcategoriaNome');
             $subcategorias->whereBetween('fatura.dataEnvioFatura',  [$dataInicio . ' 00:00:01', $dataFinal . ' 23:59:59']);
             $subcategorias->groupBy('subcategoria.subcategoriaNome');
@@ -1048,11 +1049,21 @@ class FaturaController extends Controller
 
                 if(preg_match('/-/', $situacao)){
                     $situacao = explode('-', $situacao);
+                    $i = 0;
+
                     foreach($situacao as $sit){
-                        $faturas->where('situacao.situacaoNome', '=', $sit);
-                        $subcategorias->Where('situacao.situacaoNome', '=', $sit);
-                        $valorTotal->where('situacao.situacaoNome', '=', $sit);
+                        if($i == 0){
+                            $faturas->where('situacao.situacaoNome', '=', $sit);
+                            $subcategorias->where('situacao.situacaoNome', '=', $sit);
+                            $valorTotal->where('situacao.situacaoNome', '=', $sit);
+                        }else{
+                            $faturas->orWhere('situacao.situacaoNome', '=', $sit);
+                            $subcategorias->orWhere('situacao.situacaoNome', '=', $sit);
+                            $valorTotal->orwhere('situacao.situacaoNome', '=', $sit);
+                        }
+                        $i++;
                     }
+
                 }else{
                     $faturas->where('situacao.situacaoNome', '=', $situacao);
                     $subcategorias->where('situacao.situacaoNome', '=', $situacao);
