@@ -376,8 +376,6 @@ class FaturaController extends Controller
                         $protocolo = 0;
                     }
 
-
-
                     DB::beginTransaction();
                     $this->verificaProtocolo($protocolo, $request);
                     return redirect('/home')->with('sucesso', 'Fatura Enviada com Sucesso');
@@ -865,106 +863,121 @@ class FaturaController extends Controller
 
     public function downloadOriginal($protocolo){
 
-        $fatura = Fatura::orderBy('protocoloAno', 'desc');
-        $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+        if(Gate::allows('administrador', Auth::user())){
 
-        $fatura->where('protocoloCompleto', '=', $protocolo);
+            $fatura = Fatura::orderBy('protocoloAno', 'desc');
+            $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
-        $fatura = $fatura->first();
+            $fatura->where('protocoloCompleto', '=', $protocolo);
 
-        if($fatura == null){
-            return redirect()->back()->with('erro', 'Protocolo não encontrado!');
-        }
+            $fatura = $fatura->first();
 
-        if($fatura->situacaoNome == "Apagada"){
-            return redirect()->back()->with('erro', 'Arquivo não encontrado!');
-        }
-
-        if ($fatura != null) {
-            if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
-                return redirect()->back()->with('erro', 'Você não tem permissão!');
+            if($fatura == null){
+                return redirect()->back()->with('erro', 'Protocolo não encontrado!');
             }
+
+            if($fatura->situacaoNome == "Apagada"){
+                return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            }
+
+            if ($fatura != null) {
+                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
+                    return redirect()->back()->with('erro', 'Você não tem permissão!');
+                }
+            }else{
+                return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            }
+
+            $arquivoExtensao = explode('.', $fatura->arquivoOriginal);
+
+            if(file_exists(storage_path("app/".$fatura->arquivoOriginal))){
+                return Response::download(storage_path("app/".$fatura->arquivoOriginal), ''.$protocolo.'-'.'Original'.'.'.$arquivoExtensao[1]);
+            }else{
+                return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
+            }
+
         }else{
-            return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            return redirect('home');
         }
-
-        $arquivoExtensao = explode('.', $fatura->arquivoOriginal);
-
-        if(file_exists(storage_path("app/".$fatura->arquivoOriginal))){
-            return Response::download(storage_path("app/".$fatura->arquivoOriginal), ''.$protocolo.'-'.'Original'.'.'.$arquivoExtensao[1]);
-        }else{
-            return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
-        }
-
     }
 
     public function downloadFormatado($protocolo){
 
-        $fatura = Fatura::orderBy('protocoloAno', 'desc');
-        $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+        if(Gate::allows('administrador', Auth::user())){
 
-        $fatura->where('protocoloCompleto', '=', $protocolo);
+            $fatura = Fatura::orderBy('protocoloAno', 'desc');
+            $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
-        $fatura = $fatura->first();
+            $fatura->where('protocoloCompleto', '=', $protocolo);
 
-        if($fatura == null){
-            return redirect()->back()->with('erro', 'Protocolo não encontrado!');
-        }
+            $fatura = $fatura->first();
 
-        if($fatura->situacaoNome == "Apagada"){
-            return redirect()->back()->with('erro', 'Arquivo não encontrado!');
-        }
-
-        if ($fatura != null) {
-            if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
-                return redirect()->back()->with('erro', 'Você não tem permissão!');
+            if($fatura == null){
+                return redirect()->back()->with('erro', 'Protocolo não encontrado!');
             }
+
+            if($fatura->situacaoNome == "Apagada"){
+                return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            }
+
+            if ($fatura != null) {
+                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
+                    return redirect()->back()->with('erro', 'Você não tem permissão!');
+                }
+            }else{
+                return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            }
+
+            $arquivoExtensao = explode('.', $fatura->arquivoFormatado);
+
+            if(file_exists(storage_path("app/".$fatura->arquivoFormatado))){
+                return Response::download(storage_path("app/".$fatura->arquivoFormatado), ''.$protocolo.'-'.'Formatado'.'.'.$arquivoExtensao[1]);
+            }else{
+                return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
+            }
+
         }else{
-            return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            return redirect('home');
         }
-
-        $arquivoExtensao = explode('.', $fatura->arquivoFormatado);
-
-        if(file_exists(storage_path("app/".$fatura->arquivoFormatado))){
-            return Response::download(storage_path("app/".$fatura->arquivoFormatado), ''.$protocolo.'-'.'Formatado'.'.'.$arquivoExtensao[1]);
-        }else{
-            return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
-        }
-
     }
 
     public function downloadComprovantePago($protocolo){
 
-        $fatura = Fatura::orderBy('protocoloAno', 'desc');
-        $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+        if(Gate::allows('administrador', Auth::user())){
 
-        $fatura->where('protocoloCompleto', '=', $protocolo);
+            $fatura = Fatura::orderBy('protocoloAno', 'desc');
+            $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
-        $fatura = $fatura->first();
+            $fatura->where('protocoloCompleto', '=', $protocolo);
 
-        if($fatura == null){
-            return redirect()->back()->with('erro', 'Protocolo não encontrado!');
-        }
+            $fatura = $fatura->first();
 
-        if($fatura->situacaoNome == "Apagada"){
-            return redirect()->back()->with('erro', 'Arquivo não encontrado!');
-        }
-
-        if ($fatura != null) {
-            if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
-                return redirect()->back()->with('erro', 'Você não tem permissão!');
+            if($fatura == null){
+                return redirect()->back()->with('erro', 'Protocolo não encontrado!');
             }
-        }else{
-            return redirect()->back()->with('erro', 'Arquivo não encontrado!');
-        }
 
-        $arquivoExtensao = explode('.', $fatura->comprovantePago);
-        if(file_exists(storage_path("app/".$fatura->comprovantePago))){
-            return Response::download(storage_path("app/".$fatura->comprovantePago), ''.$protocolo.'-'.'ComprovantePago'.'.'.$arquivoExtensao[1]);
-        }else{
-            return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
-        }
+            if($fatura->situacaoNome == "Apagada"){
+                return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            }
 
+            if ($fatura != null) {
+                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
+                    return redirect()->back()->with('erro', 'Você não tem permissão!');
+                }
+            }else{
+                return redirect()->back()->with('erro', 'Arquivo não encontrado!');
+            }
+
+            $arquivoExtensao = explode('.', $fatura->comprovantePago);
+            if(file_exists(storage_path("app/".$fatura->comprovantePago))){
+                return Response::download(storage_path("app/".$fatura->comprovantePago), ''.$protocolo.'-'.'ComprovantePago'.'.'.$arquivoExtensao[1]);
+            }else{
+                return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
+            }
+
+        }else{
+            return redirect('home');
+        }
     }
 
     public function apagar(Request $request){
@@ -1008,7 +1021,69 @@ class FaturaController extends Controller
         }
 
         // verifica se existe o arquivo e o deleta;
+    }
 
+    public function carregarRelatorio($dataInicio = null, $dataFinal = null, $situacao = null){
+        if(Gate::allows('administrador', Auth::user())){
+
+            $situacoes = Situacao::orderBy('situacaoNome')->get();
+
+            $faturas = Fatura::orderBy('protocolo');
+            $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+            $faturas->whereBetween('dataEnvioFatura',  [$dataInicio . ' 00:00:01', $dataFinal . ' 23:59:59']);
+
+            $subcategorias = SubCategoria::orderBy('subcategoriaNome');
+            $subcategorias->join('fatura', 'fatura.subcategoriaID', 'subcategoria.subcategoriaID');
+            $subcategorias->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+            $subcategorias->selectRaw('COUNT(*) as quantidade, subcategoria.subcategoriaNome');
+            $subcategorias->whereBetween('fatura.dataEnvioFatura',  [$dataInicio . ' 00:00:01', $dataFinal . ' 23:59:59']);
+            $subcategorias->groupBy('subcategoria.subcategoriaNome');
+
+            $valorTotal = DB::table('fatura');
+            $valorTotal->selectRaw('SUM(valor) as total');
+            $valorTotal->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+            $valorTotal->whereBetween('dataEnvioFatura',  [$dataInicio . ' 00:00:01', $dataFinal . ' 23:59:59']);
+
+            if($situacao != null && $situacao != "tudo"){
+
+                if(preg_match('/-/', $situacao)){
+                    $situacao = explode('-', $situacao);
+                    foreach($situacao as $sit){
+                        $faturas->where('situacao.situacaoNome', '=', $sit);
+                        $subcategorias->Where('situacao.situacaoNome', '=', $sit);
+                        $valorTotal->where('situacao.situacaoNome', '=', $sit);
+                    }
+                }else{
+                    $faturas->where('situacao.situacaoNome', '=', $situacao);
+                    $subcategorias->where('situacao.situacaoNome', '=', $situacao);
+                    $valorTotal->where('situacao.situacaoNome', '=', $situacao);
+                }
+
+            }
+
+            $faturas = $faturas->count();
+            $subcategorias = $subcategorias->get();
+            $valorTotal = $valorTotal->first();
+
+            if($dataInicio != null && $dataFinal != null && $situacao != null){
+                return view('fatura.relatorio',  ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'valorTotal' => $valorTotal, 'situacoes' => $situacoes]);
+            }else{
+                return view('fatura.relatorio', ['situacoes' => $situacoes]);
+            }
+        }else{
+            return redirect('home');
+        }
+    }
+
+    public function carregarRelatorioFiltro(Request $request){
+
+        if($request->situacao != null && $request->situacao != "tudo" ){
+            $situacao = $request->situacao;
+        }else{
+            $situacao = "tudo";
+        }
+
+        return redirect()->route('carregarRelatorio', ['dataInicio' => $request->dataInicio, 'dataFinal' => $request->dataFinal, 'situacao' => $situacao]);
     }
 
 }

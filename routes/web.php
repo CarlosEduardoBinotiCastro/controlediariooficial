@@ -164,6 +164,10 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::get('/downloadComprovantePago/{protocolo}', 'FaturaController@downloadComprovantePago');
     Route::get('/downloadTemp/{arquivoFormatadoTemp}', 'FaturaController@downloadTemp');
 
+    Route::get('/relatorio', 'FaturaController@carregarRelatorio');
+    Route::get('/relatorio/dataInicial/{dataInicio}/dataFinal/{dataFinal}/situacao/{situacao}', ['as' => 'carregarRelatorio', 'uses' => 'FaturaController@carregarRelatorio']);
+    Route::post('/relatorioFiltro', 'FaturaController@carregarRelatorioFiltro');
+
     Route::get('/caixaDeTexto', 'FaturaController@caixaDeTexto');
 });
 
