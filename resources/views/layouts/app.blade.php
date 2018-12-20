@@ -137,7 +137,7 @@
                                           Faturas
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                          <a class="dropdown-item" href="/exibirWord">Listar</a>
+                                          <a class="dropdown-item" href="/fatura/listar">Listar</a>
                                           <a class="dropdown-item" href="/fatura/cadastrar">Cadastrar</a>
                                           <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
                                         </div>
@@ -195,6 +195,7 @@
         <main class="py-4" id="corpo">
             @yield('content')
         </main>
+        {{-- <a class="btn" href="/fatura/caixaDeTexto">Teste</a> --}}
     </div>
 
     <footer class="border-top">

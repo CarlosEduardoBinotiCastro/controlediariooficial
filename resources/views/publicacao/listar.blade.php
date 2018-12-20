@@ -298,7 +298,7 @@
                 <div class='modal-dialog row justify-content-center'>
                     <div class="modal-content">
                             <div class="modal-header">
-                                <Strong class=" offset-md-5" > Legenda </Strong>
+                                <Strong class=" offset-md-5" > Legenda Publicação </Strong>
                             </div>
                             <div class="modal-body">
 

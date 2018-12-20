@@ -40,7 +40,7 @@
                         <input type="hidden" name="cadernos" id="cadernos" value="">
                         <input type="hidden" name="usuarioID" id="usuarioID" value="{{$usuario->id}}">
                         <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Nome') }}</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Nome') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ $usuario->name }}" minlength="6" placeholder="nome do usuário" required autofocus>
@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="form-group row">
-                                <label for="login" class="col-md-4 col-form-label text-md-right">{{ __('Login') }}</label>
+                                <label for="login" class="col-md-4 col-form-label text-md-right">{{ __('Login') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <input id="login" type="text" class="form-control{{ $errors->has('login') ? ' is-invalid' : '' }}" name="login" value="{{ $usuario->login }}" placeholder="login do usuário" minlength="4" maxlength="20" required autofocus>
@@ -84,7 +84,7 @@
                         <br>
 
                         <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Email') }}</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Email') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $usuario->email }}" minlength="7" placeholder="exemplo@gmail.com" required autofocus>
@@ -92,7 +92,7 @@
                         </div>
 
                         <div class="form-group row">
-                                <label for="cpf" class="col-md-4 col-form-label text-md-right">{{ __('CPF') }}</label>
+                                <label for="cpf" class="col-md-4 col-form-label text-md-right">{{ __('CPF') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <input id="cpf" type="text" class="form-control{{ $errors->has('cpf') ? ' is-invalid' : '' }}" name="cpf" value="{{ $usuario->cpf }}" minlength="11" placeholder="XXX.XXX.XXX-XX" required autofocus>
@@ -100,7 +100,7 @@
                         </div>
 
                         <div class="form-group row">
-                                <label for="telefoneSetor" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Setor') }}</label>
+                                <label for="telefoneSetor" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Setor') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <input id="telefoneSetor" type="text" class="form-control{{ $errors->has('telefoneSetor') ? ' is-invalid' : '' }}" name="telefoneSetor" value="{{ $usuario->telefoneSetor}}" placeholder="(XX)XXXX-XXXX" minlength="10" required autofocus>
@@ -108,14 +108,14 @@
                         </div>
 
                         <div class="form-group row">
-                                <label for="telefoneCelular" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Celular') }}</label>
+                                <label for="telefoneCelular" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Celular') }} <span style="color:red;">*</span></label>
                                 <div class="col-md-6">
                                     <input id="telefoneCelular" type="text" class="form-control{{ $errors->has('telefoneCelular') ? ' is-invalid' : '' }}" name="telefoneCelular" value="{{ $usuario->telefoneCelular }}" placeholder="(XX)XXXXX-XXXX" minlength="11" required autofocus>
                                 </div>
                         </div>
 
                         <div class="form-group row">
-                                <label for="orgaoID" class="col-md-4 col-form-label text-md-right">{{ __('Órgão Requisitante') }}</label>
+                                <label for="orgaoID" class="col-md-4 col-form-label text-md-right">{{ __('Órgão Requisitante') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <select class="custom-select mr-sm-2" @if (Gate::allows('administrador', Auth::user())) name="orgaoID" id="orgaoID" @else disabled @endif>
@@ -130,7 +130,7 @@
                         </div>
 
                         <div class="form-group row">
-                                <label for="statusID" class="col-md-4 col-form-label text-md-right">{{ __('Status') }}</label>
+                                <label for="statusID" class="col-md-4 col-form-label text-md-right">{{ __('Status') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <select class="custom-select mr-sm-2" @if (Gate::allows('administrador', Auth::user())) name="statusID" id="statusID" @else disabled @endif>
@@ -142,7 +142,7 @@
                         </div>
 
                         <div class="form-group row">
-                                <label for="grupoID" class="col-md-4 col-form-label text-md-right">{{ __('Grupo de Usuário') }}</label>
+                                <label for="grupoID" class="col-md-4 col-form-label text-md-right">{{ __('Grupo de Usuário') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <select class="custom-select mr-sm-2"  @if (Gate::allows('administrador', Auth::user())) name="grupoID" id="grupoID" @else disabled @endif>
@@ -154,7 +154,7 @@
                         </div>
 
                         <div class="form-group row">
-                                <label for="horaEnvio" class="col-md-4 col-form-label text-md-right">{{ __('Horário de Envio') }}</label>
+                                <label for="horaEnvio" class="col-md-4 col-form-label text-md-right">{{ __('Horário de Envio') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
                                 <input id="horaEnvio" type="time" class="form-control{{ $errors->has('horaEnvio') ? ' is-invalid' : '' }}" value="{{ date('17:00') }}" @if (Gate::allows('administrador', Auth::user())) name="horaEnvio"  @else disabled @endif required autofocus>
@@ -166,7 +166,7 @@
                                 <div class="row justify-content-center">
                                     <div class="col-md-8">
                                         <div class="card">
-                                            <div class="card-header"> <span> {{ __('Cadernos Deste Usuário') }} </span> </div>
+                                            <div class="card-header"> <span> {{ __('Cadernos Deste Usuário') }} <span style="color:red;">*</span></span> </div>
 
                                             <div class="card-body">
 

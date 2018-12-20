@@ -220,7 +220,7 @@
                     <div class='modal-dialog row justify-content-center'>
                         <div class="modal-content">
                                 <div class="modal-header">
-                                    <Strong class=" offset-md-4" > Confirmar Aceitar </Strong>
+                                    <Strong class=" offset-md-4" > Confirmar Rejeitar </Strong>
                                 </div>
                                 <div class="modal-body">
 

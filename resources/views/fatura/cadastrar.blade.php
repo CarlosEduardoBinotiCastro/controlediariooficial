@@ -14,8 +14,9 @@
             </div>
 </div>
 <br>
+<br>
 
-<div class="container">
+<div class="container" id="body">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
@@ -33,7 +34,7 @@
                         @csrf
 
                         <div class="form-group row">
-                            <label for="requisitante" class="col-md-4 col-form-label text-md-right">{{ __('Requisitante') }}</label>
+                            <label for="requisitante" class="col-md-4 col-form-label text-md-right">{{ __('Requisitante') }} <span style="color:red;">*</span> </label>
 
                             <div class="col-md-6">
                                 <input  id="requisitante" type="text" class="form-control{{ $errors->has('requisitante') ? ' is-invalid' : '' }}" name="requisitante" value="{{ old('requisitante') }}" placeholder="nome do requisitante" required autofocus>
@@ -41,7 +42,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="empresa" class="col-md-4 col-form-label text-md-right">{{ __('Empresa') }}</label>
+                            <label for="empresa" class="col-md-4 col-form-label text-md-right">{{ __('Empresa') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
                                 <input  id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }}" name="empresa" value="{{ old('empresa') }}" placeholder="nome da empresa" required autofocus>
@@ -49,7 +50,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }}</label>
+                            <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('CPF / CNPJ') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-2">
                                 <select  class="custom-select mr-sm-2" name="tipoDoc" id="tipoDoc">
@@ -66,7 +67,7 @@
                         <div class="form-group row">
                             <label for="observacao" class="col-md-4 col-form-label text-md-right">{{ __('Observação') }}</label>
                             <div class="col-md-6">
-                                <textarea  name="observacao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{old('observacao')}}" required></textarea>
+                                <textarea  id="observacao" name="observacao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{old('observacao')}}"></textarea>
                             </div>
                         </div>
                         <br>
@@ -89,7 +90,7 @@
 
                         <div class="form-group row">
 
-                            <label for="tipoID" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }}</label>
+                            <label for="tipoID" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
                                 <select  class="custom-select mr-sm-2" name="tipoID" id="tipoID" onchange="carregarSubcategorias()">
@@ -104,7 +105,7 @@
 
                         <div class="form-group row">
 
-                            <label for="subcategoriaID" class="col-md-4 col-form-label text-md-right">{{ __('Subcategoria') }}</label>
+                            <label for="subcategoriaID" class="col-md-4 col-form-label text-md-right">{{ __('Subcategoria') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
                                 <select  class="custom-select mr-sm-2" name="subcategoriaID" id="subcategoriaID">
@@ -120,7 +121,7 @@
                             @php
                                 $diariosDatas = json_decode($diarioDatas);
                             @endphp
-                                <label for="diario" class="col-md-4 col-form-label text-md-right">{{ __('Diário') }}</label>
+                                <label for="diario" class="col-md-4 col-form-label text-md-right">{{ __('Diário') }} <span style="color:red;">*</span></label>
                                 <div class="col-md-6">
                                     <select id="diario" class="custom-select  mr-sm-2" name="diarioDataID" required onchange="dataLimite()">
                                             <option slected value=""> Escolha o Diário </option>
@@ -211,6 +212,14 @@
         </div>
     </div>
 
+    <div class="container" id="carregando" style="display:none;">
+        <br><br>
+        <h2 class="offset-md-4"> Carregando Solicitação </h2>
+        <br>
+        <div class="loader offset-md-5"></div>
+    </div>
+
+
 @endauth
 
 
@@ -269,6 +278,10 @@
         $("#form" ).submit(function( event ) {
             if($("#form").valid()){
                 $("#numeroDoc").unmask();
+                $('html, body').animate({scrollTop: '0px'}, 300);
+                $("#carregando").css('display', 'block');
+                $("#body").css('display', 'none');
+                $('#Erro').css('display', 'none');
             }
         });
 

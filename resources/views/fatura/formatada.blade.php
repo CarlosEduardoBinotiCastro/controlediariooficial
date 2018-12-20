@@ -67,7 +67,7 @@
                             <div class="form-group row">
                                 <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('Observação') }}</label>
                                 <div class="col-md-6">
-                                    <textarea  name="descricao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{$fatura['observacao']}}" readonly>{{$fatura['observacao']}}</textarea>
+                                    <textarea  name="observacao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{$fatura['observacao']}}" readonly>{{$fatura['observacao']}}</textarea>
                                 </div>
                             </div>
                             <br>
@@ -278,13 +278,16 @@
             var config = <?php echo $faturaConfig ?>;
 
             // valor da fatura referente a some do conteudo do texto, com o valor da coluna (existe uma redução do valor do tamanho do texto do titulo e seu padding)
-            $("#valor").val(((($("#fatura").height()*0.026).toFixed(2) - (($("#titulo").height()*0.026)+(<?php echo ($size+1) ?> * 0.035 )).toFixed(2)).toFixed(2)*config[0].valorColuna).toFixed(2));
+
+
 
             // $("#valor").val(($("#fatura").height()*0.026*config[0].valorColuna).toFixed(2));        | meio antigo
             // $("#centimetragem").val(($("#fatura").height()*0.026).toFixed(2));                      | meio antigo
 
             // existe uma redução do valor do tamanho do texto do titulo e seu padding
             $("#centimetragem").val((($("#fatura").height()*0.026).toFixed(2) - (($("#titulo").height()*0.03)+(<?php echo ($size+1) ?> * 0.035 )).toFixed(2)).toFixed(2));
+
+            $("#valor").val(($("#centimetragem").val() * config[0].valorColuna).toFixed(2));
 
             if( $("#numeroDoc").val().length > 11 ){
                 $("#numeroDoc").mask('00.000.000/0000-00', {reverse: true});

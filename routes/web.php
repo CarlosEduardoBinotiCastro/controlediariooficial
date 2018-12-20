@@ -149,8 +149,22 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::get('/cadastrar', 'FaturaController@cadastrar');
     Route::post('/salvar', 'FaturaController@salvar');
     Route::post('/formatar', 'FaturaController@formatar');
+    Route::get('/ver/{protocolo}', 'FaturaController@ver');
+    Route::post('/rejeitar', 'FaturaController@rejeitar');
+    Route::post('/aceitar', 'FaturaController@aceitar');
+    Route::post('/publicar', 'FaturaController@publicar');
+    Route::post('/apagar', 'FaturaController@apagar');
 
+    Route::get('/listar', 'FaturaController@listar');
+    Route::get('/listar/cpfcnpj/{cpfCnpj}/protocolo/{protocolo}/diario/{diario}/situacao/{situacao}/empresa/{empresa}/subcategoria/{subcategoria}', ['as' => 'listarFaturas', 'uses' => 'FaturaController@listar']);
+    Route::post('/chamarListar', 'FaturaController@listarFiltro');
+
+    Route::get('/downloadOriginal/{protocolo}', 'FaturaController@downloadOriginal');
+    Route::get('/downloadFormatado/{protocolo}', 'FaturaController@downloadFormatado');
+    Route::get('/downloadComprovantePago/{protocolo}', 'FaturaController@downloadComprovantePago');
     Route::get('/downloadTemp/{arquivoFormatadoTemp}', 'FaturaController@downloadTemp');
+
+    Route::get('/caixaDeTexto', 'FaturaController@caixaDeTexto');
 });
 
 

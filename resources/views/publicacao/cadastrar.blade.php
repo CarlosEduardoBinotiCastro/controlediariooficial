@@ -35,7 +35,7 @@
                         <div class="col-md-6">
                                 {{-- Escolher Caderno --}}
                                 <div class="col-md-12">
-                                    Caderno:
+                                    Caderno: <span style="color:red;">*</span>
                                     <select class="custom-select" name="cadernoID" onchange="carregarDocumentos()" id="cadernoSelect" required>
                                             <option slected value=""> Escolha o Caderno </option>
 
@@ -47,7 +47,7 @@
 
                                 {{-- Escolher Documento --}}
                                 <div class="col-md-12">
-                                    Documento:
+                                    Documento: <span style="color:red;">*</span>
                                     <select class="custom-select" name="tipoID" id="documentoSelect" required>
                                             <option slected value=""> Escolha o Documento </option>
                                     </select>
@@ -59,7 +59,7 @@
                                     @php
                                         $diariosDatas = json_decode($diarioDatas);
                                     @endphp
-                                        Diario:
+                                        Diario: <span style="color:red;">*</span>
                                         <select id="diario" class="custom-select" name="diarioDataID" required onchange="dataLimite()">
                                                 <option slected value=""> Escolha o Diario </option>
                                                 @foreach ($diariosDatas as $item)
@@ -76,12 +76,14 @@
                             <div class="col-md-6">
 
                                 <div class="col-md-12">
-                                    Título
+                                    Título <span style="color:red;">*</span>
                                     <input id="titulo" type="text" name="titulo" class="form-control" placeholder="Título do Arquivo" minlength="4"  value="{{ old('titulo') }}" required>
                                 </div>
                                 <br>
                                 <div class="col-md-12">
+                                        <span style="color:red;">*</span>
                                     <textarea name="descricao" cols="60" rows="4" class="form-control" placeholder="Entre com a descrição do arquivo!" style="resize: none;" value="{{old('descricao')}}" required></textarea>
+
                                 </div>
                             </div>
 
