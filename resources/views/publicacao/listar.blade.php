@@ -256,7 +256,7 @@
                                     <p> Segue protocolo de publicação:</p>
                                     <p> <b> {{$publicacao->protocoloCompleto}} </b> </p>
 
-                                    <p> Ao realizar esta ação o usuário que enviou a publicação não poderá mais edita-la!</p>
+                                    <p> Ao realizar esta ação você confirma que esta publicação foi, de fato, publicada!</p>
 
                                     <p><strong>Deseja realmente Publicar?</strong></p>
 

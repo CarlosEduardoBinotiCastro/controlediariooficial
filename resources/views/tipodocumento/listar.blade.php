@@ -44,6 +44,17 @@
 
                     </div>
                 @endif
+                @if (session()->has('faturas'))
+                    <div style="display: block;" class="form-group row mb-0 alert alert-danger" style="font-size:20px">
+
+                                <p> Segue protocolos dos pedidos de faturas para este documento: </p>
+
+                                @foreach (session()->get('faturas') as $item)
+                                    <span> <i>{{$item->protocoloCompleto}}</i> <strong> / </strong> </span>
+                                @endforeach
+
+                    </div>
+                @endif
             @endif
             </div>
 </div>

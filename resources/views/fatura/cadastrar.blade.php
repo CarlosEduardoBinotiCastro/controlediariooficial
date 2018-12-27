@@ -151,7 +151,9 @@
                                 <div class="form-group row offset-md-6">
                                     <a href="/fatura/gerarTemplate" class="btn btn-primary">Template</a><a style="color:red; margin-left:2%" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle fa-2x"></i></a>
                                 </div>
-
+                                <div class="form-group row offset-md-4">
+                                    <p><strong style="color:red;">Lembre que o arquivo deve seguir modelo descrito no template!!</strong> </p>
+                                </div>
 
                             <div class=" row col-md-8 offset-md-2">
 
@@ -166,7 +168,6 @@
 
                                 {{-- Relecionado com o lado do botão --}}
 
-
                                     <div class="col-md-4" id="divBotao" style="display:none;">
                                         <br>
                                         <input id="btnEnviar" type="submit" class="btn btn-success" value="Formatar Fatura">
@@ -176,9 +177,7 @@
                                         <Strong><span style="color:red; white-space:nowrap;" id="labelText">Escolha um Diário!</span></Strong>
 
                                     </div>
-
                             </div>
-
                     </form>
                 </div>
             </div>
@@ -238,6 +237,7 @@
 
         $("#termo").prop('checked', false);
         $("#btnEnviar").prop('disabled', true);
+        $("#diario").val("");
 
         var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
         var subcategorias = <?php  echo $subcategorias; ?>;

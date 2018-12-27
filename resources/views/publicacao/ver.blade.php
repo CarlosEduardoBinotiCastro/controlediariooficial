@@ -253,6 +253,12 @@
             </form>
 @endif
 
+
+
+
+
+
+
 {{-- fim do layout do ver publicação --}}
 
 

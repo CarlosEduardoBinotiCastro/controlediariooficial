@@ -132,13 +132,22 @@ class TipoDocumentoController extends Controller
 
             $publicacoes = Publicacao::orderBy('dataEnvio');
             $publicacoes = $publicacoes->where('tipoID', '=', $id)->get();
-
+            $faturas = $faturas->where('tipoID', '=', $id)->get();
             // validar deletar OBS**
 
             if(sizeof($publicacoes) == 0){
+
+                if(sizeof($faturas) == 0){
+
                 $cadernoTipoDocumento->where('tipoID', '=', $id)->delete();
                 $tipoDocumento->where('tipoID', '=', $id)->delete();
                 return redirect('/tipodocumento/listar')->with("sucesso", "Tipo Documento Deletado");
+
+                }else{
+
+                    return redirect()->back()->with(["erro" => "Impossível deletar pois existem publicações vinculadas a este tipo de documento!", 'faturas' => $faturas]);
+
+                }
 
             }else{
 

@@ -7,6 +7,7 @@ use App\DiarioData;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Publicacao;
+use App\Fatura;
 use DateTime;
 
 
@@ -108,24 +109,27 @@ class DiarioDataController extends Controller
 
             $publicacoes = Publicacao::orderBy('dataEnvio');
             $publicacoes = $publicacoes->where('diarioDataID', '=', $id)->get();
+            $faturas = Fatura::orderBy('dataEnvio');
+            $faturas = $faturas->where('diarioDataID', '=', $id)->get();
+
             // validar deletar OBS**
             if(sizeof($publicacoes) == 0){
 
-                $data = new DateTime($dataDiario->diarioData);
-                $data = $data->format('d/m/Y');
+                if(sizeof($faturas) == 0){
+                    $data = new DateTime($dataDiario->diarioData);
+                    $data = $data->format('d/m/Y');
 
-                if($data <= date('d/m/Y')){
-                    return redirect()->back()->with(["erro" => "Impossível deletar datas passadas !"]);
+                    if($data <= date('d/m/Y')){
+                        return redirect()->back()->with(["erro" => "Impossível deletar datas passadas !"]);
+                    }else{
+                        $diarioData->where('diarioDataID', '=', $id)->delete();
+                        return redirect('/diariodata/listar')->with("sucesso", "Diario Oficial Deletado");
+                    }
                 }else{
-                    $diarioData->where('diarioDataID', '=', $id)->delete();
-                    return redirect('/diariodata/listar')->with("sucesso", "Diario Oficial Deletado");
+                    return redirect()->back()->with(["erro" => "Impossível deletar pois existem faturas vinculadas a este diário !", 'faturas' => $faturas]);
                 }
-
-
             }else{
-
                 return redirect()->back()->with(["erro" => "Impossível deletar pois existem publicações vinculadas a este diário !", 'publicacoes' => $publicacoes]);
-
             }
 
 

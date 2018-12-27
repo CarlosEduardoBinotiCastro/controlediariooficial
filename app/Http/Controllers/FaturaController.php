@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Fatura;
 use App\Situacao;
 use Illuminate\Support\Facades\Session;
+use PhpOffice\PhpWord\Style\Line;
+use TPDF;
+use Illuminate\Support\Facades\Log;
 
 
 class FaturaController extends Controller
@@ -27,6 +30,7 @@ class FaturaController extends Controller
     private $paginacao = 10;
     public $fileOriginal = "";
     public $fileFormatado = "";
+    public $fileVisualizado = "";
 
     public function __construct()
     {
@@ -172,7 +176,20 @@ class FaturaController extends Controller
 
                 $request->arquivo->storeAs("public/temp/", $fileName);
 
-                $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $fileName));
+
+                // if(pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) == 'doc'){
+                //     $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $fileName), 'MsDoc');
+
+                //     // $arquivoTeste = \PhpOffice\PhpWord\IOFactory::createWriter($arquivo, "Word2007");
+                //     // $newDocx = str_replace('.doc', '.docx', $fileName);
+                //     // $arquivoTeste->save(storage_path("app/public/temp/".$newDocx));
+                //     // $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $newDocx));
+                // }else{
+                    $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $fileName));
+                // }
+
+
+
 
                 // "PhpOffice\PhpWord\Element\TextRun" textrun class
                 // "PhpOffice\PhpWord\Element\Text" text class
@@ -185,6 +202,7 @@ class FaturaController extends Controller
                 $passouTitulo = false;
                 // dd($arquivo);
                 try {
+
                     foreach($arquivo->getSections()[0]->getElements() as $txtRunOuTxt){
 
                         // Verifica se é o titulo, 1 pragrafo geralmente é o titulo, e centraliza o titulo
@@ -192,7 +210,9 @@ class FaturaController extends Controller
                         // dd($txtRunOuTxt->paragraphStyle->getLineHeight());
 
 
+
                         if($contaParagrafos == 0){
+
                             $txtRunOuTxt->fontStyle->bold = true;
                             $txtRunOuTxt->paragraphStyle->alignment = "center";
                         }else{
@@ -206,6 +226,8 @@ class FaturaController extends Controller
 
                         if(get_class($txtRunOuTxt) == "PhpOffice\PhpWord\Element\TextRun"){
                             foreach ($txtRunOuTxt->getElements() as $txt) {
+
+
                                 $txt->fontStyle->name = $fontFamily;
                                 $txt->fontStyle->size = $fontSize;
 
@@ -306,12 +328,17 @@ class FaturaController extends Controller
 
                 // fim do limite
 
+                // calculo de centimetragem
+                $info = $this->centimetragem($fileNameFormat, $request->cpfCnpj);
+                $centimetragem = $info['centimetragem'];
+                $fileVisualizacao = $info['file'];
+
                 // necessario criar um json para se entendido pelo javascript
-                return view('fatura.formatada', ['formatada' => $arquivo, 'faturaConfig' => $faturaConfig, 'fatura' => $filtro, 'dataLimite' => $diaUtil]);
+                return view('fatura.formatada', ['formatada' => $arquivo, 'faturaConfig' => $faturaConfig, 'fatura' => $filtro, 'dataLimite' => $diaUtil, 'centimetragem' => $centimetragem, 'arquivoVisualizacao' => $fileVisualizacao]);
 
                 } catch (\Exception $e) {
 
-                    return redirect()->back()->with('erro', 'Falha na formatação do arquivo, verifique se o mesmo segue o padrão do template e tente novamente');
+                    return redirect()->back()->with('erro', 'Falha na formatação do arquivo, verifique se o mesmo segue o padrão do template e tente novamente. Erro: '.$e->getMessage());
 
                 }
 
@@ -364,11 +391,13 @@ class FaturaController extends Controller
 
                 $this->fileOriginal = str_replace('_temp','',$request->arquivoOriginal);
                 $this->fileFormatado = str_replace('_temp','',$request->arquivoFormatado);
+                $this->fileVisualizado = str_replace('_temp','',$request->arquivoVisualizado);
 
                 try {
 
                     $copiaOriginal = File::move(storage_path("app/public/temp/".$request->arquivoOriginal),storage_path("app/".$this->fileOriginal));
                     $copiaFormatado = File::move(storage_path("app/public/temp/".$request->arquivoFormatado),storage_path("app/".$this->fileFormatado));
+                    $copiaVisualizado = File::move(storage_path("app/public/temp/".$request->arquivoVisualizado),storage_path("app/".$this->fileVisualizado));
 
                     if(DB::table('fatura')->where('protocoloAno', '=', date('Y'))->count() ){
                         $protocolo = DB::table('fatura')->where('protocoloAno', '=', date('Y'))->max('protocolo') + 1;
@@ -387,10 +416,12 @@ class FaturaController extends Controller
                     if(file_exists(storage_path("app/".$this->fileFormatado))){
                         Storage::delete([$this->fileFormatado]);
                     }
-
+                    if(file_exists(storage_path("app/".$this->fileVisualizado))){
+                        Storage::delete([$this->fileVisualizado]);
+                    }
                     DB::rollBack();
 
-                    return redirect()->back()->with('erro', "Um erro durante a operação ocorreu!".$e->getMessage());
+                    return redirect('home')->with('erro', "Um erro durante a operação ocorreu!".$e->getMessage());
                 }
 
             break;
@@ -404,13 +435,21 @@ class FaturaController extends Controller
             $protocolo++;
             $this->verificaProtocolo($protocolo, $request);
         }else {
-            DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'arquivoFormatado' => $this->fileFormatado, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id]);
+            DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'arquivoFormatado' => $this->fileFormatado, 'arquivoVisualizacao' => $this->fileVisualizado, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id]);
+
+            $dir = $protocolo.date('Y').'FAT';
 
             $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$this->fileFormatado));
             $arquivo->getSections()[0]->addText('Protocolo: '.$protocolo.date('Y').'FAT', array('bold'=>true, 'size'=>10, 'name'=>'Times'));
 
             $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($arquivo, "Word2007");
             $objectWriter->save(storage_path("app/".$this->fileFormatado));
+
+            File::makeDirectory(storage_path("app/".$dir));
+
+            $copiaOriginal = File::move(storage_path("app/".$this->fileOriginal),storage_path("app/".$dir."/".$this->fileOriginal));
+            $copiaFormatado = File::move(storage_path("app/".$this->fileFormatado),storage_path("app/".$dir."/".$this->fileFormatado));
+            $copiaVisualizado = File::move(storage_path("app/".$this->fileVisualizado),storage_path("app/".$dir."/".$this->fileVisualizado));
 
             DB::commit();
         }
@@ -419,7 +458,9 @@ class FaturaController extends Controller
     public function validar($request){
 
         if(isset($request->arquivo)){
-            if(pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) != "docx"){
+            if(pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) == "docx"){
+
+            }else{
                 return 1;
             }
 
@@ -621,11 +662,15 @@ class FaturaController extends Controller
             )
         );
 
+        // $textbox->getStyle()->setVTextAnchor('middle');
+
+
         $textbox->addText('meu titulo', array('alignment' => "center"));
         $textbox->addText('texto bolado do jurandir kkkk, jurandir é cara louco, não tem como lidar com ele. Muito bacana mesmo, noosssa tatata!', array('alignment' => "justify"));
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, "Word2007");
-        // dd($objWriter);
+
         $objWriter->save(storage_path('app/'.'dummy.docx'));
+        dd($objWriter);
     }
 
     public function listar($cpfCnpj = null, $protocolo = null, $diario = null, $situacao = null, $empresa = null,  $subcategoria = null){
@@ -750,10 +795,14 @@ class FaturaController extends Controller
                 Session::put('urlVoltar', url()->previous());
             }
 
+            if($fatura == null){
+                return redirect('home')->with('erro', 'Fatura Não Encontrada!');
+            }
+
             $faturaConfig = DB::table('configuracaofatura')->get();
 
             if($fatura->situacaoNome != "Apagada"){
-                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/". $fatura->arquivoFormatado));
+                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
                 return view('fatura.ver', ['fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
             }else{
                 return view('fatura.ver', ['fatura' => $fatura, 'faturaConfig' => $faturaConfig]);
@@ -819,7 +868,7 @@ class FaturaController extends Controller
 
         try {
 
-            $request->arquivo->storeAs("",$request->protocolo."_comprovantePago.pdf");
+            $request->arquivo->storeAs("".$request->protocolo."",$request->protocolo."_comprovantePago.pdf");
             $fatura->update(['situacaoID' => 3, 'comprovantePago' => $request->protocolo."_comprovantePago.pdf"]);
 
             return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Fatura Aceita!');
@@ -890,8 +939,8 @@ class FaturaController extends Controller
 
             $arquivoExtensao = explode('.', $fatura->arquivoOriginal);
 
-            if(file_exists(storage_path("app/".$fatura->arquivoOriginal))){
-                return Response::download(storage_path("app/".$fatura->arquivoOriginal), ''.$protocolo.'-'.'Original'.'.'.$arquivoExtensao[1]);
+            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
+                return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal), ''.$protocolo.'-'.'Original'.'.'.$arquivoExtensao[1]);
             }else{
                 return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
             }
@@ -930,8 +979,8 @@ class FaturaController extends Controller
 
             $arquivoExtensao = explode('.', $fatura->arquivoFormatado);
 
-            if(file_exists(storage_path("app/".$fatura->arquivoFormatado))){
-                return Response::download(storage_path("app/".$fatura->arquivoFormatado), ''.$protocolo.'-'.'Formatado'.'.'.$arquivoExtensao[1]);
+            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
+                return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado), ''.$protocolo.'-'.'Formatado'.'.'.$arquivoExtensao[1]);
             }else{
                 return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
             }
@@ -969,8 +1018,8 @@ class FaturaController extends Controller
             }
 
             $arquivoExtensao = explode('.', $fatura->comprovantePago);
-            if(file_exists(storage_path("app/".$fatura->comprovantePago))){
-                return Response::download(storage_path("app/".$fatura->comprovantePago), ''.$protocolo.'-'.'ComprovantePago'.'.'.$arquivoExtensao[1]);
+            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
+                return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago), ''.$protocolo.'-'.'ComprovantePago'.'.'.$arquivoExtensao[1]);
             }else{
                 return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
             }
@@ -1003,16 +1052,16 @@ class FaturaController extends Controller
 
         try {
 
-            if(file_exists(storage_path("app/".$fatura->arquivoOriginal))){
-                Storage::delete([$fatura->arquivoOriginal]);
+            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
+                Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal)]);
             }
-            if(file_exists(storage_path("app/".$fatura->arquivoFormatado))){
-                Storage::delete([$fatura->arquivoFormatado]);
+            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
+                Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado)]);
             }
-            if(file_exists(storage_path("app/".$fatura->comprovantePago))){
-                Storage::delete([$fatura->comprovantePago]);
+            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
+                Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago)]);
             }
-
+            File::deleteDirectory(storage_path("app/".$fatura->protocoloCompleto));
             $faturaApagar->update(['situacaoID' => 2]);
             return redirect()->back()->with('sucesso', 'Fatura Apagada!');
 
@@ -1096,5 +1145,232 @@ class FaturaController extends Controller
 
         return redirect()->route('carregarRelatorio', ['dataInicio' => $request->dataInicio, 'dataFinal' => $request->dataFinal, 'situacao' => $situacao]);
     }
+
+    public function centimetragem($file, $documento){
+
+        // pegar o arquivo Atual para calcular centimetragem
+        $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/".$file));
+        $texto = "";
+        $contaTexto = 0;
+
+        // Gerando uma string unica para a centimetragem
+        foreach ($formatada->getSections()[0]->getElements() as $txtRunOuTxt) {
+            if(get_class($txtRunOuTxt) == "PhpOffice\PhpWord\Element\TextRun" ){
+                 if($contaTexto == 0){
+                 }else{
+                    //Aqui Adiciona o Texto
+                     foreach ($txtRunOuTxt->getElements() as $txt) {
+                        $texto = $texto.$txt->getText();
+                     }
+                     $texto =$texto."\n";
+                 }
+            }else{
+                if($txtRunOuTxt->getText() == "" || $txtRunOuTxt->getText() == " "){
+                     // texto vazio de vez em quando
+                }else{
+                 if($contaTexto == 0){
+                     }else{
+                        //Aqui Adiciona o Texto
+                        $texto = $texto.$txtRunOuTxt->getText();
+                        $texto = $texto."\n";
+
+                     }
+                }
+            }
+            $contaTexto += 1;
+        }
+        // fim da geração da string
+
+        //carrega informações de configuração da fatura
+        $faturaConfig = DB::table('configuracaofatura')->get();
+
+        // gera o pdf para calcular centimetrgem
+        $pdf = new TPDF;
+        $pdf::SetTitle('Centimetragem Diario Oficial');
+
+        // todas as margens zeradas
+        $pdf::SetMargins(0,0,0,false);
+        $pdf::SetAutoPageBreak(FALSE, 0); // remove a margem do final e e retira a quebra de paginas
+
+        // cria a pagina
+        $pdf::AddPage();
+
+        // cofiguração da fonte
+        $pdf::SetFont('times', '', 10,'', 'false');
+
+        //espaçamento do texto;
+        $pdf::setCellHeightRatio(1);
+
+        // Escreve o conteudo na celula para o calcula, primeiro parametro, largura (em milimetros), segundo, altura (em 0 ele gera dinamicamente).
+        $width = ($faturaConfig[0]->largura*10);
+        $pdf::Multicell($width, 0, $texto, 0, 'J', 0, 1, '', '', true);
+
+        // função para retornar a centimetragem, como o retorno é em milimetros, apenas uma divisão por 10, resolve o problema.
+        $centimetragem = $pdf::getY()/10;
+
+        // dd($centimetragem);
+
+        //gera o pdf na tela para visualição
+        $fileName = $documento.'-'.date('Y-m-d-H-i-s').'_visualizacao_temp.pdf';
+        TPDF::Output(storage_path('app/public/temp/'.$fileName), 'F');
+
+        //retorna a centimetragem
+        return array('centimetragem' => $centimetragem, 'file' => $fileName);
+    }
+
+    public function downloadVisualizacaoTemp($arquivoVisualizacao){
+        if(Gate::allows('administrador', Auth::user())){
+            try {
+                return Response::download(storage_path('app/public/temp/'.$arquivoVisualizacao));
+
+            } catch (\Exception $e) {
+
+                return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
+
+            }
+        }else{
+            return redirect('home');
+        }
+    }
+
+    public function downloadVisualizacao($arquivoVisualizacao, $protocolo){
+        if(Gate::allows('administrador', Auth::user())){
+            try {
+                return Response::download(storage_path("app/".$protocolo."/".$arquivoVisualizacao));
+
+            } catch (\Exception $e) {
+
+                return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
+
+            }
+        }else{
+            return redirect('home');
+        }
+    }
+
+
+    public function relatorioDetalhado($cpfCnpj = null, $protocolo = null, $dataInicial = null, $dataFinal = null, $situacao = null, $empresa = null,  $subcategoria = null){
+
+        if(Gate::allows('administrador', Auth::user())){
+
+            $situacoes = Situacao::orderBy('situacaoNome')->get();
+            $subcategorias = DB::table('subcategoria')->orderBy('subcategoriaNome')->get();
+
+            $faturas = Fatura::orderBy('dataEnvioFatura', 'desc');
+            $faturas->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+
+            $faturas->join('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
+            $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+
+            // Filtros
+
+                if($empresa != null && $empresa != "tudo"){
+                    $arrayPalavras = explode(' ', $empresa);
+                    foreach ($arrayPalavras as $palavra) {
+                        $faturas->where('empresa', 'like', '%' . $palavra . '%');
+                    }
+                }
+
+                if($protocolo != null && $protocolo != "tudo"){
+                    $faturas->where('protocoloCompleto', '=', $protocolo);
+                }
+
+                if($cpfCnpj != null && $cpfCnpj != "tudo"){
+                    $faturas->where('cpfCnpj', '=', $cpfCnpj);
+                }
+
+                if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
+                    $faturas->whereBetween('diariodata.diarioData',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
+                }
+
+                if($situacao != null && $situacao != "tudo"){
+                    $faturas->where('situacao.situacaoNome', '=', $situacao);
+                }
+
+                if($subcategoria != null && $subcategoria != "tudo"){
+                        $faturas->where('fatura.subcategoriaID', '=', $subcategoria);
+                }
+
+            // Fim Filtros
+
+            $faturas->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome');
+            $faturas = $faturas->paginate($this->paginacao);
+            return view('fatura.relatoriodetalhado', ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+
+        }else{
+            return redirect('home');
+        }
+    }
+
+
+    public function  relatorioDetalhadoFiltro(Request $request){
+
+        if($request->cpfCnpj != null){
+            $cpfCnpj = $request->cpfCnpj;
+        }else{
+            $cpfCnpj = "tudo";
+        }
+
+        if($request->protocolo != null){
+            $protocolo = $request->protocolo;
+        }else{
+            $protocolo = "tudo";
+        }
+
+        if($request->dataInicial != null && $request->dataFinal != null){
+            if($request->dataInicial > $request->dataFinal){
+                return redirect()->back()->with('erro', 'Data inicial deve ser menor que data final!');
+            }else{
+                $dataInicial = $request->dataInicial;
+                $dataFinal = $request->dataFinal;
+            }
+        }else{
+            if($request->dataInicial != null && $request->dataFinal == null){
+                return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
+            }
+            if($request->dataInicial == null && $request->dataFinal != null){
+                return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
+            }
+            $dataInicial = "tudo";
+            $dataFinal = "tudo";
+        }
+
+        if($request->situacao == "tudo" ){
+            $situacao = "tudo";
+        }else{
+            $situacao = $request->situacao;
+        }
+
+        if($request->empresa != null){
+            $empresa = $request->empresa;
+        }else{
+            $empresa = "tudo";
+        }
+
+        if($request->subcategoria != null){
+            $subcategoria = $request->subcategoria;
+        }else{
+            $subcategoria = "tudo";
+        }
+
+        if(($dataInicial == "tudo") && ($dataFinal == "tudo") && ($cpfCnpj == "tudo") && ($protocolo == "tudo") && ($situacao == "tudo") && ($empresa == "tudo") && ($subcategoria == "tudo")){
+            return redirect('fatura/relatorioDetalhado');
+        }else{
+            return redirect()->route('relatorioDetalhado', ['cpfCnpj' => $cpfCnpj, 'protocolo' => $protocolo, 'dataInicial' => $dataInicial ,'dataFinal' => $dataFinal, 'situacao' => $situacao, 'empresa' => $empresa, 'subcategoria' => $subcategoria]);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -1,5 +1,7 @@
 <?php
 
+use PhpOffice\PhpWord\Writer\PDF\TCPDF;
+
 return [
 
     /*
@@ -160,6 +162,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class,
+
 
 
         /*
@@ -224,6 +228,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'TPDF' => Elibyy\TCPDF\Facades\TCPDF::class,
 
     ],
 

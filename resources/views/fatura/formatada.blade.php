@@ -37,6 +37,7 @@
                         @csrf
                         <input type="hidden" name="arquivoOriginal" value=" {{$fatura['arquivoOriginal']}} ">
                         <input type="hidden" name="arquivoFormatado" value=" {{$fatura['arquivoFormatado']}} ">
+                        <input type="hidden" name="arquivoVisualizado" value=" {{$arquivoVisualizacao}} ">
                         <input type="hidden" name="subcategoriaID" value=" {{$fatura['subcategoriaID']}} ">
                         <input type="hidden" name="tipoID" value=" {{$fatura['tipoID']}} ">
                         <input type="hidden" name="diarioDataID" value=" {{$fatura['diarioDataID']}} ">
@@ -139,6 +140,11 @@
                                             <input type="submit" name="confirmar" value="Confirmar Fatura" class="btn btn-success">
                                         </div>
                                     </div>
+                                <div class="form-group row">
+                                        <div class="col-md-6 offset-md-4">
+                                                <a id="btnVoltar" name="voltar" class="btn btn-danger" style="color:white;">Cancelar Fatura</a>
+                                        </div>
+                                    </div>
                     </form>
                 </div>
 
@@ -147,7 +153,7 @@
         <div class="col-md-5">
                 <div class="card" style="text-align:center;"> {{-- Coluna da visualização  --}}
                         <div class="card-header"> {{ __('Visualização') }}</div>
-                    <div class="card-body" >
+                    <div class="card-body table-responsive">
 
                         {{-- RESPONSAVEL POR GERAR UM VISUALIZAÇÃO DO ARQUIVO FORMATADO --}}
                     @php
@@ -260,7 +266,11 @@
 
                     {{-- FIM DA VISUALIZAÇÃO DO ARQUIVO FORMATADO --}}
 
-
+                    <div>
+                        <a href="/fatura/visualizacaoTemp/{{$arquivoVisualizacao}}" type="button" class="btn btn-primary col-md-12" data-dismiss="modal">
+                            Arquivo Base Centimetragem
+                        </a>
+                    </div>
 
                     </div>
                 </div>
@@ -273,19 +283,15 @@
 <script>
 
     $(document).ready(function(){
-            // alert(((<?php echo ($size+1) ?> * 0.03 )).toFixed(2));
+
+            $("#btnVoltar").click(function(){
+                window.history.back();
+            });
 
             var config = <?php echo $faturaConfig ?>;
+            var centimetragem = <?php echo $centimetragem ?>;
 
-            // valor da fatura referente a some do conteudo do texto, com o valor da coluna (existe uma redução do valor do tamanho do texto do titulo e seu padding)
-
-
-
-            // $("#valor").val(($("#fatura").height()*0.026*config[0].valorColuna).toFixed(2));        | meio antigo
-            // $("#centimetragem").val(($("#fatura").height()*0.026).toFixed(2));                      | meio antigo
-
-            // existe uma redução do valor do tamanho do texto do titulo e seu padding
-            $("#centimetragem").val((($("#fatura").height()*0.026).toFixed(2) - (($("#titulo").height()*0.03)+(<?php echo ($size+1) ?> * 0.035 )).toFixed(2)).toFixed(2));
+            $("#centimetragem").val(centimetragem.toFixed(2));
 
             $("#valor").val(($("#centimetragem").val() * config[0].valorColuna).toFixed(2));
 

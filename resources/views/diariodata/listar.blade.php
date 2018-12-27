@@ -4,12 +4,7 @@
 
 @guest
 
-
-
 @else
-
-
-
 
 <div id="Sucesso" class="container">
         <div class="col-md-8 offset-md-2">
@@ -33,13 +28,22 @@
                 @if (session()->has('publicacoes'))
                     <div style="display: block;" class="form-group row mb-0 alert alert-danger" style="font-size:20px">
 
-
                                 <p> Segue protocolos dos pedidos de publicações para este diário: </p>
 
                                 @foreach (session()->get('publicacoes') as $item)
                                     <span> <i>{{$item->protocoloCompleto}}</i> <strong> / </strong> </span>
                                 @endforeach
 
+                    </div>
+                @endif
+                @if (session()->has('faturas'))
+                    <div style="display: block;" class="form-group row mb-0 alert alert-danger" style="font-size:20px">
+
+                                <p> Segue protocolos dos pedidos de faturas para este diário: </p>
+
+                                @foreach (session()->get('faturas') as $item)
+                                    <span> <i>{{$item->protocoloCompleto}}</i> <strong> / </strong> </span>
+                                @endforeach
 
                     </div>
                 @endif

@@ -262,7 +262,7 @@
             <div class="col-md-5">
                     <div class="card" style="text-align:center;"> {{-- Coluna da visualização  --}}
                         <div class="card-header"> {{ __('Visualização') }}</div>
-                    <div class="card-body" >
+                    <div class="card-body table-responsive">
 
                         {{-- RESPONSAVEL POR GERAR UM VISUALIZAÇÃO DO ARQUIVO FORMATADO --}}
                     @php
@@ -280,7 +280,7 @@
 
                                     if($paragrafo){
 
-                                        echo '<p style="text-align:justify; font-size:'.$size.'pt; margin-top:-10px;">';
+                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt;">';
 
                                         foreach ($txtRunOuTxt->getElements() as $txt) {
 
@@ -299,7 +299,7 @@
                                         if($contaTexto == 0){
 
                                             echo '<div id="titulo">';
-                                            echo '<p style="text-align:center; font-size:'.$size.'pt;">';
+                                            echo '<p style="text-align:center; font-size:'.$size.'pt; margin:1pt;">';
 
                                             foreach ($txtRunOuTxt->getElements() as $txt) {
 
@@ -316,7 +316,7 @@
 
                                         }else{
 
-                                            echo '<p style="text-align:justify; font-size:'.$size.'pt;">';
+                                            echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt;">';
 
                                             foreach ($txtRunOuTxt->getElements() as $txt) {
 
@@ -349,17 +349,17 @@
                                             }else{
                                                 if($txtRunOuTxt->fontStyle->bold){
                                                     if($paragrafo){
-                                                        echo '<p style="text-align:justify; font-size:'.$size.'pt; margin-top:-10px; font-weight:bold;">'.$txtRunOuTxt->getText()."</p>";
+                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt; font-weight:bold;">'.$txtRunOuTxt->getText()."</p>";
                                                     }else{
-                                                        echo '<p style="text-align:justify; font-size:'.$size.'pt; font-weight:bold;">'.$txtRunOuTxt->getText()."</p>";
+                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; font-weight:bold;">'.$txtRunOuTxt->getText()."</p>";
                                                         $paragrafo = true;
                                                     }
                                                 }else{
 
                                                     if($paragrafo){
-                                                        echo '<p style="text-align:justify; font-size:'.$size.'pt; margin-top:-10px;">'.$txtRunOuTxt->getText()."</p>";
+                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt;">'.$txtRunOuTxt->getText()."</p>";
                                                     }else{
-                                                        echo '<p style="text-align:justify; font-size:'.$size.'pt;">'.$txtRunOuTxt->getText()."</p>";
+                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt;">'.$txtRunOuTxt->getText()."</p>";
                                                         $paragrafo = true;
                                                     }
                                                 }
@@ -374,6 +374,13 @@
                     </div>
 
                     {{-- FIM DA VISUALIZAÇÃO DO ARQUIVO FORMATADO --}}
+                    <br>
+
+                    <div>
+                    <a href="/fatura/visualizacao/{{$fatura->arquivoVisualizacao}}/{{$fatura->protocoloCompleto}}" type="button" class="btn btn-primary col-md-12" data-dismiss="modal">
+                            Arquivo Base Centimetragem
+                        </a>
+                    </div>
 
                     </div>
                     </div>
@@ -483,9 +490,12 @@
     <div class="loader offset-md-5"></div>
 </div>
 
+
+
 <script>
 
     $(document).ready(function (){
+
 
         var url = "<?php  echo Session::get('urlVoltar');  ?>";
 
@@ -508,6 +518,7 @@
          $("#btnVoltar").click(function(){
                 location.replace(url);
         })
+
 
     });
 

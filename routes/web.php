@@ -168,7 +168,15 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::get('/relatorio/dataInicial/{dataInicio}/dataFinal/{dataFinal}/situacao/{situacao}', ['as' => 'carregarRelatorio', 'uses' => 'FaturaController@carregarRelatorio']);
     Route::post('/relatorioFiltro', 'FaturaController@carregarRelatorioFiltro');
 
-    Route::get('/caixaDeTexto', 'FaturaController@caixaDeTexto');
+    // Route::get('/caixaDeTexto', 'FaturaController@caixaDeTexto');
+
+    Route::get('/visualizacaoTemp/{arquivoVisualizacao}', 'FaturaController@downloadVisualizacaoTemp');
+    Route::get('/visualizacao/{arquivoVisualizacao}/{protocolo}', 'FaturaController@downloadVisualizacao');
+
+
+    Route::get('/relatorioDetalhado', 'FaturaController@relatorioDetalhado');
+    Route::get('/relatorioDetalhado/cpfcnpj/{cpfCnpj}/protocolo/{protocolo}/datainicial/{dataInicial}/datafinal/{dataFinal}/situacao/{situacao}/empresa/{empresa}/subcategoria/{subcategoria}', ['as' => 'relatorioDetalhado', 'uses' => 'FaturaController@relatorioDetalhado']);
+    Route::post('/relatorioDetalhadoFiltro', 'FaturaController@relatorioDetalhadoFiltro');
 });
 
 

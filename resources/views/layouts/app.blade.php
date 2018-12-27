@@ -141,6 +141,7 @@
                                           <a class="dropdown-item" href="/fatura/cadastrar">Cadastrar</a>
                                           <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
                                           <a class="dropdown-item" href="/fatura/relatorio">Relatorio Quantitativo Por Período</a>
+                                          <a class="dropdown-item" href="/fatura/relatorioDetalhado">Relatorio Detalhado</a>
                                         </div>
                                     </div>
                                  </li>
