@@ -66,7 +66,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Tipos Documentos </strong> </h4>  <a style="margin-left:auto" href='/tipodocumento/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Tipos de Documentos </strong> </h4>  <a style="margin-left:auto" href='/tipodocumento/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 

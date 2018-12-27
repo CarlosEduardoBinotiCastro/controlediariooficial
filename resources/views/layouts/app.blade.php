@@ -140,8 +140,8 @@
                                           <a class="dropdown-item" href="/fatura/listar">Listar</a>
                                           <a class="dropdown-item" href="/fatura/cadastrar">Cadastrar</a>
                                           <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
-                                          <a class="dropdown-item" href="/fatura/relatorio">Relatorio Quantitativo Por Período</a>
-                                          <a class="dropdown-item" href="/fatura/relatorioDetalhado">Relatorio Detalhado</a>
+                                          <a class="dropdown-item" href="/fatura/relatorio">Relatório Quantitativo Por Período</a>
+                                          <a class="dropdown-item" href="/fatura/relatorioDetalhado">Relatório Detalhado</a>
                                         </div>
                                     </div>
                                  </li>
@@ -157,7 +157,7 @@
                               <a class="dropdown-item" href="{{url("/usuario/listar")}}">Usuários</a>
                               <a class="dropdown-item" href="/orgaorequisitante/listar">Órgão Requisitante</a>
                               <a class="dropdown-item" href="/caderno/listar">Caderno</a>
-                              <a class="dropdown-item" href="/tipodocumento/listar">Tipo Documento</a>
+                              <a class="dropdown-item" href="/tipodocumento/listar">Tipo de Documento</a>
                               <a class="dropdown-item" href="/subcategoria/listar">Subcategorias</a>
                               <a class="dropdown-item" href="/diariodata/listar">Datas Diários Oficiais</a>
                               <a class="dropdown-item" href="/diasnaouteis/listar">Feriados/Pontos Facultativos</a>

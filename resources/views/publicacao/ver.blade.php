@@ -81,7 +81,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                    <p>Orgão Requisitante: <strong style="text-transform:capitalize;">{{$publicacao->orgaoNome}}</strong></p>
+                                    <p>Órgão Requisitante: <strong style="text-transform:capitalize;">{{$publicacao->orgaoNome}}</strong></p>
                             </div>
 
                             <div class="col-md-12">

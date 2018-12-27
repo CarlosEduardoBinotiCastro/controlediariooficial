@@ -87,7 +87,7 @@
 
                        <thead>
                        <th>Nome</th>
-                       <th>email</th>
+                       <th>e-mail</th>
                        <th>CPF</th>
                        <th>Status</th>
                        <th>Editar</th>

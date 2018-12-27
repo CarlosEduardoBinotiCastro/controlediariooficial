@@ -56,7 +56,7 @@
                                     <td style="border-color:transparent;"><input style="resize:none; width: 200px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usário"></td>
                                     <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
                                     <td>
-                                        <select style="resize:none; width: 200px;" class="custom-select" name="orgao" placeholder="Orgão Requisitante">
+                                        <select style="resize:none; width: 200px;" class="custom-select" name="orgao" placeholder="Órgão Requisitante">
                                             <option slected value="tudo">Órgãos</option>
                                             @foreach ($orgaos as $orgao)
                                                 <option value=" {{$orgao->orgaoID}}"> {{$orgao->orgaoNome}} </option>
@@ -126,7 +126,7 @@
                        <thead>
                        <th>Protocolo</th>
                        <th>Diário</th>
-                       <th>Orgão Requisitante</th>
+                       <th>Órgão Requisitante</th>
                        <th>Data Envio</th>
                        <th>Usuário</th>
                        <th style="white-space:nowrap;">Situação  <a style="color:red;" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle"></i></a> </th>

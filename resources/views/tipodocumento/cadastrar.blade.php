@@ -20,7 +20,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"> {{ __('Cadastrar Tipo Documento') }}</div>
+                <div class="card-header"> {{ __('Cadastrar Tipo de Documento') }}</div>
 
                 <div class="card-body">
                     <form id='form' method="POST" action="{{ url("/tipodocumento/salvar") }}" enctype="multipart/form-data" >

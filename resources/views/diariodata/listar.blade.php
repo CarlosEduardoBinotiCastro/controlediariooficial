@@ -58,7 +58,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Diarios Oficiais </strong> </h4>  <a style="margin-left:auto" href='/diariodata/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Diários Oficiais </strong> </h4>  <a style="margin-left:auto" href='/diariodata/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 

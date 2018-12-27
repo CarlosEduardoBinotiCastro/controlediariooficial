@@ -59,7 +59,7 @@
                                     @php
                                         $diariosDatas = json_decode($diarioDatas);
                                     @endphp
-                                        Diario: <span style="color:red;">*</span>
+                                        Diário: <span style="color:red;">*</span>
                                         <select id="diario" class="custom-select" name="diarioDataID" required onchange="dataLimite()">
                                                 <option slected value=""> Escolha o Diario </option>
                                                 @foreach ($diariosDatas as $item)

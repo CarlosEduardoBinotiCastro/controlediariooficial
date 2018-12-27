@@ -71,10 +71,10 @@
 
                                 <tbody>
                                     <tr style="background-color:transparent;">
-                                        <td style="border-color:transparent;"><input style="resize:none; width: 200px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usário"></td>
+                                        <td style="border-color:transparent;"><input style="resize:none; width: 200px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usuário"></td>
                                         <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
                                         <td>
-                                            <select style="resize:none; width: 200px;" class="custom-select" name="orgao" placeholder="Orgão Requisitante">
+                                            <select style="resize:none; width: 200px;" class="custom-select" name="orgao" placeholder="Órgão Requisitante">
                                                 <option slected value="tudo">Órgãos</option>
                                                 @foreach ($orgaos as $orgao)
                                                     <option value=" {{$orgao->orgaoID}}"> {{$orgao->orgaoNome}} </option>
@@ -129,7 +129,7 @@
                        <thead>
                        <th>Protocolo</th>
                        <th>Título</th>
-                       <th>Orgão Requisitante</th>
+                       <th>Órgão Requisitante</th>
                        <th>Enviado Por</th>
                        <th>Apagado Por</th>
                        <th>Diário</th>

@@ -37,7 +37,7 @@
                             <label for="requisitante" class="col-md-4 col-form-label text-md-right">{{ __('Requisitante') }} <span style="color:red;">*</span> </label>
 
                             <div class="col-md-6">
-                                <input  id="requisitante" type="text" class="form-control{{ $errors->has('requisitante') ? ' is-invalid' : '' }}" name="requisitante" value="{{ old('requisitante') }}" placeholder="nome do requisitante" required autofocus>
+                                <input  id="requisitante" type="text" class="form-control{{ $errors->has('requisitante') ? ' is-invalid' : '' }}" name="requisitante" value="{{ old('requisitante') }}" placeholder="Nome do requisitante" required autofocus>
                             </div>
                         </div>
 
@@ -45,7 +45,7 @@
                             <label for="empresa" class="col-md-4 col-form-label text-md-right">{{ __('Empresa') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
-                                <input  id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }}" name="empresa" value="{{ old('empresa') }}" placeholder="nome da empresa" required autofocus>
+                                <input  id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }}" name="empresa" value="{{ old('empresa') }}" placeholder="Nome da empresa" required autofocus>
                             </div>
                         </div>
 
