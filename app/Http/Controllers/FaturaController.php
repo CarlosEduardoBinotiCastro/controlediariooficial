@@ -1317,7 +1317,7 @@ class FaturaController extends Controller
             $protocolo = "tudo";
         }
 
-        if($request->dataInicial != null && $request->dataFinal != null){
+        if(($request->dataFinal != null && $request->dataFinal != "tudo") && ($request->dataInicial!= null && $request->dataInicial != "tudo")){
             if($request->dataInicial > $request->dataFinal){
                 return redirect()->back()->with('erro', 'Data inicial deve ser menor que data final!');
             }else{
@@ -1325,10 +1325,11 @@ class FaturaController extends Controller
                 $dataFinal = $request->dataFinal;
             }
         }else{
-            if($request->dataInicial != null && $request->dataFinal == null){
+
+            if($request->dataInicial != null && ($request->dataFinal == null || $request->dataFinal == "tudo")){
                 return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
             }
-            if($request->dataInicial == null && $request->dataFinal != null){
+            if($request->dataFinal != null && ($request->dataInicial!= null || $request->dataInicial == "tudo")){
                 return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
             }
             $dataInicial = "tudo";
