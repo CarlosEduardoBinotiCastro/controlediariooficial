@@ -107,7 +107,7 @@
 
                                 <div class="col-md-8">
                                 <br>
-                                <input type="file" class="form-control-file" name="arquivo" required>
+                                <input type="file" class="form-control-file" name="arquivo" id="file" required>
                                 <strong><sub style="font-size:90%;">Somente arquivos nas extensões 'pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx' e 'xls'. <br>
                                 Tamanho máximo: 30 MB</sub></strong>
                             </div>
@@ -149,10 +149,22 @@
 
     $(document).ready(function($) {
 
+        $("#diario").val("");
+        $('#file').val("");
+        var canUpload = false;
+
         $('#form').validate({
             errorClass: "my-error-class"
         });
 
+
+        $('#file').bind('change', function() {
+            if( ((this.files[0].size / 1024)/1024) > 30){
+                canUpload = false;
+            }else{
+                canUpload = true;
+            }
+        });
 
         $("#cadernoSelect").val("");
         $("#documentoSelect").val("");
@@ -192,9 +204,14 @@
 
          $('#form').submit( function(e){
              if($("#form").valid()){
-                $("#carregando").css('display', 'block');
-                $("#pagina").css('display', 'none');
-                $('#Erro').css('display', 'none');
+                if(canUpload){
+                    $("#carregando").css('display', 'block');
+                    $("#pagina").css('display', 'none');
+                    $('#Erro').css('display', 'none');
+                }else{
+                    e.preventDefault();
+                    alert("Upload somente de arquivos até 30 MB!");
+                }
              }
          });
 

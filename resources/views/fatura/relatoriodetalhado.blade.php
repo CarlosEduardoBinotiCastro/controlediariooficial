@@ -378,7 +378,7 @@
                     $('#dateEnd').attr('type', 'date');
                 }else{
                     dataEnd = $('#dateEnd').val();
-                    var datas =  $('#datEnd').val().split('-');
+                    var datas =  $('#dateEnd').val().split('-');
                     var datanormal = datas[2]+'/'+datas[1]+'/'+datas[0];
                     $('#dateEnd').attr('type', 'text');
                     if($('#dateEnd').val() != ""){

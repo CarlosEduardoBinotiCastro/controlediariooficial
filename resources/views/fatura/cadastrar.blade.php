@@ -161,7 +161,7 @@
 
                                     <div class="col-md-8">
                                     <br>
-                                    <input type="file" class="form-control-file" name="arquivo" required>
+                                    <input type="file" class="form-control-file" name="arquivo" id="file" required>
                                     <strong><sub style="font-size:90%;">Somente arquivos nas extensão 'DOCX'. <br>
                                     Tamanho máximo: 30 MB</sub></strong>
                                 </div>
@@ -232,6 +232,16 @@
             errorClass: "my-error-class"
         });
 
+        $('#file').val("");
+        var canUpload = false;
+        $('#file').bind('change', function() {
+            if( ((this.files[0].size / 1024)/1024) > 30){
+                canUpload = false;
+            }else{
+                canUpload = true;
+            }
+        });
+
         $("#numeroDoc").attr('maxlength',11);
         $("#numeroDoc").mask('000.000.000-00', {reverse: true});
 
@@ -277,11 +287,17 @@
 
         $("#form" ).submit(function( event ) {
             if($("#form").valid()){
-                $("#numeroDoc").unmask();
-                $('html, body').animate({scrollTop: '0px'}, 300);
-                $("#carregando").css('display', 'block');
-                $("#body").css('display', 'none');
-                $('#Erro').css('display', 'none');
+                if(canUpload == true){
+                    $("#numeroDoc").unmask();
+                    $('html, body').animate({scrollTop: '0px'}, 300);
+                    $("#carregando").css('display', 'block');
+                    $("#body").css('display', 'none');
+                    $('#Erro').css('display', 'none');
+                }else{
+                    event.preventDefault();
+                    alert("Upload somente de arquivos até 30 MB!");
+                }
+
             }
         });
 

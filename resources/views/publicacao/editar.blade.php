@@ -153,7 +153,7 @@
 
                                     <div class="col-md-8" >
                                         <br>
-                                        <input style="display:none;" type="file" class="form-control-file" id="divInputArquivo" name="arquivo" required>
+                                        <input style="display:none;" type="file" class="form-control-file" id="divInputArquivo" name="arquivo" id="file" required>
                                     </div>
 
                                     {{-- Relecionado com o lado do botão --}}
@@ -197,6 +197,7 @@
 
         $(document).ready(function($) {
 
+            var canUpload = false;
             var enviar = true;
             var diaLimite;
             var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
@@ -209,7 +210,13 @@
                 window.history.back();
             });
 
-
+            $('#file').bind('change', function() {
+                if( ((this.files[0].size / 1024)/1024) > 30){
+                    canUpload = false;
+                }else{
+                    canUpload = true;
+                }
+            });
 
             // verifica se o diario atual carregado pode editar pela data
 
@@ -343,11 +350,16 @@
             });
 
              $('#form').submit( function(e){
-                 if($("#form").valid()){
+                if($("#form").valid()){
+                if(canUpload){
                     $("#carregando").css('display', 'block');
                     $("#pagina").css('display', 'none');
                     $('#Erro').css('display', 'none');
-                 }
+                }else{
+                    e.preventDefault();
+                    alert("Upload somente de arquivos até 30 MB!");
+                }
+             }
              });
 
 

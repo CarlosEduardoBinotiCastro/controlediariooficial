@@ -372,16 +372,16 @@ class PublicacoesController extends Controller
         $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request->diarioDataID)->first();
 
         if(!isset($request->manterArquivo)){
-            $tamanhoArquivo = ((filesize($request->arquivo) / 1024)/1024);
-            if($tamanhoArquivo >= 30){
-                return 1;
-            }
-
             $extensões = array('pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx', 'xls');
             $extensao = pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
 
             if(!in_array($extensao, $extensões)){
                 return 2;
+            }
+
+            $tamanhoArquivo = ((filesize($request->arquivo) / 1024)/1024);
+            if($tamanhoArquivo >= 30){
+                return 1;
             }
         }
 

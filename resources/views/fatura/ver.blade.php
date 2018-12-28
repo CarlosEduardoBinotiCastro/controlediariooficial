@@ -410,7 +410,7 @@
                                     <br><br>
 
                                     <strong style="font-size:12pt;">Insira o comprovante de pagamento:</strong>
-                                    <input type="file" class="form-control-file" name="arquivo" required>
+                                    <input type="file" class="form-control-file" name="arquivo" id="file" required>
                                     <strong><sub style="font-size:90%;">Somente arquivos nas extensão 'PDF'.
                                     Tamanho máximo: 30 MB</sub></strong>
 
@@ -503,15 +503,31 @@
             errorClass: "my-error-class"
         });
 
+        $('#file').val("");
+        var canUpload = false;
+        $('#file').bind('change', function() {
+            if( ((this.files[0].size / 1024)/1024) > 30){
+                canUpload = false;
+            }else{
+                canUpload = true;
+            }
+        });
+
         $('#formAceitar').submit( function(e){
              if($("#formAceitar").valid()){
-                $("#btnDismiss").trigger("click");
-                $("#carregando").css('display', 'block');
-                $("#pagina").css('display', 'none');
-                $('#modalRejeitar').css('display', 'none');
-                $('#modalAceitar').css('display', 'none');
-                $('#Erro').css('display', 'none');
-                $('html, body').animate({scrollTop: '0px'}, 300);
+                 if(canUpload == true){
+                    $("#btnDismiss").trigger("click");
+                    $("#carregando").css('display', 'block');
+                    $("#pagina").css('display', 'none');
+                    $('#modalRejeitar').css('display', 'none');
+                    $('#modalAceitar').css('display', 'none');
+                    $('#Erro').css('display', 'none');
+                    $('html, body').animate({scrollTop: '0px'}, 300);
+                 }else{
+                    event.preventDefault();
+                    alert("Upload somente de arquivos até 30 MB!");
+                 }
+
              }
          });
 

@@ -20,7 +20,6 @@ use App\Situacao;
 use Illuminate\Support\Facades\Session;
 use PhpOffice\PhpWord\Style\Line;
 use TPDF;
-use Illuminate\Support\Facades\Log;
 
 
 class FaturaController extends Controller
@@ -51,8 +50,22 @@ class FaturaController extends Controller
         $table = DB::table('configuracaofatura')->orderBy('configID');
 
         if($request->valorColuna != null && $request->largura != null){
-            $table->where('configID', '=', $request->configID)->update(['largura' => $request->largura, 'valorColuna' => $request->valorColuna, 'cadernoID' => $request->cadernoID]);
-            return redirect('home')->with('sucesso', 'Configurações Salvas');
+
+
+            $request->valorColuna = str_replace(',','.',$request->valorColuna);
+            $request->largura = str_replace(',','.',$request->largura);
+
+            if(is_numeric($request->valorColuna) && is_numeric($request->largura)){
+                $table->where('configID', '=', $request->configID)->update(['largura' => $request->largura, 'valorColuna' => $request->valorColuna, 'cadernoID' => $request->cadernoID]);
+                return redirect('home')->with('sucesso', 'Configurações Salvas');
+            }else{
+                if(!is_numeric($request->valorColuna)){
+                    return redirect()->back()->with('erro', 'Valor não numérico em valor da coluna');
+                }
+                if(!is_numeric($request->largura)){
+                    return redirect()->back()->with('erro', 'Valor não numérico em largura');
+                }
+            }
         }else{
             return redirect()->back()->with('erro', 'Valores Em Brano');
         }
@@ -906,7 +919,6 @@ class FaturaController extends Controller
             return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: ']);
 
         }
-
     }
 
 
@@ -1068,7 +1080,6 @@ class FaturaController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('erro', 'Ocorreu um erro durante o processo! Erro: '.$e->getMessage());
         }
-
         // verifica se existe o arquivo e o deleta;
     }
 
@@ -1326,10 +1337,10 @@ class FaturaController extends Controller
             }
         }else{
 
-            if($request->dataInicial != null && ($request->dataFinal == null || $request->dataFinal == "tudo")){
+            if(($request->dataInicial != null && $request->dataInicial != "tudo") && ($request->dataFinal == null || $request->dataFinal == "tudo")){
                 return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
             }
-            if($request->dataFinal != null && ($request->dataInicial!= null || $request->dataInicial == "tudo")){
+            if(($request->dataFinal != null && $request->dataFinal != "tudo") && ($request->dataInicial!= null || $request->dataInicial == "tudo")){
                 return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
             }
             $dataInicial = "tudo";
@@ -1359,19 +1370,5 @@ class FaturaController extends Controller
         }else{
             return redirect()->route('relatorioDetalhado', ['cpfCnpj' => $cpfCnpj, 'protocolo' => $protocolo, 'dataInicial' => $dataInicial ,'dataFinal' => $dataFinal, 'situacao' => $situacao, 'empresa' => $empresa, 'subcategoria' => $subcategoria]);
         }
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
