@@ -111,7 +111,7 @@
 
                             <div class="form-group row">
                                     <div class="col-md-10">
-                                        <p>Documento: <strong>{{$fatura->tipoDocumento}}</strong> </p>
+                                        <p>Matéria: <strong>{{$fatura->tipoDocumento}}</strong> </p>
                                     </div>
                             </div>
 

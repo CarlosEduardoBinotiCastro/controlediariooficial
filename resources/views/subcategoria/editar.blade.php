@@ -37,7 +37,7 @@
                         <br>
 
                         <div class="form-group row">
-                        <label for="users" class="col-md-4 col-form-label text-md-right">{{ __('Tipo Documento') }}</label>
+                        <label for="users" class="col-md-4 col-form-label text-md-right">{{ __('Matéria') }}</label>
                         <div class="col-md-6">
                                 <select name="tipoID" id="tipoID" class="form-control">
                                         @foreach($documentos as $documento)

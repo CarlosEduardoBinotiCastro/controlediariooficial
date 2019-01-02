@@ -34,7 +34,7 @@
                     <div style="display: block;" class="form-group row mb-0 alert alert-danger" style="font-size:20px">
 
 
-                                <p> Segue protocolos dos pedidos de publicações para este documento: </p>
+                                <p> Segue protocolos dos pedidos de publicações para esta matéria: </p>
 
                                 @foreach (session()->get('publicacoes') as $item)
                                     <span> <i>{{$item->protocoloCompleto}}</i> <strong> / </strong> </span>
@@ -47,7 +47,7 @@
                 @if (session()->has('faturas'))
                     <div style="display: block;" class="form-group row mb-0 alert alert-danger" style="font-size:20px">
 
-                                <p> Segue protocolos dos pedidos de faturas para este documento: </p>
+                                <p> Segue protocolos dos pedidos de faturas para esta matéria: </p>
 
                                 @foreach (session()->get('faturas') as $item)
                                     <span> <i>{{$item->protocoloCompleto}}</i> <strong> / </strong> </span>
@@ -66,14 +66,14 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Tipos de Documentos </strong> </h4>  <a style="margin-left:auto" href='/tipodocumento/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Matérias </strong> </h4>  <a style="margin-left:auto" href='/tipodocumento/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 
                   <table id="mytable" class="table table-bordred table-striped">
 
                        <thead>
-                       <th>Tipo Documento</th>
+                       <th>Matéria</th>
                        <th>Editar</th>
                        <th>Apagar</th>
                        </thead>
@@ -102,7 +102,7 @@
                         </div>
                         <div class="modal-body">
 
-                            <p> <b> Se existirem cadernos com este tipo documento, o tipo documento será removido do caderno </b> </p>
+                            <p> <b> Se existirem cadernos com esta matéria, a matéria será removida do caderno </b> </p>
 
                             <br><br>
 

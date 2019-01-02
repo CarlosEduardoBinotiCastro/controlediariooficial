@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Publicacao;
 use App\Caderno;
 use App\CadernoTipoDocumento;
+use Illuminate\Support\Facades\DB;
 
 class TipoDocumentoController extends Controller
 {
@@ -24,7 +25,7 @@ class TipoDocumentoController extends Controller
 
         if(Gate::allows('administrador', Auth::user())){
 
-            $tiposDocumentos = TipoDocumento::orderBy('tipoDocumento', 'desc');
+            $tiposDocumentos = TipoDocumento::orderBy('tipoDocumento');
             $tiposDocumentos = $tiposDocumentos->paginate($this->paginacao);
             return view('tipodocumento.listar', ['tiposDocumentos' => $tiposDocumentos]);
 
@@ -48,17 +49,18 @@ class TipoDocumentoController extends Controller
         switch ($this->validar($request)){
 
             case 1:
-                return redirect()->back()->with("erro", "Tipo de documento já existente")->withInput();
+                return redirect()->back()->with("erro", "Matéria já existente")->withInput();
             break;
 
             default:
 
                 if(isset($request->tipoID)){
-                    $tipoDocumento->where('tipoID', '=', $request->tipoDocumentoID)->update(['tipoDocumento' => $request->tipoDocumento]);
-                    return redirect('/tipodocumento/listar')->with("sucesso", "Tipo Documento Editado");
+
+                    $tipoDocumento->where('tipoID', '=', $request->tipoID)->update(['tipoDocumento' => $request->tipoDocumento]);
+                    return redirect('/tipodocumento/listar')->with("sucesso", "Matéria Editada");
                 }else{
                     $tipoDocumento->insert(['tipoDocumento' => $request->tipoDocumento]);
-                    return redirect('/tipodocumento/listar')->with("sucesso", "Tipo Documento Cadastrado");
+                    return redirect('/tipodocumento/listar')->with("sucesso", "Matéria Cadastrada");
                 }
 
 
@@ -132,7 +134,7 @@ class TipoDocumentoController extends Controller
 
             $publicacoes = Publicacao::orderBy('dataEnvio');
             $publicacoes = $publicacoes->where('tipoID', '=', $id)->get();
-            $faturas = $faturas->where('tipoID', '=', $id)->get();
+            $faturas =  DB::table('fatura')->where('tipoID', '=', $id)->get();
             // validar deletar OBS**
 
             if(sizeof($publicacoes) == 0){
@@ -141,17 +143,17 @@ class TipoDocumentoController extends Controller
 
                 $cadernoTipoDocumento->where('tipoID', '=', $id)->delete();
                 $tipoDocumento->where('tipoID', '=', $id)->delete();
-                return redirect('/tipodocumento/listar')->with("sucesso", "Tipo Documento Deletado");
+                return redirect('/tipodocumento/listar')->with("sucesso", "Matéria Deletada");
 
                 }else{
 
-                    return redirect()->back()->with(["erro" => "Impossível deletar pois existem publicações vinculadas a este tipo de documento!", 'faturas' => $faturas]);
+                    return redirect()->back()->with(["erro" => "Impossível deletar pois existem faturas vinculadas a esta matéria!", 'faturas' => $faturas]);
 
                 }
 
             }else{
 
-                return redirect()->back()->with(["erro" => "Impossível deletar pois existem publicações vinculadas a este tipo de documento!", 'publicacoes' => $publicacoes]);
+                return redirect()->back()->with(["erro" => "Impossível deletar pois existem faturas vinculadas a esta matéria!", 'publicacoes' => $publicacoes]);
 
             }
 

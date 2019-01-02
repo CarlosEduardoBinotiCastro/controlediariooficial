@@ -89,7 +89,7 @@
                                         <p>Caderno: <strong style="text-transform:capitalize;">{{$publicacao->cadernoNome}}</strong></p>
                                     </div>
                                     <div>
-                                        <p>Documento: <strong style="text-transform:capitalize;">{{$publicacao->tipoDocumento}}</strong></p>
+                                        <p>Matéria: <strong style="text-transform:capitalize;">{{$publicacao->tipoDocumento}}</strong></p>
                                     </div>
                             </div>
 

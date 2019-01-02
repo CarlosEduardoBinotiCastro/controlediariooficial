@@ -19,7 +19,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"> {{ __('Editar Tipo de Documento') }}</div>
+                <div class="card-header"> {{ __('Editar Matéria') }}</div>
 
                 <div class="card-body">
                     <form id='formEditar' method="POST" action="{{ url("/tipodocumento/salvar") }}" enctype="multipart/form-data" >
@@ -31,7 +31,7 @@
                             <label for="numero" class="col-md-4 col-form-label text-md-right">{{ __('Tipo Documento') }}</label>
 
                             <div class="col-md-6">
-                                <input id="tipoDocumento" type="text" class="form-control{{ $errors->has('tipoDocumento') ? ' is-invalid' : '' }}" name="tipoDocumento" value="{{ $tipoDocumento->tipoDocumento }}" placeholder="nome do documento" required autofocus>
+                                <input id="tipoDocumento" type="text" class="form-control{{ $errors->has('tipoDocumento') ? ' is-invalid' : '' }}" name="tipoDocumento" value="{{ $tipoDocumento->tipoDocumento }}" placeholder="nome da matéria" required autofocus>
                             </div>
                         </div>
 
@@ -46,13 +46,13 @@
                                     @if (sizeof($publicacoes) > 0 || sizeof($cadernos) > 0)
 
                                         <a style="color: white;" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{$tipoDocumento->tipoID}}">
-                                            {{ __('Editar Tipo Documento') }}
+                                            {{ __('Editar Matéria') }}
                                         </a>
 
                                     @else
 
                                         <button type="submit" class="btn btn-primary">
-                                            {{ __('Editar Tipo Documento') }}
+                                            {{ __('Editar Matéria') }}
                                         </button>
 
                                     @endif
@@ -76,8 +76,8 @@
                                             <div class="modal-body">
 
                                                 @if (sizeof($publicacoes) > 0)
-                                                    <p> <b> Existem pedidos de publicações para este Tipo Documento. </b> </p>
-                                                    <p> Segue protocolos dos pedidos de publicações para este Tipo Documento: </p>
+                                                    <p> <b> Existem pedidos de publicações para esta matéria. </b> </p>
+                                                    <p> Segue protocolos dos pedidos de publicações para esta matéria: </p>
 
                                                     @foreach ($publicacoes as $item)
                                                         <span> <i>{{$item->protocoloCompleto}}</i> <strong> / </strong> </span>
@@ -87,8 +87,8 @@
                                                 <br><br>
 
                                                 @if (sizeof($cadernos) > 0)
-                                                    <p> <b> Existem cadernos com este Tipo Documento. </b> </p>
-                                                    <p> Segue nome dos cadernos vinculados a este documento: </p>
+                                                    <p> <b> Existem cadernos com esta matéria. </b> </p>
+                                                    <p> Segue nome dos cadernos vinculados a esta matéria: </p>
 
                                                     @foreach ($cadernos as $item)
                                                         <span> <i>{{$item->cadernoNome}}</i> <strong> / </strong> </span>

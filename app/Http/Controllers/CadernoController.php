@@ -56,7 +56,7 @@ class CadernoController extends Controller
         switch ($this->validar($request)){
 
             case 1:
-                return redirect()->back()->with('erro', "Um caderno Deve ter no mínimo 1 documento!");
+                return redirect()->back()->with('erro', "Um caderno Deve ter no mínimo 1 matéria!");
             break;
 
             case 2:

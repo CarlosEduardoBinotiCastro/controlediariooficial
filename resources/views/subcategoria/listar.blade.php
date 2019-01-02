@@ -56,7 +56,7 @@
                        <thead>
 
                        <th>SubCategoria</th>
-                       <th>Documento</th>
+                       <th>Matéria</th>
                        <th>Editar</th>
                        <th>Apagar</th>
 

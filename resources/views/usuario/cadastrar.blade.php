@@ -129,6 +129,7 @@
                                     <select class="custom-select mr-sm-2" name="grupoID" id="grupoID">
                                     <option slected value="1">Administrador</option>
                                     <option value="2">Usuário</option>
+                                    <option value="3">Fatura</option>
                                     </select>
                                 </div>
 

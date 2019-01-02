@@ -148,6 +148,7 @@
                                     <select class="custom-select mr-sm-2"  @if (Gate::allows('administrador', Auth::user())) name="grupoID" id="grupoID" @else disabled @endif>
                                     <option @if ($usuario->grupoID == 1) selected @endif value="1">Administrador</option>
                                     <option @if ($usuario->grupoID == 2) selected @endif value="2">Usuário</option>
+                                    <option @if ($usuario->grupoID == 3) selected @endif value="3">Fatura</option>
                                     </select>
                                 </div>
 

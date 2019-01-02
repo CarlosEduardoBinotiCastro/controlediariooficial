@@ -66,7 +66,7 @@ class PublicacoesController extends Controller
     }
 
     public function apagadas($nome = null, $protocolo = null, $diario = null, $orgao = null){
-
+        if(!Gate::allows('faturas', Auth::user())){
         $publicacoes = Publicacao::orderBy('protocoloAno', 'desc')->orderBy('protocolo', 'desc');
         $orgaos = OrgaoRequisitante::orderBy('orgaoNome')->get();
 
@@ -111,10 +111,15 @@ class PublicacoesController extends Controller
         $publicacoes = $publicacoes->paginate($this->paginacao);
 
         return view('publicacao.apagadas', ['publicacoes' => $publicacoes, 'orgaos' => $orgaos]);
+        }else{
+            return redirect('home');
+        }
     }
 
 
     public function listar($nome = null, $protocolo = null, $diario = null, $situacao = null, $orgao = null){
+
+        if(!Gate::allows('faturas', Auth::user())){
 
         $situacoes = DB::table('situacao')->get();
         $orgaos = OrgaoRequisitante::orderBy('orgaoNome')->get();
@@ -164,6 +169,10 @@ class PublicacoesController extends Controller
         $publicacoes = $publicacoes->paginate($this->paginacao);
 
         return view('publicacao.listar', ['publicacoes' => $publicacoes, 'situacoes' => $situacoes, 'orgaos' => $orgaos]);
+
+        }else{
+            return redirect('home');
+        }
     }
 
 
@@ -211,13 +220,25 @@ class PublicacoesController extends Controller
 
     public function cadastrar(){
 
-        $usuarioCaderno = DB::table('usuariocaderno')->join('caderno', 'caderno.cadernoID', 'usuariocaderno.cadernoID')->where('usuarioID', '=', Auth::user()->id)->select('caderno.*')->get();
+        if(!Gate::allows('faturas', Auth::user())){
+
+        $cadernoFatura = DB::table('configuracaofatura')->select('cadernoID')->first();
+
+        if($cadernoFatura->cadernoID != null){
+            $usuarioCaderno = DB::table('usuariocaderno')->join('caderno', 'caderno.cadernoID', 'usuariocaderno.cadernoID')->where('usuarioID', '=', Auth::user()->id)->where('caderno.cadernoID', '!=', $cadernoFatura->cadernoID)->select('caderno.*')->get();
+        }else {
+            $usuarioCaderno = DB::table('usuariocaderno')->join('caderno', 'caderno.cadernoID', 'usuariocaderno.cadernoID')->where('usuarioID', '=', Auth::user()->id)->select('caderno.*')->get();
+        }
+
         $horaEnvio = Auth::user()->horaEnvio;
         $documentos = TipoDocumento::orderBy('tipoDocumento');
         $documentos->join('cadernotipodocumento', 'tipodocumento.tipoID',  '=', 'cadernotipodocumento.tipoID');
         foreach($usuarioCaderno as $caderno){
             $documentos->orWhere('cadernotipodocumento.cadernoID', '=', $caderno->cadernoID);
         }
+
+
+
         $documentos->select('cadernotipodocumento.cadernoID', 'tipodocumento.tipoID', 'tipodocumento.tipoDocumento');
         $documentos = $documentos->get();
 
@@ -251,6 +272,10 @@ class PublicacoesController extends Controller
         }
         // fim dos limites para os diarios
         return view('publicacao.cadastrar', ['usuarioCaderno' => $usuarioCaderno, 'documentos' => $documentos, 'diarioDatas' => json_encode($diariosDatasLimites), 'horaEnvio' => $horaEnvio]);
+
+        }else{
+            return redirect('home');
+        }
     }
 
 
@@ -430,6 +455,8 @@ class PublicacoesController extends Controller
 
     public function editar($protocolo){
 
+        if(!Gate::allows('faturas', Auth::user())){
+
         if($protocolo != null){
             if(strlen($protocolo) > 7){
                 $protocoloCompleto = $protocolo;
@@ -501,7 +528,15 @@ class PublicacoesController extends Controller
         if($podeEditar){
             Session::put('protocoloEditar', $protocolo);
             $situacoes = DB::table('situacao')->get();
-            $usuarioCaderno = DB::table('usuariocaderno')->join('caderno', 'caderno.cadernoID', 'usuariocaderno.cadernoID')->where('usuarioID', '=', Auth::user()->id)->select('caderno.*')->get();
+
+            $cadernoFatura = DB::table('configuracaofatura')->select('cadernoID')->first();
+
+            if($cadernoFatura->cadernoID != null){
+                $usuarioCaderno = DB::table('usuariocaderno')->join('caderno', 'caderno.cadernoID', 'usuariocaderno.cadernoID')->where('usuarioID', '=', Auth::user()->id)->where('caderno.cadernoID', '!=', $cadernoFatura->cadernoID)->select('caderno.*')->get();
+            }else {
+                $usuarioCaderno = DB::table('usuariocaderno')->join('caderno', 'caderno.cadernoID', 'usuariocaderno.cadernoID')->where('usuarioID', '=', Auth::user()->id)->select('caderno.*')->get();
+            }
+
 
             $documentos = TipoDocumento::orderBy('tipoDocumento');
             $documentos->join('cadernotipodocumento', 'tipodocumento.tipoID',  '=', 'cadernotipodocumento.tipoID');
@@ -544,10 +579,17 @@ class PublicacoesController extends Controller
         }else{
             return redirect('home')->with('erro', 'Você não pode realizar essa ação!');
         }
+
+        }else{
+            return redirect('home');
+        }
     }
 
 
     public function ver($protocolo){
+
+        if(!Gate::allows('faturas', Auth::user())){
+
         if($protocolo != null){
             if(strlen($protocolo) > 7){
                 $protocoloCompleto = $protocolo;
@@ -604,11 +646,17 @@ class PublicacoesController extends Controller
 
 
         return view('publicacao.ver', ['publicacao' => $publicacao]);
+
+        }else{
+            return redirect('home');
+        }
     }
 
 
     // Download de Publicações pelo protocolo
     public function download($protocolo){
+
+        if(!Gate::allows('faturas', Auth::user())){
 
         $publicacao = Publicacao::orderBy('protocoloAno', 'desc');
         $publicacao->join('caderno', 'caderno.cadernoID', 'publicacao.cadernoID');
@@ -653,6 +701,9 @@ class PublicacoesController extends Controller
             return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
         }
 
+        }else{
+            return redirect('home');
+        }
     }
 
 

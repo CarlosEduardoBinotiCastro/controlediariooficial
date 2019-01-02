@@ -71,7 +71,7 @@
 
         <div class="col-md-12">
 
-        <div class="row"> <a id="btnAdicionar" style="margin-left: 3%; margin-bottom: 2%; color: white;" class="btn btn-primary">Adicionar Documento</a>
+        <div class="row"> <a id="btnAdicionar" style="margin-left: 3%; margin-bottom: 2%; color: white;" class="btn btn-primary">Adicionar Matéria</a>
             <div class="col-md-4" >
                     <select class="custom-select mr-sm-2" name="idDocumentos" id="idDocumentos" required>
                     @foreach ($documentos as $documento)
@@ -87,7 +87,7 @@
               <table id="mytable" class="table table-bordred table-striped">
 
                    <thead>
-                   <th>Documento</th>
+                   <th>Matéria</th>
                    <th>Remover</th>
                    </thead>
     <tbody>

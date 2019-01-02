@@ -90,11 +90,11 @@
 
                         <div class="form-group row">
 
-                            <label for="tipoID" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }} <span style="color:red;">*</span></label>
+                            <label for="tipoID" class="col-md-4 col-form-label text-md-right">{{ __('Matéria') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
                                 <select  class="custom-select mr-sm-2" name="tipoID" id="tipoID" onchange="carregarSubcategorias()">
-                                <option slected value="">Selecione o Documento</option>
+                                <option slected value="">Selecione a Matéria</option>
                                     @foreach ($documentos as $item)
                                         <option value="{{$item->tipoID}}"> {{$item->tipoDocumento}} </option>
                                     @endforeach

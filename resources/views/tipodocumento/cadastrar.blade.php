@@ -20,7 +20,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"> {{ __('Cadastrar Tipo de Documento') }}</div>
+                <div class="card-header"> {{ __('Cadastrar Matéria') }}</div>
 
                 <div class="card-body">
                     <form id='form' method="POST" action="{{ url("/tipodocumento/salvar") }}" enctype="multipart/form-data" >
@@ -30,7 +30,7 @@
                             <label for="tipoDocumento" class="col-md-4 col-form-label text-md-right">{{ __('Nome') }}</label>
 
                             <div class="col-md-6">
-                                <input id="tipoDocumento" type="text" class="form-control{{ $errors->has('tipoDocumento') ? ' is-invalid' : '' }}" name="tipoDocumento" value="{{ old('tipoDocumento') }}" placeholder="nome do documento" required autofocus>
+                                <input id="tipoDocumento" type="text" class="form-control{{ $errors->has('tipoDocumento') ? ' is-invalid' : '' }}" name="tipoDocumento" value="{{ old('tipoDocumento') }}" placeholder="nome da matéria" required autofocus>
                             </div>
                         </div>
 
@@ -41,7 +41,7 @@
                             <div style="float: left;" class="offset-md-4">
                                 <div>
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Cadastrar Tipo Documento') }}
+                                        {{ __('Cadastrar Matéria') }}
                                     </button>
                                 </div>
                             </div>

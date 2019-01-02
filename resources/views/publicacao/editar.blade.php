@@ -71,9 +71,9 @@
 
                                     {{-- Escolher Documento --}}
                                     <div class="col-md-12">
-                                        Documento: <span style="color:red;">*</span>
+                                        Matéria: <span style="color:red;">*</span>
                                         <select class="custom-select" name="tipoID" id="documentoSelect" required>
-                                                <option slected value=""> Escolha o Documento </option>
+                                                <option slected value=""> Escolha a Matéria </option>
                                         </select>
                                     </div>
 
@@ -311,7 +311,7 @@
 
 
             $("#documentoSelect").empty();
-            $("#documentoSelect").append('<option selected value="">Escolha o Documento</option>');
+            $("#documentoSelect").append('<option selected value="">Escolha a Matéria</option>');
             documentos.forEach(element => {
                 if(element.cadernoID ==  $("#cadernoSelect").val()){
                     if(publicacao.tipoID == element.tipoID){
@@ -328,7 +328,7 @@
 
                 if(selected != ""){
                     $("#documentoSelect").empty();
-                    $("#documentoSelect").append('<option selected value="">Escolha o Documento</option>');
+                    $("#documentoSelect").append('<option selected value="">Escolha a Matéria</option>');
 
                     documentos.forEach(element => {
                         if(element.cadernoID == selected){
@@ -337,7 +337,7 @@
                     });
                 }else{
                     $("#documentoSelect").empty();
-                    $("#documentoSelect").append('<option selected value="">Escolha o Documento</option>');
+                    $("#documentoSelect").append('<option selected value="">Escolha a Matéria</option>');
                 }
             }
 

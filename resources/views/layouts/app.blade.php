@@ -118,6 +118,8 @@
                 <div class="collapse navbar-collapse offset-md-1" id="navbarCollapse">
                   <ul class="navbar-nav mr-auto">
 
+                        @if (!Gate::allows('faturas', Auth::user()))
+
                         <li class="nav-item active">
                                 <a class="nav-link" href="/publicacao/listar">Publicações<span class="sr-only">(current)</span></a>
                               </li>
@@ -130,7 +132,9 @@
                                   <a class="nav-link" href="/publicacao/apagadas">Apagadas <span class="sr-only">(current)</span></a>
                               </li>
 
-                              @can('administrador', Auth::user())
+                        @endif
+
+                              @if (Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user()))
 
                                 @can('cadernoFatura', Auth::user())
 
@@ -148,8 +152,10 @@
                                         </div>
                                     </div>
                                  </li>
+
                                  @endcan
-                              @endcan
+
+                              @endif
                     </ul>
 
                     @can('administrador', Auth::user())
@@ -161,7 +167,7 @@
                               <a class="dropdown-item" href="{{url("/usuario/listar")}}">Usuários</a>
                               <a class="dropdown-item" href="/orgaorequisitante/listar">Órgão Requisitante</a>
                               <a class="dropdown-item" href="/caderno/listar">Caderno</a>
-                              <a class="dropdown-item" href="/tipodocumento/listar">Tipo de Documento</a>
+                              <a class="dropdown-item" href="/tipodocumento/listar">Matéria</a>
                               <a class="dropdown-item" href="/subcategoria/listar">Subcategorias</a>
                               <a class="dropdown-item" href="/diariodata/listar">Datas Diários Oficiais</a>
                               <a class="dropdown-item" href="/diasnaouteis/listar">Feriados/Pontos Facultativos</a>

@@ -106,7 +106,7 @@
                             </div>
 
                         <div class="form-group row">
-                                <label for="Documento" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }}</label>
+                                <label for="Documento" class="col-md-4 col-form-label text-md-right">{{ __('Matéria') }}</label>
 
                                 <div class="col-md-6">
                                 <input id="documento" type="text" class="form-control{{ $errors->has('documento') ? ' is-invalid' : '' }}" name="documento" value="{{$fatura['subcategoriaNome']}}"  readonly autofocus>

@@ -37,7 +37,7 @@ class FaturaController extends Controller
     }
 
     public function carregarConfiguracao(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 $confFatura = DB::table('configuracaofatura')->first();
                 $cadernos = Caderno::orderBy('cadernoNome')->get();
@@ -77,7 +77,7 @@ class FaturaController extends Controller
 
     public function cadastrar(){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 $horaEnvio = Auth::user()->horaEnvio;
 
@@ -218,7 +218,7 @@ class FaturaController extends Controller
                 //     // $arquivoTeste->save(storage_path("app/public/temp/".$newDocx));
                 //     // $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $newDocx));
                 // }else{
-                    $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $fileName));
+                $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $fileName));
                 // }
 
 
@@ -742,7 +742,7 @@ class FaturaController extends Controller
 
     public function listar($cpfCnpj = null, $protocolo = null, $diario = null, $situacao = null, $empresa = null,  $subcategoria = null){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -851,7 +851,7 @@ class FaturaController extends Controller
     public function ver($protocolo){
 
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -990,7 +990,7 @@ class FaturaController extends Controller
 
     public function downloadOriginal($protocolo){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1036,7 +1036,7 @@ class FaturaController extends Controller
 
     public function downloadFormatado($protocolo){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1081,7 +1081,7 @@ class FaturaController extends Controller
 
     public function downloadComprovantePago($protocolo){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1166,7 +1166,7 @@ class FaturaController extends Controller
     }
 
     public function carregarRelatorio($dataInicio = null, $dataFinal = null, $situacao = null){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1319,7 +1319,7 @@ class FaturaController extends Controller
     }
 
     public function downloadVisualizacaoTemp($arquivoVisualizacao){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 try {
                     return Response::download(storage_path('app/public/temp/'.$arquivoVisualizacao));
@@ -1338,7 +1338,7 @@ class FaturaController extends Controller
     }
 
     public function downloadVisualizacao($arquivoVisualizacao, $protocolo){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 try {
                     return Response::download(storage_path("app/".$protocolo."/".$arquivoVisualizacao));
@@ -1359,7 +1359,7 @@ class FaturaController extends Controller
 
     public function relatorioDetalhado($cpfCnpj = null, $protocolo = null, $dataInicial = null, $dataFinal = null, $situacao = null, $empresa = null,  $subcategoria = null){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
