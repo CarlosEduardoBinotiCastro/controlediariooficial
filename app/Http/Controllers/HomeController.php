@@ -29,7 +29,6 @@ class HomeController extends Controller
 
     public function carregarHome(){
 
-        if(Auth::user()->statusID == 1){
 
             if(Auth::user()->primeiroLogin == 0){
                 $user = new User();
@@ -39,11 +38,6 @@ class HomeController extends Controller
                 $user = User::orderBy('name')->where('id', '=', Auth::user()->id)->update(['primeiroLogin' => 0]);
                 return redirect('/usuario/editar/'.Auth::user()->id)->with("login", "Primeiro Login Detectado, Altere Sua Senha!");
             }
-
-        }else{
-            Auth::logout();
-            return redirect()->back()->with("message", "Usuário Inativo para Acessar o Sistema")->withInput();
-        }
     }
 
     public function pegarLogo(){

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Http\Controllers\UserController;
 use App\User;
 
 class AuthServiceProvider extends ServiceProvider
@@ -30,6 +31,9 @@ class AuthServiceProvider extends ServiceProvider
             return $user->grupoID == 1;
         });
 
+        Gate::define('cadernoFatura', function ($user) {
+            return $user->getCaderno();
+        });
 
     }
 }

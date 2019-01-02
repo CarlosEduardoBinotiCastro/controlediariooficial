@@ -11,7 +11,6 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    public static  $cadernoID;
     /**
      * The attributes that are mass assignable.
      *
@@ -30,12 +29,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public static function setCaderno($idCarderno){
-        self::$cadernoID = $idCarderno;
+    public static function setCaderno($trueOrFalse){
+        self::$cadernoFatura = $trueOrFalse;
     }
 
     public function getCaderno(){
-        return self::$cadernoID;
+        $userController = new UserController();
+        return $userController->cadernoFatura();
     }
 
 }

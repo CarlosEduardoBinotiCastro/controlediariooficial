@@ -38,9 +38,13 @@ class FaturaController extends Controller
 
     public function carregarConfiguracao(){
         if(Gate::allows('administrador', Auth::user())){
-            $confFatura = DB::table('configuracaofatura')->first();
-            $cadernos = Caderno::orderBy('cadernoNome')->get();
-            return view('fatura.configuracao', ['config' => $confFatura, 'cadernos' => $cadernos]);
+            if(Gate::allows('cadernoFatura', Auth::user())){
+                $confFatura = DB::table('configuracaofatura')->first();
+                $cadernos = Caderno::orderBy('cadernoNome')->get();
+                return view('fatura.configuracao', ['config' => $confFatura, 'cadernos' => $cadernos]);
+            }else{
+                return redirect('home');
+            }
         }else{
             return redirect('home');
         }
@@ -74,57 +78,61 @@ class FaturaController extends Controller
     public function cadastrar(){
 
         if(Gate::allows('administrador', Auth::user())){
-            $horaEnvio = Auth::user()->horaEnvio;
+            if(Gate::allows('cadernoFatura', Auth::user())){
+                $horaEnvio = Auth::user()->horaEnvio;
 
-            $diariosDatas = DiarioData::orderBy('diarioData', 'desc')->where('diarioData', '>', date('Y-m-d'))->get();
-            $confFatura = DB::table('configuracaofatura')->first();
+                $diariosDatas = DiarioData::orderBy('diarioData', 'desc')->where('diarioData', '>', date('Y-m-d'))->get();
+                $confFatura = DB::table('configuracaofatura')->first();
 
-            if($confFatura->cadernoID != null){
+                if($confFatura->cadernoID != null){
 
-                $documentos = TipoDocumento::orderBy('tipoDocumento');
-                $documentos->join('cadernotipodocumento', 'cadernotipodocumento.tipoID', 'tipodocumento.tipoID');
-                $documentos->join('caderno', 'caderno.cadernoID', 'cadernotipodocumento.cadernoID');
-                $documentos->where('caderno.cadernoID', '=', $confFatura->cadernoID);
-                $documentos = $documentos->get();
+                    $documentos = TipoDocumento::orderBy('tipoDocumento');
+                    $documentos->join('cadernotipodocumento', 'cadernotipodocumento.tipoID', 'tipodocumento.tipoID');
+                    $documentos->join('caderno', 'caderno.cadernoID', 'cadernotipodocumento.cadernoID');
+                    $documentos->where('caderno.cadernoID', '=', $confFatura->cadernoID);
+                    $documentos = $documentos->get();
 
-                $subcategorias = SubCategoria::orderBy('subcategoriaNome');
-                foreach ($documentos as $documento) {
-                    $subcategorias->orWhere('tipoID', '=', $documento->tipoID);
-                }
-                $subcategorias = $subcategorias->get();
-
-            }else{
-                return redirect('home')->with('erro', 'Nenhum caderno vinculado com faturas! Vincule nas configurações da fatura.');
-            }
-
-
-            // vericar datas limites para os diários
-
-            $diariosDatasLimites = Collection::make([]);
-
-            foreach($diariosDatas as $diario){
-
-                $diaDiarioDate = new DateTime($diario->diarioData);
-                $verificaDiaUtil = false;
-                $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
-
-                do{
-                    $finalDeSemana = date('N', strtotime($diaUtil));
-                    if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
-                        if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
-                            $verificaDiaUtil = true;
-                            $diariosDatasLimites->push(['diarioData' => $diario->diarioData, 'diarioDataID' => $diario->diarioDataID, 'numeroDiario' => $diario->numeroDiario, 'diaLimite' => $diaUtil]);
-                        }else{
-
-                        }
+                    $subcategorias = SubCategoria::orderBy('subcategoriaNome');
+                    foreach ($documentos as $documento) {
+                        $subcategorias->orWhere('tipoID', '=', $documento->tipoID);
                     }
+                    $subcategorias = $subcategorias->get();
 
-                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
-                }while($verificaDiaUtil == false);
+                }else{
+                    return redirect('home')->with('erro', 'Nenhum caderno vinculado com faturas! Vincule nas configurações da fatura.');
+                }
 
+
+                // vericar datas limites para os diários
+
+                $diariosDatasLimites = Collection::make([]);
+
+                foreach($diariosDatas as $diario){
+
+                    $diaDiarioDate = new DateTime($diario->diarioData);
+                    $verificaDiaUtil = false;
+                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
+
+                    do{
+                        $finalDeSemana = date('N', strtotime($diaUtil));
+                        if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                            if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                                $verificaDiaUtil = true;
+                                $diariosDatasLimites->push(['diarioData' => $diario->diarioData, 'diarioDataID' => $diario->diarioDataID, 'numeroDiario' => $diario->numeroDiario, 'diaLimite' => $diaUtil]);
+                            }else{
+
+                            }
+                        }
+
+                        $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                    }while($verificaDiaUtil == false);
+
+                }
+                // fim dos limites para os diarios
+                return view('fatura.cadastrar', [ 'diarioDatas' => json_encode($diariosDatasLimites), 'horaEnvio' => $horaEnvio, 'config' => $confFatura, 'documentos' => $documentos, 'subcategorias' => $subcategorias]);
+            }else{
+                return redirect('home');
             }
-            // fim dos limites para os diarios
-            return view('fatura.cadastrar', [ 'diarioDatas' => json_encode($diariosDatasLimites), 'horaEnvio' => $horaEnvio, 'config' => $confFatura, 'documentos' => $documentos, 'subcategorias' => $subcategorias]);
         }else{
             return redirect('home');
         }
@@ -736,6 +744,8 @@ class FaturaController extends Controller
 
         if(Gate::allows('administrador', Auth::user())){
 
+            if(Gate::allows('cadernoFatura', Auth::user())){
+
             $situacoes = Situacao::orderBy('situacaoNome')->get();
             $subcategorias = DB::table('subcategoria')->orderBy('subcategoriaNome')->get();
 
@@ -779,6 +789,10 @@ class FaturaController extends Controller
             $faturas->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome');
             $faturas = $faturas->paginate($this->paginacao);
             return view('fatura.listar', ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+
+            }else{
+                return redirect('home');
+            }
 
         }else{
 
@@ -839,6 +853,8 @@ class FaturaController extends Controller
 
         if(Gate::allows('administrador', Auth::user())){
 
+            if(Gate::allows('cadernoFatura', Auth::user())){
+
             $fatura = Fatura::orderBy('diariodata.diarioData', 'desc');
             $fatura->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
             $fatura->join('users as usuario', 'usuario.id', 'fatura.usuarioID');
@@ -866,6 +882,10 @@ class FaturaController extends Controller
             }else{
                 return view('fatura.ver', ['fatura' => $fatura, 'faturaConfig' => $faturaConfig]);
             }
+
+        }else{
+            return redirect('home');
+        }
 
         }else{
             return redirect('home');
@@ -972,6 +992,8 @@ class FaturaController extends Controller
 
         if(Gate::allows('administrador', Auth::user())){
 
+            if(Gate::allows('cadernoFatura', Auth::user())){
+
             $fatura = Fatura::orderBy('protocoloAno', 'desc');
             $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
@@ -1006,11 +1028,17 @@ class FaturaController extends Controller
         }else{
             return redirect('home');
         }
+
+        }else{
+            return redirect('home');
+        }
     }
 
     public function downloadFormatado($protocolo){
 
         if(Gate::allows('administrador', Auth::user())){
+
+            if(Gate::allows('cadernoFatura', Auth::user())){
 
             $fatura = Fatura::orderBy('protocoloAno', 'desc');
             $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
@@ -1046,11 +1074,16 @@ class FaturaController extends Controller
         }else{
             return redirect('home');
         }
+        }else{
+            return redirect('home');
+        }
     }
 
     public function downloadComprovantePago($protocolo){
 
         if(Gate::allows('administrador', Auth::user())){
+
+            if(Gate::allows('cadernoFatura', Auth::user())){
 
             $fatura = Fatura::orderBy('protocoloAno', 'desc');
             $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
@@ -1082,6 +1115,9 @@ class FaturaController extends Controller
                 return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
             }
 
+        }else{
+            return redirect('home');
+        }
         }else{
             return redirect('home');
         }
@@ -1131,6 +1167,8 @@ class FaturaController extends Controller
 
     public function carregarRelatorio($dataInicio = null, $dataFinal = null, $situacao = null){
         if(Gate::allows('administrador', Auth::user())){
+
+            if(Gate::allows('cadernoFatura', Auth::user())){
 
             $situacoes = Situacao::orderBy('situacaoNome')->get();
 
@@ -1187,6 +1225,10 @@ class FaturaController extends Controller
             }else{
                 return view('fatura.relatorio', ['situacoes' => $situacoes]);
             }
+
+        }else{
+            return redirect('home');
+        }
         }else{
             return redirect('home');
         }
@@ -1278,13 +1320,17 @@ class FaturaController extends Controller
 
     public function downloadVisualizacaoTemp($arquivoVisualizacao){
         if(Gate::allows('administrador', Auth::user())){
-            try {
-                return Response::download(storage_path('app/public/temp/'.$arquivoVisualizacao));
+            if(Gate::allows('cadernoFatura', Auth::user())){
+                try {
+                    return Response::download(storage_path('app/public/temp/'.$arquivoVisualizacao));
 
-            } catch (\Exception $e) {
+                } catch (\Exception $e) {
 
-                return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
+                    return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
 
+                }
+            }else{
+                return redirect('home');
             }
         }else{
             return redirect('home');
@@ -1293,13 +1339,17 @@ class FaturaController extends Controller
 
     public function downloadVisualizacao($arquivoVisualizacao, $protocolo){
         if(Gate::allows('administrador', Auth::user())){
-            try {
-                return Response::download(storage_path("app/".$protocolo."/".$arquivoVisualizacao));
+            if(Gate::allows('cadernoFatura', Auth::user())){
+                try {
+                    return Response::download(storage_path("app/".$protocolo."/".$arquivoVisualizacao));
 
-            } catch (\Exception $e) {
+                } catch (\Exception $e) {
 
-                return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
+                    return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
 
+                }
+            }else{
+                return redirect('home');
             }
         }else{
             return redirect('home');
@@ -1310,6 +1360,8 @@ class FaturaController extends Controller
     public function relatorioDetalhado($cpfCnpj = null, $protocolo = null, $dataInicial = null, $dataFinal = null, $situacao = null, $empresa = null,  $subcategoria = null){
 
         if(Gate::allows('administrador', Auth::user())){
+
+            if(Gate::allows('cadernoFatura', Auth::user())){
 
             $situacoes = Situacao::orderBy('situacaoNome')->get();
             $subcategorias = DB::table('subcategoria')->orderBy('subcategoriaNome')->get();
@@ -1355,6 +1407,9 @@ class FaturaController extends Controller
             $faturas = $faturas->paginate($this->paginacao);
             return view('fatura.relatoriodetalhado', ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
 
+            }else{
+                return redirect('home');
+            }
         }else{
             return redirect('home');
         }

@@ -1,0 +1,29 @@
+Após baixar este projeto para seu Computador, faça as seguintes alterações:
+
+1 - realizar composer update.
+
+2 - alterações necessarias na pasta vendor do PHPWORD (extremamente importantes)
+	
+	TextRun e Text e Link Classe:
+
+		fontStyle de private para public
+
+		paragraphStyle private para public
+
+	Font Classe:
+		
+		name, size, bold de private para public
+
+
+	Paragraph Classe:
+		
+		spacing, alignment, lineHeight de private para public
+
+
+	Section Classe:
+		
+		paper de private para public
+
+	AbstractContainer Classe:
+		
+		elements de private para public;

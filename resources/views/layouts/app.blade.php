@@ -131,6 +131,9 @@
                               </li>
 
                               @can('administrador', Auth::user())
+
+                                @can('cadernoFatura', Auth::user())
+
                                  <li class="nav-item active">
                                     <div class="dropdown nav-item" >
                                         <a style="background-color: transparent; border-color:transparent; color:black;" class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -145,6 +148,7 @@
                                         </div>
                                     </div>
                                  </li>
+                                 @endcan
                               @endcan
                     </ul>
 

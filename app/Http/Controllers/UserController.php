@@ -373,4 +373,17 @@ class UserController extends Controller
         }
     }
 
+    public function cadernoFatura(){
+
+        $cadernoID = DB::table('configuracaofatura')->select('cadernoID')->first();
+        $cadernoID = $cadernoID->cadernoID;
+        if($cadernoID == null){
+            return true;
+        }
+        if(User::orderBy('name')->join('usuariocaderno', 'usuariocaderno.usuarioID', 'users.id')->where('cadernoID', '=', $cadernoID)->where('users.id', '=', Auth::user()->id)->count()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
