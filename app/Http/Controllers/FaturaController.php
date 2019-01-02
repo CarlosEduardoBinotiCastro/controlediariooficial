@@ -175,6 +175,18 @@ class FaturaController extends Controller
                 return redirect()->back()->with('erro', "Arquivo temporário não existe mais!")->withInput();
             break;
 
+            case 7:
+                return redirect()->back()->with('erro', "Observação com tamanho excedido!")->withInput();
+            break;
+
+            case 8:
+                return redirect()->back()->with('erro', "Empresa com tamanho excedido!")->withInput();
+            break;
+
+            case 9:
+                return redirect()->back()->with('erro', "Requisitante com tamanho excedido!")->withInput();
+            break;
+
             default:
 
                 // carrega configurações da fatura
@@ -351,7 +363,7 @@ class FaturaController extends Controller
 
                 } catch (\Exception $e) {
 
-                    return redirect()->back()->with('erro', 'Falha na formatação do arquivo, verifique se o mesmo segue o padrão do template e tente novamente. Erro: '.$e->getMessage());
+                    return redirect()->back()->with('erro', 'Falha na formatação do arquivo, verifique se está usando o template e tente novamente. Erro: '.$e->getMessage());
 
                 }
 
@@ -383,9 +395,9 @@ class FaturaController extends Controller
                 return redirect('home')->with('erro', "Arquivo com tamanho maior que 30MB!");
             break;
 
-            // case 3:
-            //     return redirect('home')->with('erro', "Nome do requisitante não pode possuir caracteres especiais!");
-            // break;
+            case 3:
+                 return redirect('home')->with('erro', "Valores da fatura não são consistentes!");
+            break;
 
             case 4:
                 return redirect('home')->with('erro', "Data de envio ultrapassada!");
@@ -397,6 +409,18 @@ class FaturaController extends Controller
 
             case 6:
                 return redirect('home')->with('erro', "Arquivo temporário não existe mais!");
+            break;
+
+            case 7:
+                return redirect('home')->with('erro', "Observação com tamanho excedido!")->withInput();
+            break;
+
+            case 8:
+                return redirect('home')->with('erro', "Empresa com tamanho excedido!")->withInput();
+            break;
+
+            case 9:
+                return redirect('home')->with('erro', "Requisitante com tamanho excedido!")->withInput();
             break;
 
 
@@ -470,6 +494,18 @@ class FaturaController extends Controller
 
     public function validar($request){
 
+        if(strlen($request->observacao) > 255){
+            return 7;
+        }
+
+        if(strlen($request->empresa) > 200){
+            return 6;
+        }
+
+        if(strlen($request->requisitante) > 200){
+            return 8;
+        }
+
         if(isset($request->arquivo)){
             if(pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) == "docx"){
 
@@ -483,10 +519,20 @@ class FaturaController extends Controller
             }
         }
 
-        // if (preg_match('', $request->requisitante))
-        // {
-        //     return 3;
-        // }
+
+        $valorColuna =  DB::table('configuracaofatura')->get();
+        if ($valorColuna[0]->valorColuna != $request->valorColuna)
+        {
+             return 3;
+        }else{
+            $centimetragem = Session::get('centimetragem');
+            $valorFatura = $valorColuna[0]->valorColuna*number_format($centimetragem, 2, ".", "");
+            $valorFatura = number_format($valorFatura, 2, ".", "");
+            // dd($valorFatura  . '    /    ' . $request->valor);
+            if($request->valor != $valorFatura){
+                return 3;
+            }
+        }
 
 
         // Verificação do lado do servidor sobre a data do envio par o diario !
@@ -1218,6 +1264,7 @@ class FaturaController extends Controller
 
         // função para retornar a centimetragem, como o retorno é em milimetros, apenas uma divisão por 10, resolve o problema.
         $centimetragem = $pdf::getY()/10;
+        Session::put('centimetragem', $centimetragem);
 
         // dd($centimetragem);
 

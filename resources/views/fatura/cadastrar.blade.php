@@ -67,7 +67,7 @@
                         <div class="form-group row">
                             <label for="observacao" class="col-md-4 col-form-label text-md-right">{{ __('Observação') }}</label>
                             <div class="col-md-6">
-                                <textarea  id="observacao" name="observacao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{old('observacao')}}"></textarea>
+                                <textarea  id="observacao" name="observacao" cols="60" rows="4" class="form-control" placeholder="Entre com as Observações!" style="resize: none;" value="{{old('observacao')}}">{{old('observacao')}}</textarea>
                             </div>
                         </div>
                         <br>
@@ -242,12 +242,15 @@
             }
         });
 
+
         $("#numeroDoc").attr('maxlength',11);
         $("#numeroDoc").mask('000.000.000-00', {reverse: true});
 
         $("#termo").prop('checked', false);
         $("#btnEnviar").prop('disabled', true);
         $("#diario").val("");
+        $("#tipoID").val("");
+        $("#subcategoriaID").val("");
 
         var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
         var subcategorias = <?php  echo $subcategorias; ?>;

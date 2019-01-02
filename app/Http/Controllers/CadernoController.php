@@ -141,18 +141,15 @@ class CadernoController extends Controller
             return 1;
         }
 
-
         if(isset($request->cadernoID)){
             if(Caderno::orderBy('cadernoNome')->where('cadernoNome', '=', $request->cadernoNome)->where('cadernoID', '!=', $request->cadernoID)->count()){
                 return 2;
             }
 
         }else{
-
             if(Caderno::orderBy('cadernoNome')->where('cadernoNome', '=', $request->cadernoNome)->count()){
                 return 2;
             }
-
         }
 
     }

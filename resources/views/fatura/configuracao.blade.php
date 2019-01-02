@@ -3,16 +3,17 @@
 
 @auth
 
-<div id="Erro" class="container">
-        <div class="col-md-8 offset-md-2">
-            @if(session()->has('erro'))
-                <br>
-                <div class="form-group row mb-0 alert alert-danger" style="font-size:20px">
-                    {{ session()->get('erro') }}
+    <div id="Erro" class="container">
+            <div class="col-md-8 offset-md-2">
+                @if(session()->has('erro'))
+                    <br>
+                    <div class="form-group row mb-0 alert alert-danger" style="font-size:20px">
+                        {{ session()->get('erro') }}
+                    </div>
+                @endif
                 </div>
-            @endif
-            </div>
-</div>
+    </div>
+
 <br>
 
 <div class="container">
