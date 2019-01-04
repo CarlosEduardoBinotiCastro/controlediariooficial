@@ -154,6 +154,9 @@
                                 @endphp
                                 <td> N° {{$fatura->numeroDiario}} <br> {{$dataDiario}} </td>
 
+                                {{-- Trocar a Cor da situação de acordo com o valor --}}
+                                {{-- <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;">{{$fatura->situacaoNome}}</p> --}}
+
                                 <td> {{$fatura->situacaoNome}} </td>
 
                                 <td style="white-space:nowrap;">

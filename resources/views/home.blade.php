@@ -51,7 +51,7 @@
 
         <div class="col-md-4">
             <div class="card">
-                    <div class="card-header">Lista de Feriados / Pontos Facultativos</div>
+                    <div class="card-header" style="text-align:center;"> <b> Lista de Feriados / Pontos Facultativos </b></div>
                     <div class="card-body">
                             <div class="table-responsive">
                                 <table id="mytable" class="table table-bordred table-striped">

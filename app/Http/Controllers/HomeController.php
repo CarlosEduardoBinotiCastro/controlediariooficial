@@ -31,17 +31,10 @@ class HomeController extends Controller
 
     public function carregarHome(){
 
+        $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData')->whereBetween('diaNaoUtilData',  [date('Y')."-01-01", date('Y')."-12-31"]);
+        $diasNaoUteis = $diasNaoUteis->get();
+        return view('home', ['diasNaoUteis' => $diasNaoUteis]);
 
-            if(Auth::user()->primeiroLogin == 0){
-
-                $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData')->whereBetween('diaNaoUtilData',  [date('Y')."-01-01", date('Y')."-12-31"]);
-                $diasNaoUteis = $diasNaoUteis->get();
-
-                return view('home', ['diasNaoUteis' => $diasNaoUteis]);
-            }else{
-                $user = User::orderBy('name')->where('id', '=', Auth::user()->id)->update(['primeiroLogin' => 0]);
-                return redirect('/usuario/editar/'.Auth::user()->id)->with("login", "Primeiro Login Detectado, Altere Sua Senha!");
-            }
     }
 
     public function pegarLogo(){

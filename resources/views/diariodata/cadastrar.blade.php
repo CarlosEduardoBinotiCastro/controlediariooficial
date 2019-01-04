@@ -81,11 +81,18 @@
             errorClass: "my-error-class"
         });
 
+        // MEXER
+
         var today = new Date().toISOString().split('T')[0];
 
         var date =  today.split('-');
+        var dia = parseInt(date[2])+1;
 
-        document.getElementsByName("diarioData")[0].setAttribute('min', date[0]+'-'+date[1]+'-'+(parseInt(date[2])+1).toString());
+        if(dia <= 9){
+            dia = "0"+(parseInt(date[2])+1).toString();
+        }
+
+        document.getElementsByName("diarioData")[0].setAttribute('min', date[0]+'-'+date[1]+'-'+dia);
 
     });
 </script>

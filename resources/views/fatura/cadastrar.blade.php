@@ -194,8 +194,7 @@
                     <div class="modal-body">
 
                         <p> <strong> Template de Arquivo: </strong> </p>
-                        <p>Para formatar a fatura, por favor faça o download do template, passe o conteúdo para o arquivo do template.
-                            Dessa forma, a possibilidade de algum erro é minimizado.
+                        <p>Para formatar a fatura é necessário fazer o download do template e passar o conteúdo para o arquivo baixado. Dessa forma, a possibilidade de existir algum erro é reduzida.
                         </p>
 
                         <div>

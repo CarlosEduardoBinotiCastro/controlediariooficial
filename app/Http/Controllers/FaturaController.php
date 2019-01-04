@@ -81,7 +81,7 @@ class FaturaController extends Controller
             if(Gate::allows('cadernoFatura', Auth::user())){
                 $horaEnvio = Auth::user()->horaEnvio;
 
-                $diariosDatas = DiarioData::orderBy('diarioData', 'desc')->where('diarioData', '>', date('Y-m-d'))->get();
+                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
                 $confFatura = DB::table('configuracaofatura')->first();
 
                 if($confFatura->cadernoID != null){

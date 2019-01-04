@@ -23,7 +23,7 @@ class DiarioDataController extends Controller
 
     public function listar(){
         if(Gate::allows('administrador', Auth::user())){
-            $diariosDatas = DiarioData::orderBy('diarioData', 'desc');
+            $diariosDatas = DiarioData::orderBy('diarioData');
             $diariosDatas = $diariosDatas->paginate($this->paginacao);
             return view('diariodata.listar', ['diariosDatas' => $diariosDatas]);
         }else{
