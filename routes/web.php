@@ -177,6 +177,9 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::get('/relatorioDetalhado', 'FaturaController@relatorioDetalhado');
     Route::get('/relatorioDetalhado/cpfcnpj/{cpfCnpj}/protocolo/{protocolo}/datainicial/{dataInicial}/datafinal/{dataFinal}/situacao/{situacao}/empresa/{empresa}/subcategoria/{subcategoria}', ['as' => 'relatorioDetalhado', 'uses' => 'FaturaController@relatorioDetalhado']);
     Route::post('/relatorioDetalhadoFiltro', 'FaturaController@relatorioDetalhadoFiltro');
+
+    // chamar aceitas
+    Route::get('/irParaAceita', 'FaturaController@chamarAceita');
 });
 
 

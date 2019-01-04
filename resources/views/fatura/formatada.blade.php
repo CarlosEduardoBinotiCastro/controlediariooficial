@@ -109,7 +109,7 @@
                                 <label for="Documento" class="col-md-4 col-form-label text-md-right">{{ __('Matéria') }}</label>
 
                                 <div class="col-md-6">
-                                <input id="documento" type="text" class="form-control{{ $errors->has('documento') ? ' is-invalid' : '' }}" name="documento" value="{{$fatura['subcategoriaNome']}}"  readonly autofocus>
+                                <input id="documento" type="text" class="form-control{{ $errors->has('documento') ? ' is-invalid' : '' }}" name="documento" value="{{$fatura['tipoDocumento']}}"  readonly autofocus>
                                 </div>
                             </div>
 
@@ -117,7 +117,7 @@
                                 <label for="subcategoria" class="col-md-4 col-form-label text-md-right">{{ __('Subcategoria') }}</label>
 
                                 <div class="col-md-6">
-                                <input id="subcategoria" type="text" class="form-control{{ $errors->has('subcategoria') ? ' is-invalid' : '' }}" name="subcategoria" value="{{$fatura['tipoDocumento']}}"  readonly autofocus>
+                                <input id="subcategoria" type="text" class="form-control{{ $errors->has('subcategoria') ? ' is-invalid' : '' }}" name="subcategoria" value="{{$fatura['subcategoriaNome']}}"  readonly autofocus>
                                 </div>
                             </div>
 

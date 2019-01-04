@@ -76,6 +76,30 @@
           100% { transform: rotate(360deg); }
         }
 
+
+         .select2-selection__rendered{
+            line-height: 32px!important;
+            color: gray !important;
+         }
+        .select2 {
+
+            border-width: 1px !important;
+            border-radius: 5px !important;
+        }
+
+        .select2-selection__arrow{
+            height: 34px!important;
+        }
+
+        .select2-container--default .select2-selection--single{
+            background-color: white !important;
+            height: 37px!important;
+            font-size: 15px!important;
+            border-width: 1px !important;
+            margin-left: -1px!important;
+
+        }
+
     </style>
 
 

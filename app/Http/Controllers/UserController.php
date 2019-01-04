@@ -95,8 +95,10 @@ class UserController extends Controller
             $usuarioCaderno->where('usuariocaderno.usuarioID', '=', $id);
             $usuarioCaderno->select('caderno.cadernoID', 'caderno.cadernoNome');
             $usuarioCaderno = $usuarioCaderno->get();
+
             $cadernos = Caderno::orderBy('cadernoNome');
             $cadernos->select('*');
+
             foreach($usuarioCaderno as $caderno){
                 $cadernos->where('cadernoID', '!=', $caderno->cadernoID);
             }

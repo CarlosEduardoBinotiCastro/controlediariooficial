@@ -48,6 +48,45 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                    <div class="card-header">Lista de Feriados / Pontos Facultativos</div>
+                    <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="mytable" class="table table-bordred table-striped">
+
+                                        <thead>
+                                        <th>Data</th>
+                                        <th>Descrição</th>
+                                        </thead>
+                                        <tbody>
+
+                                             @foreach ($diasNaoUteis as $dia)
+
+                                                @php
+                                                    $data = new DateTime($dia->diaNaoUtilData);
+                                                    $data = $data->format('d/m/Y');
+                                                @endphp
+
+                                             <tr>
+                                                <td>{{$data}}</td>
+                                                <td>{{$dia->diaDescricao}}</td>
+                                            </tr>
+
+                                             @endforeach
+
+
+
+                                            </tbody>
+
+                                     </table>
+
+                            </div>
+                    </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

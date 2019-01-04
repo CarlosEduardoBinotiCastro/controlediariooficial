@@ -110,6 +110,7 @@
                             <div class="col-md-6">
                                 <select  class="custom-select mr-sm-2" name="subcategoriaID" id="subcategoriaID">
                                     <option slected value="">Selecione a Subcategoria</option>
+                                    <option  value="NaoPossui">Não Possui</option>
                                 </select>
                             </div>
 
@@ -151,8 +152,8 @@
                                 <div class="form-group row offset-md-6">
                                     <a href="/fatura/gerarTemplate" class="btn btn-primary">Template</a><a style="color:red; margin-left:2%" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle fa-2x"></i></a>
                                 </div>
-                                <div class="form-group row offset-md-4">
-                                    <p><strong style="color:red;">Lembre que o arquivo deve seguir modelo descrito no template!!</strong> </p>
+                                <div class="form-group row offset-md-3">
+                                    <p><strong style="color:red; font-size:20px;">Lembre que você deve usar o template citado acima!!</strong> </p>
                                 </div>
 
                             <div class=" row col-md-8 offset-md-2">
@@ -189,13 +190,11 @@
 <div class='modal fade' id="modalLegenda" role='dialog'>
         <div class='modal-dialog row justify-content-center'>
             <div class="modal-content">
-                    <div class="modal-header">
-                        <Strong class=" offset-md-5" > Legenda </Strong>
-                    </div>
+
                     <div class="modal-body">
 
                         <p> <strong> Template de Arquivo: </strong> </p>
-                        <p>Para formatar a fatura, porfavor faça o download do template, passe o conteúdo para o arquivo do tamplate.
+                        <p>Para formatar a fatura, por favor faça o download do template, passe o conteúdo para o arquivo do template.
                             Dessa forma, a possibilidade de algum erro é minimizado.
                         </p>
 
@@ -221,18 +220,23 @@
 
 @endauth
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
 
 <script type="text/javascript">
 
     $(document).ready(function($) {
 
+        $("#tipoID").val("");
+
+        $('#tipoID').select2();
+
         $('#form').validate({
             errorClass: "my-error-class"
         });
 
         $('#file').val("");
+
         var canUpload = false;
         $('#file').bind('change', function() {
             if( ((this.files[0].size / 1024)/1024) > 30){
@@ -249,7 +253,7 @@
         $("#termo").prop('checked', false);
         $("#btnEnviar").prop('disabled', true);
         $("#diario").val("");
-        $("#tipoID").val("");
+
         $("#subcategoriaID").val("");
 
         var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
@@ -275,6 +279,7 @@
 
                 $("#subcategoriaID").empty();
                 $("#subcategoriaID").append('<option selected value="">Escolha a Subcategoria</option>');
+                $("#subcategoriaID").append('<option value="NaoPossui">Não Possui</option>');
 
                 subcategorias.forEach(element => {
 
@@ -285,6 +290,7 @@
             }else{
                 $("#documentoSelect").empty();
                 $("#documentoSelect").append('<option selected value="">Escolha a Subcategoria</option>');
+                $("#subcategoriaID").append('<option value="NaoPossui">Não Possui</option>');
             }
         }
 

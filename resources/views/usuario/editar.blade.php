@@ -267,7 +267,7 @@
                 location.replace(url);
         });
 
-        var adm =  <?php  echo Auth::user()->id ?> ;
+        var adm =  <?php  echo Auth::user()->grupoID ?> ;
         var usuarioCaderno = <?php  echo $usuarioCaderno ?> ;
 
         $("#alterarSenha").prop('checked', false);
@@ -307,12 +307,14 @@
 
 
         $("#btnAdicionar").click(function(){
-
             if(adm == 1){
 
                 var cadernoAdd = $('#idCadernos').find(":selected").text();
 
+
+
                 if(cadernoAdd != ''){
+
 
                     var caderno = {cadernoID: "", cadernoNome: ""};
                     caderno.cadernoID = $('#idCadernos').find(":selected").val();

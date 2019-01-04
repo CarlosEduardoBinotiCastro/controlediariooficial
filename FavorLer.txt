@@ -4,7 +4,7 @@ Após baixar este projeto para seu Computador, faça as seguintes alterações:
 
 2 - alterações necessarias na pasta vendor do PHPWORD (extremamente importantes)
 	
-	TextRun e Text e Link Classe:
+	TextRun, Text, Link e TextBreak Classe:
 
 		fontStyle de private para public
 

@@ -8,6 +8,8 @@ use App\User;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Session;
 use DateTime;
+use App\DiasNaoUteis;
+
 
 class HomeController extends Controller
 {
@@ -31,9 +33,11 @@ class HomeController extends Controller
 
 
             if(Auth::user()->primeiroLogin == 0){
-                $user = new User();
-                $userController = new UserController();
-                return view('home');
+
+                $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData')->whereBetween('diaNaoUtilData',  [date('Y')."-01-01", date('Y')."-12-31"]);
+                $diasNaoUteis = $diasNaoUteis->get();
+
+                return view('home', ['diasNaoUteis' => $diasNaoUteis]);
             }else{
                 $user = User::orderBy('name')->where('id', '=', Auth::user()->id)->update(['primeiroLogin' => 0]);
                 return redirect('/usuario/editar/'.Auth::user()->id)->with("login", "Primeiro Login Detectado, Altere Sua Senha!");

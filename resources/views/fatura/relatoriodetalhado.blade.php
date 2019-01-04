@@ -83,8 +83,9 @@
                                     <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
 
                                     <td>
-                                            <select style="resize:none; width: 150px;" class="custom-select" name="subcategoria" >
+                                            <select style="resize:none; width: 150px;" class="custom-select" name="subcategoria" id="subcategoriaID" >
                                                     <option slected value="tudo">Subcategoria</option>
+                                                    <option  value="NaoPossui">Não Possui</option>
                                                 @foreach ($subcategorias as $subcategoria)
                                                     <option value=" {{$subcategoria->subcategoriaID}} "> {{$subcategoria->subcategoriaNome}} </option>
                                                 @endforeach
@@ -173,7 +174,7 @@
 
                                 <td style="white-space:nowrap;"> {{$maskared}} </td>
                                 <td> {{$fatura->empresa}} </td>
-                                <td> {{$fatura->subcategoriaNome}} </td>
+                                <td> @if($fatura->subcategoriaNome != null) {{$fatura->subcategoriaNome}} @else Não Possui @endif </td>
 
                                 @php
                                     $dataDiario = new DateTime($fatura->diarioData);
@@ -192,7 +193,7 @@
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#modalEditar{{$fatura->protocoloCompleto}}" style="width:75px">Editar</button>
                                     @endif --}}
 
-                                    @if ($fatura->diarioData <= date('Y-m-d') && $fatura->situacaoNome != "Publicada" && $fatura->situacaoNome != "Apagada" && $fatura->situacaoNome == "Aceita")
+                                    @if ($fatura->diarioData <= date('Y-m-d') && $fatura->situacaoNome != "Publicada" && $fatura->situacaoNome != "Apagada" && $fatura->situacaoNome == "Aceita" && Gate::allows('administrador', Auth::user()))
                                         @php
                                             $modalPublicar = true;
                                         @endphp
@@ -346,10 +347,12 @@
 
     </div>
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function($) {
+
+            $("#subcategoriaID").select2();
 
             var dataBegin = "tudo";
             var dataEnd = "tudo";

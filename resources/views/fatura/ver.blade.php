@@ -118,7 +118,7 @@
 
                             <div class="form-group row">
                                     <div class="col-md-10">
-                                        <p>Subcategoria: <strong>{{$fatura->subcategoriaNome}} </strong> </p>
+                                        <p>Subcategoria: <strong> @if($fatura->subcategoriaNome != null) {{$fatura->subcategoriaNome}} @else Não Possui @endif </strong> </p>
                                     </div>
                             </div>
 

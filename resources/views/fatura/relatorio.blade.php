@@ -85,7 +85,7 @@
                                 @foreach ($subcategorias as $sub)
 
                                 <tr>
-                                    <td>{{$sub->subcategoriaNome}}</td>
+                                    <td> @if($sub->subcategoriaNome != null) {{$sub->subcategoriaNome}} @else Não Possui @endif </td>
                                     <td>{{$sub->quantidade}}</td>
                                     <td>{{$sub->total}}</td>
                                 </tr>

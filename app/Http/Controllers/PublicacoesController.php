@@ -17,6 +17,7 @@ use App\OrgaoRequisitante;
 use Illuminate\Support\Facades\Session;
 use DateTime;
 use Illuminate\Support\Collection;
+use App\Fatura;
 
 
 
@@ -168,7 +169,12 @@ class PublicacoesController extends Controller
         $publicacoes->select('publicacao.*', 'situacao.situacaoNome', 'diariodata.diarioData', 'diariodata.numeroDiario', 'users.name as nomeUsuario', 'orgaorequisitante.orgaoNome');
         $publicacoes = $publicacoes->paginate($this->paginacao);
 
-        return view('publicacao.listar', ['publicacoes' => $publicacoes, 'situacoes' => $situacoes, 'orgaos' => $orgaos]);
+        $faturas = Fatura::orderBy('protocoloCompleto');
+        $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+        $faturas->join('diariodata', 'diariodata.diarioDataID', 'fatura.diarioDataID');
+        $faturas->where('situacao.situacaoNome', '=', 'Aceita')->where('diariodata.diarioData', '<=', date('Y-m-d'));
+        $faturas = $faturas->get();
+        return view('publicacao.listar', ['publicacoes' => $publicacoes, 'situacoes' => $situacoes, 'orgaos' => $orgaos, 'faturas' => $faturas]);
 
         }else{
             return redirect('home');

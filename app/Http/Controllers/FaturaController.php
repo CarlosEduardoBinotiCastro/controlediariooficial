@@ -223,7 +223,6 @@ class FaturaController extends Controller
 
 
 
-
                 // "PhpOffice\PhpWord\Element\TextRun" textrun class
                 // "PhpOffice\PhpWord\Element\Text" text class
 
@@ -232,6 +231,7 @@ class FaturaController extends Controller
 
                 // ALTERA INFORMAÇÕES PERTINENTE AO TEXTO, TAIS COMO TAMANHO DE LETRA, ALINHAMENTO E TIPO DE FONTE
                 $contaParagrafos = 0;
+                $contaTexto = 0;
                 $passouTitulo = false;
                 // dd($arquivo);
                 try {
@@ -239,22 +239,22 @@ class FaturaController extends Controller
                     foreach($arquivo->getSections()[0]->getElements() as $txtRunOuTxt){
 
                         // Verifica se é o titulo, 1 pragrafo geralmente é o titulo, e centraliza o titulo
-                        // $txtRunOuTxt->paragraphStyle->setLineHeight(1.0);
-                        // dd($txtRunOuTxt->paragraphStyle->getLineHeight());
 
+                        if(!(get_class($txtRunOuTxt) == "PhpOffice\PhpWord\Element\TextBreak")){
 
+                            if($contaTexto == 0){
 
-                        if($contaParagrafos == 0){
+                                $txtRunOuTxt->fontStyle->bold = true;
+                                $txtRunOuTxt->paragraphStyle->alignment = "center";
+                            }else{
+                                // $txtRunOuTxt->paragraphStyle->spacing = 0;
+                                    $txtRunOuTxt->paragraphStyle->setSpaceAfter(0);
+                                    $txtRunOuTxt->paragraphStyle->setSpaceBefore(0);
+                                    $txtRunOuTxt->paragraphStyle->alignment = "both";
 
-                            $txtRunOuTxt->fontStyle->bold = true;
-                            $txtRunOuTxt->paragraphStyle->alignment = "center";
-                        }else{
-                            // $txtRunOuTxt->paragraphStyle->spacing = 0;
-                            $txtRunOuTxt->paragraphStyle->setSpaceAfter(0);
-                            $txtRunOuTxt->paragraphStyle->setSpaceBefore(0);
-                            $txtRunOuTxt->paragraphStyle->alignment = "both";
-                            // dd($txtRunOuTxt);
-                        }
+                                // dd($txtRunOuTxt);
+                            }
+
 
 
                         if(get_class($txtRunOuTxt) == "PhpOffice\PhpWord\Element\TextRun"){
@@ -265,20 +265,26 @@ class FaturaController extends Controller
                                 $txt->fontStyle->size = $fontSize;
 
                             }
+                            $contaTexto += 1;
                         }else{
 
                             if($txtRunOuTxt->getText() != null){
                                 $txtRunOuTxt->fontStyle->name = $fontFamily;
                                 $txtRunOuTxt->fontStyle->size = $fontSize;
+                                $contaTexto += 1;
                             }else{
 
                                 // elimina os espaços em branco dos paragrafos, menos o espaço entre o titulo e o texto.
                                 if(!$passouTitulo){
-                                    if($contaParagrafos >= 1 && $arquivo->getSections()[0]->getElements()[$contaParagrafos-1]->paragraphStyle->alignment != "center"){
+
+                                    // verifica se ja passou do titulo
+
+                                    if($contaTexto >= 1 ){
+                                        $passouTitulo = true;
+                                    }else{
                                         $removeLinha = $arquivo->getSections()[0]->getElements();
                                         unset($removeLinha[$contaParagrafos]);
                                         $arquivo->getSections()[0]->elements = $removeLinha;
-                                        $passouTitulo = true;
                                     }
                                 }else{
                                     $removeLinha = $arquivo->getSections()[0]->getElements();
@@ -286,9 +292,20 @@ class FaturaController extends Controller
                                     $arquivo->getSections()[0]->elements = $removeLinha;
                                 }
                             }
+
+
                         }
+
+                        $contaParagrafos += 1;
+                    }else{
+
+                        $removeLinha = $arquivo->getSections()[0]->getElements();
+                        unset($removeLinha[$contaParagrafos]);
+                        $arquivo->getSections()[0]->elements = $removeLinha;
                         $contaParagrafos += 1;
                     }
+
+                }
 
                     //ALTERA AS INFORMAÇÕES PERTINENTE A PAGINA, LARGURA DE MARGEM E TAMANHO DE PAPEL
 
@@ -296,6 +313,9 @@ class FaturaController extends Controller
                 $arquivo->getSections()[0]->getStyle()->setMarginLeft("0");
                 $arquivo->getSections()[0]->getStyle()->setMarginTop("0");
                 $arquivo->getSections()[0]->getStyle()->setMarginRight("0");
+                $arquivo->getSections()[0]->getStyle()->setColsNum(0);
+                $arquivo->getSections()[0]->getStyle()->setColsSpace(0);
+
 
                 $arquivo->getSections()[0]->getStyle()->paper->width = intval(567*$faturaConfig[0]->largura);  //dinamico em twip
                 $arquivo->getSections()[0]->getStyle()->setPageSizeW((string)intval(567*$faturaConfig[0]->largura)); //dinamico em twip
@@ -328,14 +348,25 @@ class FaturaController extends Controller
                 $documento->where('tipoID', '=', intval($filtro['tipoID']));
                 $documento = $documento->first();
 
-                $subcategoria = SubCategoria::orderBy('subcategoriaNome');
-                $subcategoria = $subcategoria->where('subcategoriaID', '=', intval($filtro['subcategoriaID']))->first();
+
+                if($filtro['subcategoriaID'] != "NaoPossui"){
+                    $subcategoria = SubCategoria::orderBy('subcategoriaNome');
+                    $subcategoria = $subcategoria->where('subcategoriaID', '=', intval($filtro['subcategoriaID']))->first();
+                }else{
+                    $subcategoria = null;
+                }
 
                 $diariosData = DiarioData::orderBy('diarioData', 'desc')->where('diarioData', '>', date('Y-m-d'))->where('diarioDataID', '=', $filtro['diarioDataID'])->first();
                 $data = new DateTime($diariosData->diarioData);
                 $data = $data->format('d/m/Y');
 
-                $infoArray = array('subcategoriaNome' => $subcategoria->subcategoriaNome, 'tipoDocumento' => $documento->tipoDocumento, 'diario' => 'N° '.$diariosData->numeroDiario.'   Data: '.$data);
+                if($subcategoria != null){
+                    $infoArray = array('subcategoriaNome' => $subcategoria->subcategoriaNome, 'tipoDocumento' => $documento->tipoDocumento, 'diario' => 'N° '.$diariosData->numeroDiario.'   Data: '.$data);
+                }else{
+                    $infoArray = array('subcategoriaNome' => "Não Possui", 'tipoDocumento' => $documento->tipoDocumento, 'diario' => 'N° '.$diariosData->numeroDiario.'   Data: '.$data);
+                }
+
+
                 $filtro += $infoArray;
 
                 // fim das informações
@@ -480,6 +511,9 @@ class FaturaController extends Controller
             $protocolo++;
             $this->verificaProtocolo($protocolo, $request);
         }else {
+            if($request->subcategoriaID == "NaoPossui"){
+                $request->subcategoriaID = null;
+            }
             DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'arquivoFormatado' => $this->fileFormatado, 'arquivoVisualizacao' => $this->fileVisualizado, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id]);
 
             $dir = $protocolo.date('Y').'FAT';
@@ -752,7 +786,7 @@ class FaturaController extends Controller
             $faturas = Fatura::orderBy('dataEnvioFatura', 'desc');
             $faturas->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
 
-            $faturas->join('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
+            $faturas->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
             // Filtros
@@ -781,13 +815,20 @@ class FaturaController extends Controller
                 }
 
                 if($subcategoria != null && $subcategoria != "tudo"){
+
+                    if($subcategoria == "NaoPossui"){
+                        $faturas->where('fatura.subcategoriaID', '=', null);
+                    }else{
                         $faturas->where('fatura.subcategoriaID', '=', $subcategoria);
+                    }
+
                 }
 
             // Fim Filtros
 
             $faturas->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome');
             $faturas = $faturas->paginate($this->paginacao);
+
             return view('fatura.listar', ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
 
             }else{
@@ -858,8 +899,8 @@ class FaturaController extends Controller
             $fatura = Fatura::orderBy('diariodata.diarioData', 'desc');
             $fatura->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
             $fatura->join('users as usuario', 'usuario.id', 'fatura.usuarioID');
-            $fatura->join('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
-            $fatura->join('tipodocumento', 'tipodocumento.tipoID', 'subcategoria.tipoID');
+            $fatura->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
+            $fatura->join('tipodocumento', 'tipodocumento.tipoID', 'fatura.tipoID');
             $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
             $fatura->where('protocoloCompleto', '=', $protocolo);
             $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome');
@@ -1173,11 +1214,11 @@ class FaturaController extends Controller
             $situacoes = Situacao::orderBy('situacaoNome')->get();
 
             $faturas = Fatura::orderBy('protocolo');
-            $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+            $faturas->leftJoin('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
             $faturas->whereBetween('dataEnvioFatura',  [$dataInicio . ' 00:00:01', $dataFinal . ' 23:59:59']);
 
             $subcategorias = SubCategoria::orderBy('subcategoriaNome');
-            $subcategorias->join('fatura', 'fatura.subcategoriaID', 'subcategoria.subcategoriaID');
+            $subcategorias->rightJoin('fatura', 'fatura.subcategoriaID', 'subcategoria.subcategoriaID');
             $subcategorias->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
             $subcategorias->selectRaw('SUM(fatura.valor) as total');
             $subcategorias->selectRaw('COUNT(*) as quantidade, subcategoria.subcategoriaNome');
@@ -1220,6 +1261,7 @@ class FaturaController extends Controller
             $subcategorias = $subcategorias->get();
             $valorTotal = $valorTotal->first();
 
+
             if($dataInicio != null && $dataFinal != null && $situacao != null){
                 return view('fatura.relatorio',  ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'valorTotal' => $valorTotal, 'situacoes' => $situacoes]);
             }else{
@@ -1254,30 +1296,35 @@ class FaturaController extends Controller
 
         // Gerando uma string unica para a centimetragem
         foreach ($formatada->getSections()[0]->getElements() as $txtRunOuTxt) {
-            if(get_class($txtRunOuTxt) == "PhpOffice\PhpWord\Element\TextRun" ){
-                 if($contaTexto == 0){
-                 }else{
-                    //Aqui Adiciona o Texto
-                     foreach ($txtRunOuTxt->getElements() as $txt) {
-                        $texto = $texto.$txt->getText();
-                     }
-                     $texto =$texto."\n";
-                 }
-            }else{
-                if($txtRunOuTxt->getText() == "" || $txtRunOuTxt->getText() == " "){
-                     // texto vazio de vez em quando
-                }else{
-                 if($contaTexto == 0){
+
+
+
+
+                if(get_class($txtRunOuTxt) == "PhpOffice\PhpWord\Element\TextRun" ){
+                     if($contaTexto == 0){
                      }else{
                         //Aqui Adiciona o Texto
-                        $texto = $texto.$txtRunOuTxt->getText();
-                        $texto = $texto."\n";
-
+                         foreach ($txtRunOuTxt->getElements() as $txt) {
+                            $texto = $texto.$txt->getText();
+                         }
+                         $texto =$texto."\n";
                      }
+                }else{
+                    if($txtRunOuTxt->getText() == "" || $txtRunOuTxt->getText() == " "){
+                         // texto vazio de vez em quando
+                    }else{
+                     if($contaTexto == 0){
+                         }else{
+                            //Aqui Adiciona o Texto
+                            $texto = $texto.$txtRunOuTxt->getText();
+                            $texto = $texto."\n";
+
+                         }
+                    }
                 }
+                $contaTexto += 1;
             }
-            $contaTexto += 1;
-        }
+
         // fim da geração da string
 
         //carrega informações de configuração da fatura
@@ -1369,7 +1416,7 @@ class FaturaController extends Controller
             $faturas = Fatura::orderBy('dataEnvioFatura', 'desc');
             $faturas->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
 
-            $faturas->join('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
+            $faturas->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
             // Filtros
@@ -1398,7 +1445,11 @@ class FaturaController extends Controller
                 }
 
                 if($subcategoria != null && $subcategoria != "tudo"){
+                    if($subcategoria == "NaoPossui"){
+                        $faturas->where('fatura.subcategoriaID', '=', null);
+                    }else{
                         $faturas->where('fatura.subcategoriaID', '=', $subcategoria);
+                    }
                 }
 
             // Fim Filtros
@@ -1473,4 +1524,9 @@ class FaturaController extends Controller
             return redirect()->route('relatorioDetalhado', ['cpfCnpj' => $cpfCnpj, 'protocolo' => $protocolo, 'dataInicial' => $dataInicial ,'dataFinal' => $dataFinal, 'situacao' => $situacao, 'empresa' => $empresa, 'subcategoria' => $subcategoria]);
         }
     }
+
+    public function chamarAceita(){
+        return redirect()->route('listarFaturas', ['cpfCnpj' => "tudo", 'protocolo' => "tudo", 'diario' => "tudo", 'situacao' => "Aceita", 'empresa' => "tudo", 'subcategoria' => "tudo"]);
+    }
+
 }

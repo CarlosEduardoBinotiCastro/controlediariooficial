@@ -33,6 +33,22 @@
 <br/><br/>
 
 
+<div id="Erro" class="container">
+        <div class="col-md-8 offset-md-2">
+            @if(sizeof($faturas) > 0 && Gate::allows('cadernoFatura', Auth::user()))
+                <br>
+                <div class="form-group mb-0 alert alert-success" style="font-size:20px">
+                    Existem Faturas aceitas e esperando para serem publicadas !
+                    <a href="/fatura/irParaAceita" class="btn btn-success" style="margin-left:2%;">Ver Faturas</a>
+                </div>
+
+            @endif
+            </div>
+        </div>
+</div>
+
+<br><br>
+
 <div class="container">
 
         <br>
