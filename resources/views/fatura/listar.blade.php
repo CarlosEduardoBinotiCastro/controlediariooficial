@@ -148,25 +148,40 @@
                                 <td> {{$fatura->empresa}} </td>
                                 <td> @if($fatura->subcategoriaNome != null) {{$fatura->subcategoriaNome}} @else Não Possui @endif</td>
 
-                                @php
-                                    $dataDiario = new DateTime($fatura->diarioData);
-                                    $dataDiario = $dataDiario->format('d/m/Y');
-                                @endphp
-                                <td> N° {{$fatura->numeroDiario}} <br> {{$dataDiario}} </td>
-
+                                @if($fatura->diarioData != null)
+                                    @php
+                                        $dataDiario = new DateTime($fatura->diarioData);
+                                        $dataDiario = $dataDiario->format('d/m/Y');
+                                    @endphp
+                                    <td> N° {{$fatura->numeroDiario}} <br> {{$dataDiario}} </td>
+                                @else
+                                    <td> Não Possui </td>
+                                @endif
                                 {{-- Trocar a Cor da situação de acordo com o valor --}}
                                 {{-- <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;">{{$fatura->situacaoNome}}</p> --}}
 
-                                <td> {{$fatura->situacaoNome}} </td>
+                                @if($fatura->situacaoNome == "Enviada")
+                                    <td> <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                @else
+                                    @if($fatura->situacaoNome == "Aceita")
+                                        <td> <p  class="form-control" style="text-align:center; border-color:darkgreen; background-color:transparent; color:darkgreen;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                    @else
+                                        @if($fatura->situacaoNome == "Publicada")
+                                            <td> <p  class="form-control" style="text-align:center; border-color:limegreen; background-color:transparent; color:limegreen;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                        @else
+                                            @if($fatura->situacaoNome == "Rejeitada")
+                                                <td> <p  class="form-control" style="text-align:center; border-color:orange; background-color:transparent; color:orange;"><b>{{$fatura->situacaoNome}}</b> </b> </p> </td>
+                                            @else
+                                                {{-- APAGADA --}}
+                                                <td> <p  class="form-control" style="text-align:center; border-color:red; background-color:transparent; color:red;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                            @endif
+                                        @endif
+                                    @endif
+                                @endif
 
                                 <td style="white-space:nowrap;">
 
                                     <a href='/fatura/ver/{{$fatura->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
-
-                                    {{-- @if ($fatura->situacaoNome == "Apagada" || date('Y-m-d') >= $fatura->diarioData)
-                                    @else
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalEditar{{$fatura->protocoloCompleto}}" style="width:75px">Editar</button>
-                                    @endif --}}
 
                                     @if ($fatura->diarioData <= date('Y-m-d') && $fatura->situacaoNome != "Publicada" && $fatura->situacaoNome != "Apagada" && $fatura->situacaoNome == "Aceita" && Gate::allows('administrador', Auth::user()))
                                         @php
@@ -234,7 +249,7 @@
                                 <form action="/fatura/publicar" method="POST">
                                     @csrf
                                     <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
-                                    {{-- situacao publicada --}}
+                                    <input type="hidden" name="voltar" value="sim">
                                     <div class='modal fade' id="modalPublicar{{$fatura->protocoloCompleto}}" role='dialog'>
                                             <div class='modal-dialog row justify-content-center'>
                                                 <div class="modal-content">
@@ -243,19 +258,52 @@
                                                         </div>
                                                         <div class="modal-body">
 
+                                                            <div id="divLimite{{$fatura->protocoloCompleto}}" style="display:none;">
+                                                                    <br>
+                                                                    <h4 id="textoLimite{{$fatura->protocoloCompleto}}" style="text-align:center; color:red;">Texto</h4>
+                                                                    <br>
+                                                            </div>
+
                                                             <p> Segue protocolo de fatura:</p>
                                                             <p> <b> {{$fatura->protocoloCompleto}} </b> </p>
 
-                                                            <p> Ao realizar esta ação você confirma que a fatura foi publicada no diário especificado.</p>
+                                                            <p> Ao realizar esta ação você confirma que a fatura será publicada no diário especificado.</p>
+
+
+                                                            {{-- Escolher o Diário --}}
+                                                            <div class="form-group row">
+                                                                    @php
+                                                                        $diariosDatas = json_decode($diarioDatas);
+                                                                    @endphp
+                                                                        <label for="diario" class="col-md-4 col-form-label text-md-right">{{ __('Diário') }} <span style="color:red;">*</span></label>
+                                                                        <div class="col-md-6">
+                                                                            <select id="diario{{$fatura->protocoloCompleto}}" class="custom-select  mr-sm-2" name="diarioDataID" required onchange='dataLimite("diario{{$fatura->protocoloCompleto}}", "divBotao{{$fatura->protocoloCompleto}}", "divLabel{{$fatura->protocoloCompleto}}", "divLimite{{$fatura->protocoloCompleto}}", "textoLimite{{$fatura->protocoloCompleto}}", "labelText{{$fatura->protocoloCompleto}}")'>
+                                                                                    <option slected value=""> Escolha o Diário </option>
+                                                                                    @foreach ($diariosDatas as $item)
+                                                                                        @php
+                                                                                            $data = new DateTime($item->diarioData);
+                                                                                            $data = $data->format('d/m/Y');
+                                                                                        @endphp
+                                                                                        <option  value="{{$item->diarioDataID}} "> N°{{$item->numeroDiario}} Data: {{$data}} </option>
+                                                                                    @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
 
                                                             <p><strong>Deseja realmente Publicar?</strong></p>
 
                                                             <div>
-                                                                    <div style="float: left;" class="offset-md-3">
-                                                                        <div>
-                                                                            <input type="submit" class="btn btn-success" name="publicar" value="Confirmar Publicar">
-                                                                        </div>
+                                                                    <div style="float: left; display:none;" class="offset-md-3" id="divBotao{{$fatura->protocoloCompleto}}">
+                                                                            <div>
+                                                                                <input type="submit" class="btn btn-success" name="publicar" value="Confirmar Publicar">
+                                                                            </div>
                                                                     </div>
+
+                                                                    <div style="float: left;" class="offset-md-3" id="divLabel{{$fatura->protocoloCompleto}}">
+                                                                        <Strong><span style="color:red; white-space:nowrap;" id="labelText{{$fatura->protocoloCompleto}}">Escolha um Diário!</span></Strong>
+                                                                    </div>
+
                                                                     <div style="float: left; margin-left:2%;">
                                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                                                             Voltar
@@ -328,6 +376,7 @@
 
         $(document).ready(function($) {
 
+            var diariosDiasLimites = <?php echo $diarioDatas; ?>;
             var data = "tudo";
 
             $("#subcategoriaID").select2();
@@ -355,6 +404,72 @@
                 $('#diario').val(data);
                 $('#formFiltro').submit();
             });
+
+
+
+            dataLimite = function(idDiario, idBotao, idLabel, idDivLimite, idTextoLimite, idTextLabel){
+             if(!$("#"+idDiario).val() == ""){
+                diariosDiasLimites.forEach(element => {
+
+                    if(element.diarioDataID == $("#"+idDiario).val()){
+
+                        var podeEnviar = false;
+
+                        var horaEnvio =  "<?php echo Auth::user()->horaEnvio; ?>";
+                        horaEnvio = horaEnvio.split(':');
+                        var horaAtual = "<?php echo date('H:i:s') ?>"
+
+                        horaAtual = horaAtual.split(':');
+
+                        var dataAtual = ("<?php echo date('Y-m-d') ?>").split('-');
+                        var dataLimite = element.diaLimite.split('-');
+
+                        dataAtual = new Date(dataAtual[0], dataAtual[1]-1, dataAtual[2]);
+                        dataLimite = new Date(dataLimite[0], dataLimite[1]-1, dataLimite[2]);
+
+                        if(dataLimite.getTime() > dataAtual.getTime()){
+                            podeEnviar = true;
+                        }else{
+                            if(dataLimite.getTime() == dataAtual.getTime()){
+
+                                if(horaAtual[0] > horaEnvio[0]){
+                                    podeEnviar = false;
+                                }else if(horaAtual[0] == horaEnvio[0]){
+                                    if(horaAtual[1] > horaEnvio[1]){
+                                        podeEnviar = false;
+                                    }else{
+                                        podeEnviar = true;
+                                    }
+                                }else{
+                                    podeEnviar = true;
+                                }
+                            }
+                        }
+                        $("#"+idDivLimite).css('display', 'block');
+                        dataLimite = element.diaLimite.split('-');
+
+
+                        if(podeEnviar){
+                            $('#'+idLabel).css('display', 'none');
+                            $('#'+idBotao).css('display', 'block');
+                            $("#"+idTextoLimite).text('Para esse diário, você pode enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' ás: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
+                        }else{
+                            $('#'+idBotao).css('display', 'none');
+                            $('#'+idLabel).css('display', 'block');
+                            $("#"+idTextoLimite).text('Para esse diário, você poderia enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' ás: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
+                            $('#'+idTextLabel).text('Horário de envio ultrapassado!');
+                        }
+
+                    }
+                });
+             }else{
+                $("#"+idDivLimite).css('display', 'none');
+                $('#'+idBotao).css('display', 'none');
+                $('#'+idLabel).css('display', 'block');
+                $("#"+idTextLabel).text('Escolha um Diário');
+             }
+
+         }
 
         });
 

@@ -175,7 +175,25 @@
             <td> {{$publicacao->orgaoNome}}</td>
             <td> {{$dataEnviado}} </td>
             <td style="text-transform:capitalize;"> {{$publicacao->nomeUsuario}} </td>
-            <td> {{$publicacao->situacaoNome}} </td>
+
+            @if($publicacao->situacaoNome == "Enviada")
+                                    <td> <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;"><b>{{$publicacao->situacaoNome}}</b> </p> </td>
+                                @else
+                                    @if($publicacao->situacaoNome == "Aceita")
+                                        <td> <p  class="form-control" style="text-align:center; border-color:darkgreen; background-color:transparent; color:darkgreen;"><b>{{$publicacao->situacaoNome}}</b> </p> </td>
+                                    @else
+                                        @if($publicacao->situacaoNome == "Publicada")
+                                            <td> <p  class="form-control" style="text-align:center; border-color:limegreen; background-color:transparent; color:limegreen;"><b>{{$publicacao->situacaoNome}}</b> </p> </td>
+                                        @else
+                                            @if($publicacao->situacaoNome == "Rejeitada")
+                                                <td> <p  class="form-control" style="text-align:center; border-color:orange; background-color:transparent; color:orange;"><b>{{$publicacao->situacaoNome}}</b> </b> </p> </td>
+                                            @else
+                                                {{-- APAGADA --}}
+                                                <td> <p  class="form-control" style="text-align:center; border-color:red; background-color:transparent; color:red;"><b>{{$publicacao->situacaoNome}}</b> </p> </td>
+                                            @endif
+                                        @endif
+                                    @endif
+                                @endif
 
             <td style="white-space:nowrap;">
                 <a href='/publicacao/ver/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>

@@ -117,26 +117,6 @@
                         </div>
 
 
-                        {{-- Escolher o Diário --}}
-                        <div class="form-group row">
-                            @php
-                                $diariosDatas = json_decode($diarioDatas);
-                            @endphp
-                                <label for="diario" class="col-md-4 col-form-label text-md-right">{{ __('Diário') }} <span style="color:red;">*</span></label>
-                                <div class="col-md-6">
-                                    <select id="diario" class="custom-select  mr-sm-2" name="diarioDataID" required onchange="dataLimite()">
-                                            <option slected value=""> Escolha o Diário </option>
-                                            @foreach ($diariosDatas as $item)
-                                                @php
-                                                    $data = new DateTime($item->diarioData);
-                                                    $data = $data->format('d/m/Y');
-                                                @endphp
-                                                <option  value="{{$item->diarioDataID}} "> N°{{$item->numeroDiario}} Data: {{$data}} </option>
-                                            @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
                             <br>
 
                             <div class="col-md-6 offset-md-4">
@@ -169,15 +149,11 @@
 
                                 {{-- Relecionado com o lado do botão --}}
 
-                                    <div class="col-md-4" id="divBotao" style="display:none;">
+                                    <div class="col-md-4" id="divBotao">
                                         <br>
                                         <input id="btnEnviar" type="submit" class="btn btn-success" value="Formatar Fatura">
                                     </div>
-                                    <div class="col-md-4" id="divLabel">
-                                        <br>
-                                        <Strong><span style="color:red; white-space:nowrap;" id="labelText">Escolha um Diário!</span></Strong>
 
-                                    </div>
                             </div>
                     </form>
                 </div>
@@ -251,11 +227,11 @@
 
         $("#termo").prop('checked', false);
         $("#btnEnviar").prop('disabled', true);
-        $("#diario").val("");
+        // $("#diario").val("");
 
         $("#subcategoriaID").val("");
 
-        var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
+        // var diariosDiasLimites = <?php // echo $diarioDatas; ?>;
         var subcategorias = <?php  echo $subcategorias; ?>;
 
         $(document).on('change','#tipoDoc',function(){
@@ -309,69 +285,6 @@
             }
         });
 
-        dataLimite = function(){
-             if(!$("#diario").val() == ""){
-                diariosDiasLimites.forEach(element => {
-
-                    if(element.diarioDataID == $("#diario").val()){
-
-                        var podeEnviar = false;
-
-                        var horaEnvio =  "<?php  echo $horaEnvio; ?>";
-                        horaEnvio = horaEnvio.split(':');
-                        var horaAtual = "<?php echo date('H:i:s') ?>"
-
-                        horaAtual = horaAtual.split(':');
-
-                        var dataAtual = ("<?php echo date('Y-m-d') ?>").split('-');
-                        var dataLimite = element.diaLimite.split('-');
-
-                        dataAtual = new Date(dataAtual[0], dataAtual[1]-1, dataAtual[2]);
-                        dataLimite = new Date(dataLimite[0], dataLimite[1]-1, dataLimite[2]);
-
-                        if(dataLimite.getTime() > dataAtual.getTime()){
-                            podeEnviar = true;
-                        }else{
-                            if(dataLimite.getTime() == dataAtual.getTime()){
-
-                                if(horaAtual[0] > horaEnvio[0]){
-                                    podeEnviar = false;
-                                }else if(horaAtual[0] == horaEnvio[0]){
-                                    if(horaAtual[1] > horaEnvio[1]){
-                                        podeEnviar = false;
-                                    }else{
-                                        podeEnviar = true;
-                                    }
-                                }else{
-                                    podeEnviar = true;
-                                }
-                            }
-                        }
-                        $("#divLimite").css('display', 'block');
-                        dataLimite = element.diaLimite.split('-');
-
-
-                        if(podeEnviar){
-                            $('#divLabel').css('display', 'none');
-                            $('#divBotao').css('display', 'block');
-                            $("#textoLimite").text('Para esse diário, você pode enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' ás: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
-                        }else{
-                            $('#divBotao').css('display', 'none');
-                            $('#divLabel').css('display', 'block');
-                            $("#textoLimite").text('Para esse diário, você poderia enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' ás: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
-                            $('#labelText').text('Horário de envio ultrapassado!');
-                        }
-
-                    }
-                });
-             }else{
-                $("#divLimite").css('display', 'none');
-                $('#divBotao').css('display', 'none');
-                $('#divLabel').css('display', 'block');
-                $("#textoLimite").text('Escolha um Diário');
-             }
-
-         }
 
          $("#termo").click(function () {
             if($("#btnEnviar").is(":disabled")){

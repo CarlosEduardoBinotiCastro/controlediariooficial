@@ -23,15 +23,6 @@
 
                 <div class="card-body">
 
-                        @php
-                            $data = new DateTime($dataLimite);
-                            $data = $data->format('d/m/Y');
-                        @endphp
-                        <div id="divLimite">
-                                <br>
-                                <h4 id="textoLimite" style="text-align:center; color:red;">Você pode confirmar até o dia {{$data}} às {{Auth::user()->horaEnvio}} </h4>
-                                <br>
-                            </div>
 
                     <form id="form" action="/fatura/salvar" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -40,7 +31,6 @@
                         <input type="hidden" name="arquivoVisualizado" value=" {{$arquivoVisualizacao}} ">
                         <input type="hidden" name="subcategoriaID" value=" {{$fatura['subcategoriaID']}} ">
                         <input type="hidden" name="tipoID" value=" {{$fatura['tipoID']}} ">
-                        <input type="hidden" name="diarioDataID" value=" {{$fatura['diarioDataID']}} ">
 
                         <div class="form-group row">
                                 <label for="requisitante" class="col-md-4 col-form-label text-md-right">{{ __('Requisitante') }}</label>
@@ -120,14 +110,6 @@
                                 <input id="subcategoria" type="text" class="form-control{{ $errors->has('subcategoria') ? ' is-invalid' : '' }}" name="subcategoria" value="{{$fatura['subcategoriaNome']}}"  readonly autofocus>
                                 </div>
                             </div>
-
-                            <div class="form-group row">
-                                    <label for="diario" class="col-md-4 col-form-label text-md-right">{{ __('Diário') }}</label>
-
-                                    <div class="col-md-6">
-                                    <input id="diario" type="text" class="form-control{{ $errors->has('diario') ? ' is-invalid' : '' }}" name="diario" value="{{$fatura['diario']}}"  readonly autofocus>
-                                    </div>
-                                </div>
 
                                 <div class="form-group row">
                                         <div class="col-md-6 offset-md-4">
@@ -302,44 +284,7 @@
             }
 
             $('#form').submit(function (e){
-
-                var horaEnvio = "<?php  echo Auth::user()->horaEnvio; ?>";
-                var horaAtual = "<?php  echo date('H:i:s'); ?>";
-                var podeEnviar = false;
-
-                var dataAtual = ("<?php echo date('Y-m-d') ?>").split('-');
-                var dataLimite = ("<?php echo $dataLimite ?>").split('-');
-
-                dataAtual = new Date(dataAtual[0], dataAtual[1]-1, dataAtual[2]);
-                dataLimite = new Date(dataLimite[0], dataLimite[1]-1, dataLimite[2]);
-
-                horaAtual = horaAtual.split(':');
-                horaEnvio = horaEnvio.split(':');
-
-                if(dataLimite.getTime() > dataAtual.getTime()){
-                            podeEnviar = true;
-                }else{
-                    if(dataLimite.getTime() == dataAtual.getTime()){
-                        if(horaAtual[0] > horaEnvio[0]){
-                            podeEnviar = false;
-                        }else if(horaAtual[0] == horaEnvio[0]){
-                            if(horaAtual[1] > horaEnvio[1]){
-                                podeEnviar = false;
-                            }else{
-                                podeEnviar = true;
-                            }
-                        }else{
-                            podeEnviar = true;
-                        }
-                    }
-                }
-
-                if(podeEnviar){
-                    $("#numeroDoc").unmask();
-                }else{
-                    alert('Hora de Envio Ultrapassada');
-                    e.preventDefault();
-                }
+                $("#numeroDoc").unmask();
             });
 
     });

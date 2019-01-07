@@ -81,7 +81,7 @@ class FaturaController extends Controller
             if(Gate::allows('cadernoFatura', Auth::user())){
                 $horaEnvio = Auth::user()->horaEnvio;
 
-                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
+                //Copiar $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
                 $confFatura = DB::table('configuracaofatura')->first();
 
                 if($confFatura->cadernoID != null){
@@ -102,34 +102,8 @@ class FaturaController extends Controller
                     return redirect('home')->with('erro', 'Nenhum caderno vinculado com faturas! Vincule nas configurações da fatura.');
                 }
 
+                return view('fatura.cadastrar', [ 'config' => $confFatura, 'documentos' => $documentos, 'subcategorias' => $subcategorias]);
 
-                // vericar datas limites para os diários
-
-                $diariosDatasLimites = Collection::make([]);
-
-                foreach($diariosDatas as $diario){
-
-                    $diaDiarioDate = new DateTime($diario->diarioData);
-                    $verificaDiaUtil = false;
-                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
-
-                    do{
-                        $finalDeSemana = date('N', strtotime($diaUtil));
-                        if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
-                            if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
-                                $verificaDiaUtil = true;
-                                $diariosDatasLimites->push(['diarioData' => $diario->diarioData, 'diarioDataID' => $diario->diarioDataID, 'numeroDiario' => $diario->numeroDiario, 'diaLimite' => $diaUtil]);
-                            }else{
-
-                            }
-                        }
-
-                        $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
-                    }while($verificaDiaUtil == false);
-
-                }
-                // fim dos limites para os diarios
-                return view('fatura.cadastrar', [ 'diarioDatas' => json_encode($diariosDatasLimites), 'horaEnvio' => $horaEnvio, 'config' => $confFatura, 'documentos' => $documentos, 'subcategorias' => $subcategorias]);
             }else{
                 return redirect('home');
             }
@@ -171,9 +145,9 @@ class FaturaController extends Controller
             //     return redirect()->back()->with('erro', "Nome do requisitante não pode possuir caracteres especiais!")->withInput();
             // break;
 
-            case 4:
-                return redirect()->back()->with('erro', "Data de envio ultrapassada!")->withInput();
-            break;
+            // case 4:
+            //     return redirect()->back()->with('erro', "Data de envio ultrapassada!")->withInput();
+            // break;
 
             case 5:
                 return redirect()->back()->with('erro', "Fatura Já enviada Para o Sistema!")->withInput();
@@ -356,16 +330,21 @@ class FaturaController extends Controller
                     $subcategoria = null;
                 }
 
-                $diariosData = DiarioData::orderBy('diarioData', 'desc')->where('diarioData', '>', date('Y-m-d'))->where('diarioDataID', '=', $filtro['diarioDataID'])->first();
-                $data = new DateTime($diariosData->diarioData);
-                $data = $data->format('d/m/Y');
+                // $diariosData = DiarioData::orderBy('diarioData', 'desc')->where('diarioData', '>', date('Y-m-d'))->where('diarioDataID', '=', $filtro['diarioDataID'])->first();
+                // $data = new DateTime($diariosData->diarioData);
+                // $data = $data->format('d/m/Y');
+
+                // if($subcategoria != null){
+                //     $infoArray = array('subcategoriaNome' => $subcategoria->subcategoriaNome, 'tipoDocumento' => $documento->tipoDocumento, 'diario' => 'N° '.$diariosData->numeroDiario.'   Data: '.$data);
+                // }else{
+                //     $infoArray = array('subcategoriaNome' => "Não Possui", 'tipoDocumento' => $documento->tipoDocumento, 'diario' => 'N° '.$diariosData->numeroDiario.'   Data: '.$data);
+                // }
 
                 if($subcategoria != null){
-                    $infoArray = array('subcategoriaNome' => $subcategoria->subcategoriaNome, 'tipoDocumento' => $documento->tipoDocumento, 'diario' => 'N° '.$diariosData->numeroDiario.'   Data: '.$data);
+                    $infoArray = array('subcategoriaNome' => $subcategoria->subcategoriaNome, 'tipoDocumento' => $documento->tipoDocumento);
                 }else{
-                    $infoArray = array('subcategoriaNome' => "Não Possui", 'tipoDocumento' => $documento->tipoDocumento, 'diario' => 'N° '.$diariosData->numeroDiario.'   Data: '.$data);
+                    $infoArray = array('subcategoriaNome' => "Não Possui", 'tipoDocumento' => $documento->tipoDocumento);
                 }
-
 
                 $filtro += $infoArray;
 
@@ -374,21 +353,21 @@ class FaturaController extends Controller
 
                 // dia limite
 
-                    $diaDiarioDate = new DateTime($diariosData->diarioData);
-                    $verificaDiaUtil = false;
-                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
-                    do{
-                        $finalDeSemana = date('N', strtotime($diaUtil));
-                        if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
-                            if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
-                                $verificaDiaUtil = true;
-                            }else{
-                            }
-                        }
-                        if($verificaDiaUtil == false){
-                            $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
-                        }
-                    }while($verificaDiaUtil == false);
+                    // $diaDiarioDate = new DateTime($diariosData->diarioData);
+                    // $verificaDiaUtil = false;
+                    // $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
+                    // do{
+                    //     $finalDeSemana = date('N', strtotime($diaUtil));
+                    //     if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                    //         if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                    //             $verificaDiaUtil = true;
+                    //         }else{
+                    //         }
+                    //     }
+                    //     if($verificaDiaUtil == false){
+                    //         $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                    //     }
+                    // }while($verificaDiaUtil == false);
 
                 // fim do limite
 
@@ -398,7 +377,8 @@ class FaturaController extends Controller
                 $fileVisualizacao = $info['file'];
 
                 // necessario criar um json para se entendido pelo javascript
-                return view('fatura.formatada', ['formatada' => $arquivo, 'faturaConfig' => $faturaConfig, 'fatura' => $filtro, 'dataLimite' => $diaUtil, 'centimetragem' => $centimetragem, 'arquivoVisualizacao' => $fileVisualizacao]);
+                // return view('fatura.formatada', ['formatada' => $arquivo, 'faturaConfig' => $faturaConfig, 'fatura' => $filtro, 'dataLimite' => $diaUtil, 'centimetragem' => $centimetragem, 'arquivoVisualizacao' => $fileVisualizacao]);
+                return view('fatura.formatada', ['formatada' => $arquivo, 'faturaConfig' => $faturaConfig, 'fatura' => $filtro, 'centimetragem' => $centimetragem, 'arquivoVisualizacao' => $fileVisualizacao]);
 
                 } catch (\Exception $e) {
 
@@ -438,9 +418,9 @@ class FaturaController extends Controller
                  return redirect('home')->with('erro', "Valores da fatura não são consistentes!");
             break;
 
-            case 4:
-                return redirect('home')->with('erro', "Data de envio ultrapassada!");
-            break;
+            // case 4:
+            //     return redirect('home')->with('erro', "Data de envio ultrapassada!");
+            // break;
 
             case 5:
                 return redirect('home')->with('erro', "Fatura Já enviada Para o Sistema!");
@@ -579,35 +559,35 @@ class FaturaController extends Controller
 
         // Verificação do lado do servidor sobre a data do envio par o diario !
 
-        $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request->diarioDataID)->first();
+        // $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request->diarioDataID)->first();
 
-        $diaDiarioDate = new DateTime($diarioTemp->diarioData);
-        $verificaDiaUtil = false;
-        $diaUtil = date('Y-m-d', strtotime($diaDiarioDate->format('Y-m-d')));
+        // $diaDiarioDate = new DateTime($diarioTemp->diarioData);
+        // $verificaDiaUtil = false;
+        // $diaUtil = date('Y-m-d', strtotime($diaDiarioDate->format('Y-m-d')));
 
-        do{
-            $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
-            $finalDeSemana = date('N', strtotime($diaUtil));
-            if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
-                if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
-                    $verificaDiaUtil = true;
-                }else{
-                }
-            }
+        // do{
+        //     $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+        //     $finalDeSemana = date('N', strtotime($diaUtil));
+        //     if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+        //         if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+        //             $verificaDiaUtil = true;
+        //         }else{
+        //         }
+        //     }
 
-        }while($verificaDiaUtil == false);
+        // }while($verificaDiaUtil == false);
 
-        if($diaUtil <= date('Y-m-d')){
-            if($diaUtil == date('Y-m-d')){
-                if(Auth::user()->horaEnvio >= date('H:i:s')){
+        // if($diaUtil <= date('Y-m-d')){
+        //     if($diaUtil == date('Y-m-d')){
+        //         if(Auth::user()->horaEnvio >= date('H:i:s')){
 
-                }else{
-                    return 4;
-                }
-            }else{
-                return 4;
-            }
-        }
+        //         }else{
+        //             return 4;
+        //         }
+        //     }else{
+        //         return 4;
+        //     }
+        // }
 
         // fim da verificação do lado do servidor
 
@@ -784,7 +764,7 @@ class FaturaController extends Controller
             $subcategorias = DB::table('subcategoria')->orderBy('subcategoriaNome')->get();
 
             $faturas = Fatura::orderBy('dataEnvioFatura', 'desc');
-            $faturas->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+            $faturas->leftJoin('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
 
             $faturas->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
@@ -829,7 +809,43 @@ class FaturaController extends Controller
             $faturas->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome');
             $faturas = $faturas->paginate($this->paginacao);
 
-            return view('fatura.listar', ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+
+            // Verifica se a fatura foi Aceita e carrega as datas
+            $faturasAceita = Fatura::orderBy('dataEnvioFatura', 'desc');
+            $faturasAceita->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+
+            if($faturasAceita->where('situacao.situacaoNome', '=', 'Aceita')->count() && ($situacao == "tudo" || $situacao == "Aceita" || $situacao == null)){
+
+                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
+                // vericar datas limites para os diários
+                $diariosDatasLimites = Collection::make([]);
+
+                foreach($diariosDatas as $diario){
+
+                    $diaDiarioDate = new DateTime($diario->diarioData);
+                    $verificaDiaUtil = false;
+                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
+
+                    do{
+                        $finalDeSemana = date('N', strtotime($diaUtil));
+                        if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                            if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                                $verificaDiaUtil = true;
+                                $diariosDatasLimites->push(['diarioData' => $diario->diarioData, 'diarioDataID' => $diario->diarioDataID, 'numeroDiario' => $diario->numeroDiario, 'diaLimite' => $diaUtil]);
+                            }else{
+
+                            }
+                        }
+
+                        $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                    }while($verificaDiaUtil == false);
+                }
+                return view('fatura.listar', [ "diarioDatas" => json_encode($diariosDatasLimites), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+            }
+
+            // fim da verificação
+
+            return view('fatura.listar', ["diarioDatas" => json_encode("vazio"), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
 
             }else{
                 return redirect('home');
@@ -897,7 +913,7 @@ class FaturaController extends Controller
             if(Gate::allows('cadernoFatura', Auth::user())){
 
             $fatura = Fatura::orderBy('diariodata.diarioData', 'desc');
-            $fatura->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+            $fatura->leftJoin('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
             $fatura->join('users as usuario', 'usuario.id', 'fatura.usuarioID');
             $fatura->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $fatura->join('tipodocumento', 'tipodocumento.tipoID', 'fatura.tipoID');
@@ -917,11 +933,46 @@ class FaturaController extends Controller
 
             $faturaConfig = DB::table('configuracaofatura')->get();
 
+            // Verifica se a fatura foi Aceita e carrega as datas
+            if($fatura->situacaoNome == "Aceita"){
+
+                $horaEnvio = Auth::user()->horaEnvio;
+                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
+                // vericar datas limites para os diários
+                $diariosDatasLimites = Collection::make([]);
+
+                foreach($diariosDatas as $diario){
+
+                    $diaDiarioDate = new DateTime($diario->diarioData);
+                    $verificaDiaUtil = false;
+                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
+
+                    do{
+                        $finalDeSemana = date('N', strtotime($diaUtil));
+                        if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                            if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                                $verificaDiaUtil = true;
+                                $diariosDatasLimites->push(['diarioData' => $diario->diarioData, 'diarioDataID' => $diario->diarioDataID, 'numeroDiario' => $diario->numeroDiario, 'diaLimite' => $diaUtil]);
+                            }else{
+
+                            }
+                        }
+
+                        $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                    }while($verificaDiaUtil == false);
+                }
+                // fim dos limites para os diarios
+
+                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
+                return view('fatura.ver', ['diarioDatas' => json_encode($diariosDatasLimites), 'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
+            }
+
             if($fatura->situacaoNome != "Apagada"){
                 $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
-                return view('fatura.ver', ['fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
+                return view('fatura.ver', ['diarioDatas' => json_encode("vazio"),'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
+
             }else{
-                return view('fatura.ver', ['fatura' => $fatura, 'faturaConfig' => $faturaConfig]);
+                return view('fatura.ver', ['diarioDatas' => json_encode("vazio"),'fatura' => $fatura, 'faturaConfig' => $faturaConfig]);
             }
 
         }else{
@@ -1018,8 +1069,15 @@ class FaturaController extends Controller
 
         try {
 
-            $fatura->update(['situacaoID' => 1]);
-            return redirect()->back()->with('sucesso', 'Fatura Publicada!');
+            // verifica se veio da pagina de listar ou ver
+
+            if(isset($request->voltar)){
+                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID]);
+                return redirect()->back()->with('sucesso', 'Fatura Publicada!');
+            }else{
+                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID]);
+                return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Fatura Publicada!');
+            }
 
         } catch (\Exception $e) {
 
@@ -1414,7 +1472,7 @@ class FaturaController extends Controller
             $subcategorias = DB::table('subcategoria')->orderBy('subcategoriaNome')->get();
 
             $faturas = Fatura::orderBy('dataEnvioFatura', 'desc');
-            $faturas->join('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+            $faturas->leftJoin('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
 
             $faturas->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
@@ -1436,8 +1494,11 @@ class FaturaController extends Controller
                     $faturas->where('cpfCnpj', '=', $cpfCnpj);
                 }
 
+                // if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
+                //     $faturas->whereBetween('diariodata.diarioData',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
+                // }
                 if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
-                    $faturas->whereBetween('diariodata.diarioData',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
+                    $faturas->whereBetween('fatura.dataEnvioFatura',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
                 }
 
                 if($situacao != null && $situacao != "tudo"){
@@ -1454,9 +1515,47 @@ class FaturaController extends Controller
 
             // Fim Filtros
 
+
             $faturas->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome');
             $faturas = $faturas->paginate($this->paginacao);
-            return view('fatura.relatoriodetalhado', ['faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+
+
+            // Verifica se a fatura foi Aceita e carrega as datas
+            $faturasAceita = Fatura::orderBy('dataEnvioFatura', 'desc');
+            $faturasAceita->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+
+            if($faturasAceita->where('situacao.situacaoNome', '=', 'Aceita')->count() && ($situacao == "tudo" || $situacao == "Aceita" || $situacao == null)){
+
+                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
+                // vericar datas limites para os diários
+                $diariosDatasLimites = Collection::make([]);
+
+                foreach($diariosDatas as $diario){
+
+                    $diaDiarioDate = new DateTime($diario->diarioData);
+                    $verificaDiaUtil = false;
+                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
+
+                    do{
+                        $finalDeSemana = date('N', strtotime($diaUtil));
+                        if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                            if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                                $verificaDiaUtil = true;
+                                $diariosDatasLimites->push(['diarioData' => $diario->diarioData, 'diarioDataID' => $diario->diarioDataID, 'numeroDiario' => $diario->numeroDiario, 'diaLimite' => $diaUtil]);
+                            }else{
+
+                            }
+                        }
+
+                        $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                    }while($verificaDiaUtil == false);
+                }
+                return view('fatura.relatoriodetalhado', [ "diarioDatas" => json_encode($diariosDatasLimites), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+            }
+
+            // fim da verificação
+
+            return view('fatura.relatoriodetalhado', ["diarioDatas" => json_encode("vazio"),'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
 
             }else{
                 return redirect('home');

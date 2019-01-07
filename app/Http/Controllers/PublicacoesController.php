@@ -171,8 +171,7 @@ class PublicacoesController extends Controller
 
         $faturas = Fatura::orderBy('protocoloCompleto');
         $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
-        $faturas->join('diariodata', 'diariodata.diarioDataID', 'fatura.diarioDataID');
-        $faturas->where('situacao.situacaoNome', '=', 'Aceita')->where('diariodata.diarioData', '<=', date('Y-m-d'));
+        $faturas->where('situacao.situacaoNome', '=', 'Aceita');
         $faturas = $faturas->get();
         return view('publicacao.listar', ['publicacoes' => $publicacoes, 'situacoes' => $situacoes, 'orgaos' => $orgaos, 'faturas' => $faturas]);
 
