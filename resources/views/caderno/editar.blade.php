@@ -73,7 +73,7 @@
 
         <div class="row"> <a id="btnAdicionar" style="margin-left: 3%; margin-bottom: 2%; color: white;" class="btn btn-primary">Adicionar Matéria</a>
             <div class="col-md-4" >
-                    <select class="custom-select mr-sm-2" name="idDocumentos" id="idDocumentos" required>
+                    <select class="custom-select mr-sm-2" name="idDocumentos" id="idDocumentos">
                     @foreach ($documentos as $documento)
                     <option value="{{$documento->tipoID}}">{{$documento->tipoDocumento}}</option>
                     @endforeach
@@ -126,7 +126,7 @@
             errorClass: "my-error-class"
         });
 
-        var documentosCaderno = <?php  echo $documentosCaderno ?>;
+        var documentosCaderno = <?php echo $documentosCaderno ?>;
         var documentosList = [];
 
         // Carregar as informações na tabela

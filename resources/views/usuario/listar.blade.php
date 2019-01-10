@@ -87,6 +87,7 @@
 
                        <thead>
                        <th>Nome</th>
+                       <th>Órgão</th>
                        <th>e-mail</th>
                        <th>CPF</th>
                        <th>Status</th>
@@ -109,6 +110,7 @@
          <tr>
 
             <td style="text-transform:capitalize;">{{$usuario->name}}</td>
+            <td>{{$usuario->orgao}}</td>
             <td>{{$usuario->email}}</td>
             <td>{{$usuario->cpf}}</td>
             <td>{{$usuario->descricao}}</td>

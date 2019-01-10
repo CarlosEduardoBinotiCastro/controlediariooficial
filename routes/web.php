@@ -119,11 +119,11 @@ Route::group(['prefix' => 'usuario'], function () {
 Route::group(['prefix' => 'publicacao'], function () {
 
     Route::get('/listar', 'PublicacoesController@listar');
-    Route::get('/listar/usuario/{nome}/protocolo/{protocolo}/diario/{diario}/situacao/{situacao}/orgao/{orgao}', ['as' => 'listarPublicacoes', 'uses' => 'PublicacoesController@listar']);
+    Route::get('/listar/usuario/{nome}/protocolo/{protocolo}/diario/{diario}/situacao/{situacao}/orgao/{orgao}/titulo/{titulo}', ['as' => 'listarPublicacoes', 'uses' => 'PublicacoesController@listar']);
     Route::post('/chamarListar', 'PublicacoesController@listarFiltro');
 
     Route::get('/apagadas', 'PublicacoesController@apagadas');
-    Route::get('/apagadas/usuario/{nome}/protocolo/{protocolo}/diario/{diario}/orgao/{orgao}', ['as' => 'listarApagadas', 'uses' => 'PublicacoesController@apagadas']);
+    Route::get('/apagadas/usuario/{nome}/protocolo/{protocolo}/diario/{diario}/orgao/{orgao}/titulo/{titulo}', ['as' => 'listarApagadas', 'uses' => 'PublicacoesController@apagadas']);
     Route::post('/chamarApagadas', 'PublicacoesController@listarFiltroApagadas');
 
     Route::get('/cadastrar', 'PublicacoesController@cadastrar');
@@ -135,6 +135,8 @@ Route::group(['prefix' => 'publicacao'], function () {
     Route::post('/aceitar', 'PublicacoesController@aceitar');
     Route::post('/apagar', 'PublicacoesController@apagar');
     Route::post('/rejeitar', 'PublicacoesController@rejeitar');
+
+    Route::get('/gerarComprovante/{protocolo}', 'PublicacoesController@gerarComprovante');
 });
 
 
@@ -180,6 +182,14 @@ Route::group(['prefix' => 'fatura'], function () {
 
     // chamar aceitas
     Route::get('/irParaAceita', 'FaturaController@chamarAceita');
+
+
+    // Area de teste
+    Route::get('/testeDoc', 'FaturaController@convertToText');
+
+    Route::get('/cabecalho', 'FaturaController@cabecalho');
+    Route::get('/gerarComprovante/{protocoloID}', 'FaturaController@gerarComprovante');
+
 });
 
 
@@ -191,4 +201,23 @@ Route::group(['prefix' => 'subcategoria'], function () {
     Route::get('/deletar/{subcategoriaID}', 'SubCategoriaController@deletar');
     Route::get('/editar/{subcategoriaID}', 'SubCategoriaController@editar');
     Route::post('/salvar', 'SubCategoriaController@salvar');
+});
+
+
+
+
+// Rotas Relacionadas com Comunicado
+
+Route::group(['prefix' => 'comunicado'], function () {
+
+    Route::get('/listar', 'ComunicadoController@listar');
+    Route::get('/listar/{filtro}', ['as' => 'listarComunicados', 'uses' => 'ComunicadoController@listar']);
+    Route::post('/chamarListar', 'ComunicadoController@listarFiltro');
+
+    Route::get('/cadastrar', 'ComunicadoController@cadastrar');
+    Route::get('/deletar/{comunicadoID}', 'ComunicadoController@deletar');
+    Route::get('/editar/{comunicadoID}', 'ComunicadoController@editar');
+    Route::post('/salvar', 'ComunicadoController@salvar');
+
+    Route::post('/visualizarComunicado', 'ComunicadoController@visualizarComunicado');
 });

@@ -29,7 +29,7 @@
 <br/><br/>
 
 
-<div class="container">
+<div class="container col-md-10">
 
         <br>
         <div class="row">
@@ -47,12 +47,12 @@
 
                             <tbody>
                                 <tr style="background-color:transparent;">
-                                    <td style="border-color:transparent;"><input style="resize:none; width: 150px;" type="text" class="form-control" name="cpfCnpj" placeholder="N° CPF / CNPJ"></td>
-                                    <td><input style="resize:none; width: 150px;" type="text" class="form-control" name="empresa" placeholder="Empresa"></td>
-                                    <td><input style="resize:none; width: 150px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
+                                    <td style="border-color:transparent;"><input style="resize:none; width: 180px;" type="text" class="form-control" name="cpfCnpj" placeholder="N° CPF / CNPJ"></td>
+                                    <td><input style="resize:none; width: 180px;" type="text" class="form-control" name="empresa" placeholder="Empresa"></td>
+                                    <td><input style="resize:none; width: 180px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
 
                                     <td>
-                                            <select style="resize:none; width: 150px;" class="custom-select" name="subcategoria" id="subcategoriaID" >
+                                            <select style="resize:none; width: 180px;" class="custom-select" name="subcategoria" id="subcategoriaID" >
                                                     <option slected value="tudo">Subcategoria</option>
                                                     <option  value="NaoPossui">Não Possui</option>
                                                 @foreach ($subcategorias as $subcategoria)
@@ -62,7 +62,7 @@
                                     </td>
 
                                     <td>
-                                            <input style="resize:none; width: 150px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
+                                            <input style="resize:none; width: 180px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
                                             <input type="hidden" name="diario" value="tudo" id="diario">
                                         </td>
 
@@ -157,9 +157,8 @@
                                 @else
                                     <td> Não Possui </td>
                                 @endif
-                                {{-- Trocar a Cor da situação de acordo com o valor --}}
-                                {{-- <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;">{{$fatura->situacaoNome}}</p> --}}
 
+                                {{-- Trocar a Cor da situação de acordo com o valor --}}
                                 @if($fatura->situacaoNome == "Enviada")
                                     <td> <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
                                 @else
@@ -167,13 +166,13 @@
                                         <td> <p  class="form-control" style="text-align:center; border-color:darkgreen; background-color:transparent; color:darkgreen;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
                                     @else
                                         @if($fatura->situacaoNome == "Publicada")
-                                            <td> <p  class="form-control" style="text-align:center; border-color:limegreen; background-color:transparent; color:limegreen;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                            <td> <p  class="form-control" style="text-align:center; border-color:limegreen; background-color:transparent; color:limegreen;"> <b> {{$fatura->situacaoNome}} </b> </p> </td>
                                         @else
                                             @if($fatura->situacaoNome == "Rejeitada")
                                                 <td> <p  class="form-control" style="text-align:center; border-color:orange; background-color:transparent; color:orange;"><b>{{$fatura->situacaoNome}}</b> </b> </p> </td>
                                             @else
                                                 {{-- APAGADA --}}
-                                                <td> <p  class="form-control" style="text-align:center; border-color:red; background-color:transparent; color:red;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                                <td> <p  class="form-control" style="text-align:center; border-color:red; background-color:transparent; color:red;"><b> {{$fatura->situacaoNome}} </b> </p> </td>
                                             @endif
                                         @endif
                                     @endif

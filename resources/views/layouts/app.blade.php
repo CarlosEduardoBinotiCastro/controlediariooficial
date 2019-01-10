@@ -136,11 +136,16 @@
 
         <nav class="navbar navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
                 <a href="/home"><img src="/logo" alt="" width="60" height="50"></a>
+                <a class="nav-link" href="/home" style="float:left; color:black;">Home<span class="sr-only">(current)</span></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse offset-md-1" id="navbarCollapse">
+
+
+
+                <div class="collapse navbar-collapse " id="navbarCollapse">
                   <ul class="navbar-nav mr-auto">
+
 
                         @if (!Gate::allows('faturas', Auth::user()))
 
@@ -200,7 +205,7 @@
                     @endcan
 
                     <div class="nav-item" >
-                        <a style="color:black;"  class="nav-link" style="float:right;" href="#">Mensagens <span class="sr-only">(current)</span></a>
+                        <a style="color:black;"  class="nav-link" style="float:right;" href="/comunicado/listar">Comunicados <span class="sr-only">(current)</span></a>
                     </div>
 
 
@@ -229,6 +234,48 @@
             </nav>
 
         <main class="py-4" id="corpo">
+
+            @auth
+
+                @php
+                    $comunicadoController = new App\Http\Controllers\ComunicadoController;
+                    $comunicados = $comunicadoController->verificarComunicados();
+                @endphp
+
+
+                <div id="Erro" class="container">
+                        <div class="col-md-12 offset-md-0">
+                            @if(sizeof($comunicados))
+                                <br>
+                                @foreach ($comunicados as $comunicado)
+                                    <form action="/comunicado/visualizarComunicado"  method="POST">
+                                        @csrf
+                                        <input type="hidden" name="comunicadoID" value=" {{$comunicado->comunicadoID}} ">
+                                        <div class="form-group alert alert-primary" style="font-size:20px">
+                                            <div style=" background-color:lightblue; text-align:center; border-radius:10px; "> <h2 style="font-weight:bold;">Comunicado</h2></div>
+
+                                            <b>{{$comunicado->tituloMensagem}}</b>
+                                            <br>
+                                            {{$comunicado->mensagem}}
+                                            {{-- <a href="/fatura/irParaAceita" class="btn btn-success" style="margin-left:2%;">Ver Faturas</a> --}}
+                                            <br>
+                                            <div class=" form-group row mb-0 justify-content-end" style="margin-right:1%;">
+                                                <button type="submit" class="btn btn-primary"> Entendi </button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                    <br>
+                                @endforeach
+                            @endif
+                            </div>
+                    </div>
+
+            @endauth
+
+
+
+
             @yield('content')
         </main>
         {{-- <a class="btn" href="/fatura/caixaDeTexto">Teste</a> --}}

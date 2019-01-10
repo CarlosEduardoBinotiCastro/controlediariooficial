@@ -261,7 +261,7 @@
 
                                 <div class="form-group row">
                                         <div class="col-md-6 offset-md-4">
-                                            <a href="#" class="btn btn-primary" style="width:150px; float:right;">Comprovante Envio</a>
+                                            <a href="/fatura/gerarComprovante/{{$fatura->protocoloCompleto}}"  target="_blank" class="btn btn-primary" style="width:150px; float:right;">Comprovante Envio</a>
                                         </div>
                                 </div>
 

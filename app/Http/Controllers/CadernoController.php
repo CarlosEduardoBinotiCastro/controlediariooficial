@@ -128,6 +128,8 @@ class CadernoController extends Controller
 
             $caderno = Caderno::orderBy('cadernoNome')->where('cadernoID', '=', $id)->first();
 
+
+
             return view('caderno.editar', ['caderno' => $caderno, 'documentos' => $documentos, 'documentosCaderno' => $documentosCaderno]);
         }else{
             return redirect()->route('home');

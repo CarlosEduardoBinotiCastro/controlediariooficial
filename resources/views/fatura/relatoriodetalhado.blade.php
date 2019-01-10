@@ -29,7 +29,7 @@
 <br/><br/>
 
 
-<div class="container">
+<div class="container col-md-10">
 
         <br>
         <div class="row">
@@ -78,12 +78,12 @@
 
                             <tbody>
                                 <tr style="background-color:transparent;">
-                                    <td style="border-color:transparent;"><input style="resize:none; width: 200px;" type="text" class="form-control" name="cpfCnpj" placeholder="N° CPF / CNPJ"></td>
-                                    <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="empresa" placeholder="Empresa"></td>
-                                    <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
+                                    <td style="border-color:transparent;"><input style="resize:none; width: 225px;" type="text" class="form-control" name="cpfCnpj" placeholder="N° CPF / CNPJ"></td>
+                                    <td><input style="resize:none; width: 225px;" type="text" class="form-control" name="empresa" placeholder="Empresa"></td>
+                                    <td><input style="resize:none; width: 225px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
 
                                     <td>
-                                            <select style="resize:none; width: 150px;" class="custom-select" name="subcategoria" id="subcategoriaID" >
+                                            <select style="resize:none; width: 200px;" class="custom-select" name="subcategoria" id="subcategoriaID" >
                                                     <option slected value="tudo">Subcategoria</option>
                                                     <option  value="NaoPossui">Não Possui</option>
                                                 @foreach ($subcategorias as $subcategoria)
@@ -186,6 +186,7 @@
                                     <td> Não Possui </td>
                                 @endif
 
+                                {{-- Verifica a situação e muda a cor do texto --}}
                                 @if($fatura->situacaoNome == "Enviada")
                                     <td> <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
                                 @else

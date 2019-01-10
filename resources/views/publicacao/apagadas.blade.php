@@ -52,7 +52,7 @@
 <br/><br/>
 
 
-<div class="container">
+<div class="container col-md-10">
 
         <br>
         <div class="row">
@@ -71,22 +71,24 @@
 
                                 <tbody>
                                     <tr style="background-color:transparent;">
-                                        <td style="border-color:transparent;"><input style="resize:none; width: 200px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usuário"></td>
-                                        <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
-                                        <td>
-                                            <select style="resize:none; width: 200px;" class="custom-select" name="orgao" placeholder="Órgão Requisitante">
-                                                <option slected value="tudo">Órgãos</option>
-                                                @foreach ($orgaos as $orgao)
-                                                    <option value=" {{$orgao->orgaoID}}"> {{$orgao->orgaoNome}} </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input style="resize:none; width: 200px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
-                                            <input type="hidden" name="diario" value="tudo" id="diario">
-                                        </td>
+                                        <td style="border-color:transparent;"><input style="resize:none; width: 175px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usário"></td>
+                                    <td><input style="resize:none; width: 175px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
+                                    <td><input style="resize:none; width: 175px;" type="text" class="form-control" name="titulo" placeholder="Título"></td>
+                                    <td>
+                                        <select style="resize:none; width: 175px;" class="custom-select" name="orgao" placeholder="Órgão Requisitante">
+                                            <option slected value="tudo">Órgãos</option>
+                                            @foreach ($orgaos as $orgao)
+                                                <option value=" {{$orgao->orgaoID}}"> {{$orgao->orgaoNome}} </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input style="resize:none; width: 175px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
+                                        <input type="hidden" name="diario" value="tudo" id="diario">
+                                    </td>
                                         {{-- compensar tamanho do filtro --}}
                                         <td style="resize:none; width: 100px;"></td>
+
                                         <td style="border-color:transparent;"><button class="btn btn-primary" id="filtrar">Filtrar</button></td>
                                     </tr>
                                 </tbody>
@@ -101,6 +103,7 @@
                                 <tbody>
                                     <tr style="background-color:transparent;">
                                         <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
+                                        <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="titulo" placeholder="Título"></td>
                                         <td>
                                             <input style="resize:none; width: 200px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
                                             <input type="hidden" name="diario" value="tudo" id="diario">
@@ -129,7 +132,7 @@
                        <thead>
                        <th>Protocolo</th>
                        <th>Título</th>
-                       <th>Órgão Requisitante</th>
+                       <th>Órgão</th>
                        <th>Enviado Por</th>
                        <th>Apagado Por</th>
                        <th>Diário</th>

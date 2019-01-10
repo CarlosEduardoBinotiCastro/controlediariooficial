@@ -113,7 +113,7 @@
                                     </div>
                                     <br>
                                     <div class="col-md-12">
-                                            <span style="color:red;">*</span>
+                                        Descrição <span style="color:red;">*</span>
                                         <textarea name="descricao" cols="60" rows="4" class="form-control" placeholder="Entre com a descrição do arquivo!" style="resize: none;" value="{{$publicacao->descricao}}" required>{{$publicacao->descricao}}</textarea>
                                     </div>
                                 </div>
@@ -192,7 +192,7 @@
         <div class="loader offset-md-5"></div>
     </div>
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function($) {
@@ -201,6 +201,8 @@
             var enviar = true;
             var diaLimite;
             var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
+
+            $("#documentoSelect").select2();
 
             $('#form').validate({
                 errorClass: "my-error-class"
@@ -211,12 +213,16 @@
             });
 
             $('#file').bind('change', function() {
+
                 if( ((this.files[0].size / 1024)/1024) > 30){
                     canUpload = false;
                 }else{
                     canUpload = true;
                 }
+
             });
+
+
 
             // verifica se o diario atual carregado pode editar pela data
 
@@ -287,8 +293,12 @@
             $("#manterArquivo").prop('checked', true);
 
 
+            if($("#manterArquivo").prop("checked")){
+                canUpload = true;
+            }
 
             $("#manterArquivo").click(function () {
+
                 if($("#divInputArquivo").css('display') == 'none'){
                     $('#divInputArquivo').prop('disabled', false);
                     $('#divInputArquivo').css('display', 'block');
@@ -300,6 +310,7 @@
                         $('#divBotao').css('display', 'block');
                     }
                 }else{
+                    canUpload = true;
                     $('#divInputArquivo').css('display', 'none');
                     $('#divInputArquivo').prop('disabled', true);
                     $('#divInputArquivo-error').text('');

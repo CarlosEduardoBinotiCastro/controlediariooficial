@@ -20,6 +20,9 @@ use App\Situacao;
 use Illuminate\Support\Facades\Session;
 use PhpOffice\PhpWord\Style\Line;
 use TPDF;
+use COM;
+use BPDF;
+
 
 
 class FaturaController extends Controller
@@ -463,7 +466,7 @@ class FaturaController extends Controller
 
                     DB::beginTransaction();
                     $this->verificaProtocolo($protocolo, $request);
-                    return redirect('/home')->with('sucesso', 'Fatura Enviada com Sucesso');
+                    return redirect('/fatura/listar')->with('sucesso', 'Fatura Enviada com Sucesso');
                 } catch (\Exception $e) {
 
                     if(file_exists(storage_path("app/".$this->fileOriginal))){
@@ -1403,7 +1406,7 @@ class FaturaController extends Controller
         $pdf::SetFont('times', '', 10,'', 'false');
 
         //espaçamento do texto;
-        $pdf::setCellHeightRatio(1);
+        $pdf::setCellHeightRatio(1.15);
 
         // Escreve o conteudo na celula para o calcula, primeiro parametro, largura (em milimetros), segundo, altura (em 0 ele gera dinamicamente).
         $width = ($faturaConfig[0]->largura*10);
@@ -1628,4 +1631,154 @@ class FaturaController extends Controller
         return redirect()->route('listarFaturas', ['cpfCnpj' => "tudo", 'protocolo' => "tudo", 'diario' => "tudo", 'situacao' => "Aceita", 'empresa' => "tudo", 'subcategoria' => "tudo"]);
     }
 
+
+
+    public function gerarComprovante($protocolo){
+
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+
+            $fatura = Fatura::orderBy('diariodata.diarioData', 'desc');
+            $fatura->leftJoin('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+            $fatura->join('users as usuario', 'usuario.id', 'fatura.usuarioID');
+            $fatura->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
+            $fatura->join('tipodocumento', 'tipodocumento.tipoID', 'fatura.tipoID');
+            $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
+            $fatura->where('protocoloCompleto', '=', $protocolo);
+            $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome');
+            $fatura = $fatura->first();
+
+            if($fatura != null){
+
+                // foto do cabeçalho do comprovante
+                $path = storage_path("app/"."top.jpg");
+
+                $pdf = BPDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+                $pdf->setPaper('a4', 'portrait')->loadView('fatura.comprovante', ['fatura' => $fatura, 'path' => $path]);
+
+                return $pdf->stream('comprovante.pdf');
+
+            }else{
+                return redirect('home')->with('erro', 'Protocolo de fatura não existente');
+            }
+
+        }else{
+
+            return redirect('home')->with('erro', 'Você não tem permissão para isso!');
+
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Teste Zone
+
+    private function read_doc($filePath) {
+        $fileHandle = fopen($filePath, "r");
+        $line = @fread($fileHandle, filesize($filePath));
+        $lines = explode(chr(0x0D),$line);
+        $outtext = "";
+
+        foreach($lines as $thisline)
+          {
+
+            $pos = strpos($thisline, chr(0x00));
+
+            if (($pos !== FALSE)||(strlen($thisline)==0))
+              {
+
+              } else {
+
+                $outtext .= $thisline." ";
+              }
+
+          }
+
+         $outtext = preg_replace("/[^a-zA-Z0-9\s\,\.\-\n\r\t@\/\_\(\)]/","",$outtext);
+
+         return $outtext;
+    }
+
+    public function convertToText() {
+
+        $filePath = "C:/xampp/htdocs/controlediariooficial/public/testedeimpressao.doc";
+        // $arquivo = \PhpOffice\PhpWord\IOFactory::load($filePath, 'Word2007');
+
+        // $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($arquivo, "Word2007");
+        // $objectWriter->save("C:/xampp/htdocs/controlediariooficial/public/teste.docx");
+
+        if(isset($filePath) && !file_exists($filePath)) {
+            return "File Not exists";
+        }
+
+        $fileArray = pathinfo($filePath);
+        $file_ext  = $fileArray['extension'];
+        if($file_ext == "doc")
+        {
+            if($file_ext == "doc") {
+                return $this->read_doc($filePath);
+            }
+        } else {
+            return "Invalid File Type";
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

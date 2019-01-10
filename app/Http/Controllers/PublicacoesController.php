@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Session;
 use DateTime;
 use Illuminate\Support\Collection;
 use App\Fatura;
+use BPDF;
 
 
 
@@ -52,21 +53,28 @@ class PublicacoesController extends Controller
             $diario = "tudo";
         }
 
+        if($request->titulo != null){
+            $titulo = $request->titulo;
+            $titulo = str_replace('/', '¨', $titulo);
+        }else{
+            $titulo = "tudo";
+        }
+
         if($request->orgao != null){
             $orgao = $request->orgao;
         }else{
             $orgao = "tudo";
         }
 
-        if(($diario == "tudo") && ($nome == "tudo") && ($protocolo == "tudo") && ($orgao == "tudo")){
+        if(($diario == "tudo") && ($nome == "tudo") && ($protocolo == "tudo") && ($orgao == "tudo") && ($titulo == "tudo")){
             return redirect('publicacao/apagadas');
         }else{
-            return redirect()->route('listarApagadas', ['nome' => $nome, 'protocolo' => $protocolo, 'diario' => $diario, 'orgao' => $orgao]);
+            return redirect()->route('listarApagadas', ['nome' => $nome, 'protocolo' => $protocolo, 'diario' => $diario, 'orgao' => $orgao, 'titulo' => $titulo]);
         }
 
     }
 
-    public function apagadas($nome = null, $protocolo = null, $diario = null, $orgao = null){
+    public function apagadas($nome = null, $protocolo = null, $diario = null, $orgao = null, $titulo = null){
         if(!Gate::allows('faturas', Auth::user())){
         $publicacoes = Publicacao::orderBy('protocoloAno', 'desc')->orderBy('protocolo', 'desc');
         $orgaos = OrgaoRequisitante::orderBy('orgaoNome')->get();
@@ -97,6 +105,14 @@ class PublicacoesController extends Controller
             $publicacoes->where('diariodata.diarioData', '=', $diario);
         }
 
+        if($titulo != null && $titulo != "tudo"){
+            $titulo = str_replace('¨', '/', $titulo);
+            $arrayPalavras = explode(' ', $titulo);
+            foreach ($arrayPalavras as $palavra) {
+                $publicacoes->where('publicacao.titulo', 'like', '%' . $palavra . '%');
+            }
+        }
+
         if($orgao != null && $orgao != "tudo"){
             $publicacoes->where('orgaorequisitante.orgaoID', '=', $orgao);
         }
@@ -118,7 +134,7 @@ class PublicacoesController extends Controller
     }
 
 
-    public function listar($nome = null, $protocolo = null, $diario = null, $situacao = null, $orgao = null){
+    public function listar($nome = null, $protocolo = null, $diario = null, $situacao = null, $orgao = null, $titulo = null){
 
         if(!Gate::allows('faturas', Auth::user())){
 
@@ -137,6 +153,15 @@ class PublicacoesController extends Controller
             $arrayPalavras = explode(' ', $nome);
             foreach ($arrayPalavras as $palavra) {
                 $publicacoes->where('users.name', 'like', '%' . $palavra . '%');
+            }
+        }
+
+        if($titulo != null && $titulo != "tudo"){
+            $titulo = str_replace('¨', '/', $titulo);
+
+            $arrayPalavras = explode(' ', $titulo);
+            foreach ($arrayPalavras as $palavra) {
+                $publicacoes->where('publicacao.titulo', 'like', '%' . $palavra . '%');
             }
         }
 
@@ -201,6 +226,13 @@ class PublicacoesController extends Controller
             $diario = "tudo";
         }
 
+        if($request->titulo != null){
+            $titulo = $request->titulo;
+            $titulo = str_replace('/', '¨', $titulo);
+        }else{
+            $titulo = "tudo";
+        }
+
         if($request->situacao == "tudo" ){
             $situacao = "tudo";
         }else{
@@ -214,10 +246,10 @@ class PublicacoesController extends Controller
         }
 
 
-        if(($diario == "tudo") && ($nome == "tudo") && ($protocolo == "tudo") && ($situacao == "tudo") && ($orgao == "tudo")){
+        if(($diario == "tudo") && ($nome == "tudo") && ($protocolo == "tudo") && ($situacao == "tudo") && ($orgao == "tudo") && ($titulo == "tudo")){
             return redirect('publicacao/listar');
         }else{
-            return redirect()->route('listarPublicacoes', ['nome' => $nome, 'protocolo' => $protocolo, 'diario' => $diario, 'situacao' => $situacao, 'orgao' => $orgao]);
+            return redirect()->route('listarPublicacoes', ['nome' => $nome, 'protocolo' => $protocolo, 'diario' => $diario, 'situacao' => $situacao, 'orgao' => $orgao, 'titulo' => $titulo]);
         }
 
     }
@@ -333,13 +365,18 @@ class PublicacoesController extends Controller
                     try {
                         DB::beginTransaction();
                         if(!isset($request->manterArquivo)){
+
                             $this->fileName =  Auth::user()->id.date('Y-m-d-H-i-s').".".pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
                             $request->arquivo->storeAs("", $this->fileName);
-                            DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao]);
+
+                            DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4]);
                         }else{
-                            DB::table('publicacao')->where('protocolo', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao]);
+
+                            DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4]);
                         }
+
                         DB::commit();
+
                         Session::forget('protocoloEditar');
 
                         return redirect('/home')->with('sucesso', 'Publicação Editada com Sucesso');
@@ -802,4 +839,73 @@ class PublicacoesController extends Controller
         $publicacao->update(['situacaoID' => 5, 'rejeitadaDescricao' => $request->descricao]);
         return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Publicação Rejeitada!');
     }
+
+
+    public function gerarComprovante($protocolo){
+
+        if(!Gate::allows('faturas', Auth::user())){
+
+            if($protocolo != null){
+                if(strlen($protocolo) > 7){
+                    $protocoloCompleto = $protocolo;
+                }else{
+                    $protocoloCompleto = null;
+                }
+            }
+
+            // Verifica se essa publicação foi apagada
+
+            $usuarioIDApagou = Publicacao::orderBy('protocoloAno', 'desc');
+            $usuarioIDApagou->where('protocoloCompleto', '=', $protocoloCompleto);
+            $usuarioIDApagou = $usuarioIDApagou->first();
+
+
+            //verifica se a publicação é nula!
+            //se não, verifica se o usuario é comum e esta tentando entrar com protocolo de uma publicação que não é dele
+
+            if($usuarioIDApagou != null){
+                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $usuarioIDApagou->usuarioID){
+                    return redirect('/home')->with('erro', 'Você não tem permissão!');
+                  }
+                // Busca todos os dados da visualização
+
+                $publicacao = Publicacao::orderBy('protocoloAno', 'desc')->orderBy('protocolo', 'desc');
+
+                if($usuarioIDApagou->usuarioIDApagou != null){
+                    $publicacao->join('users as apagado', 'apagado.id', 'publicacao.usuarioIDApagou');
+                }
+
+                $publicacao->join('users as criado', 'criado.id', 'publicacao.usuarioID');
+                $publicacao->join('diariodata', 'diariodata.diarioDataID', 'publicacao.diarioDataID');
+                $publicacao->join('situacao', 'situacao.situacaoID', 'publicacao.situacaoID');
+                $publicacao->join('caderno', 'caderno.cadernoID', 'publicacao.cadernoID');
+                $publicacao->join('tipodocumento', 'tipodocumento.tipoID', 'publicacao.tipoID');
+                $publicacao->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'criado.orgaoID');
+                $publicacao->where('protocoloCompleto', '=', $protocoloCompleto);
+                if($usuarioIDApagou->usuarioIDApagou != null){
+                    $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'apagado.name as nomeUsuarioApagado', 'orgaorequisitante.orgaoNome');
+                }else{
+                    $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'orgaorequisitante.orgaoNome');
+                }
+                $publicacao = $publicacao->first();
+
+                 // foto do cabeçalho do comprovante
+                $path = storage_path("app/"."top.jpg");
+
+                $pdf = BPDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+                $pdf->setPaper('a4', 'portrait')->loadView('publicacao.comprovante', ['publicacao' => $publicacao, 'path' => $path]);
+
+                return $pdf->stream('comprovante.pdf');
+
+            }else{
+                return redirect('/home')->with('erro', 'Não existe publicação com esse protocolo!');
+            }
+
+        }else{
+            return redirect('/home')->with('erro', 'Você não tem permissão!');
+        }
+    }
+
+
 }

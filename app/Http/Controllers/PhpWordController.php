@@ -15,7 +15,7 @@ public function criarTemplate(){
 
     $newSection = $wordTest->addSection();
     $titulo = "Escreva seu titulo";
-    $desc1 = "Escreva Aqui o conteúdo de forma corrida, sem delimitações de margem e caixas de texto, utilizando caracteres remetentes a linguagem portuguesa. Ao copiar colar textos com muitos paragrafos, verifique se o texto segue os pafrões do template.";
+    $desc1 = "Escreva Aqui o conteúdo de forma corrida, sem delimitações de margem e caixas de texto, utilizando caracteres remetentes a linguagem portuguesa. Ao copiar colar textos com muitos paragrafos, verifique se o texto segue os padrões do template.";
 
     $newSection->addText($titulo, array('bold' => true));
     $newSection->addText("");

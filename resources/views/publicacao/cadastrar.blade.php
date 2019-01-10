@@ -48,7 +48,7 @@
                                 {{-- Escolher Documento --}}
                                 <div class="col-md-12">
                                     Matéria: <span style="color:red;">*</span>
-                                    <select class="custom-select" name="tipoID" id="documentoSelect" required>
+                                    <select class="custom-select" name="tipoID" id="documentoSelect" required >
                                             <option slected value=""> Escolha o Matéria </option>
                                     </select>
                                 </div>
@@ -81,7 +81,7 @@
                                 </div>
                                 <br>
                                 <div class="col-md-12">
-                                        <span style="color:red;">*</span>
+                                    Descrição <span style="color:red;">*</span>
                                     <textarea name="descricao" cols="60" rows="4" class="form-control" placeholder="Entre com a descrição do arquivo!" style="resize: none;" value="{{old('descricao')}}" required>{{old('descricao')}}</textarea>
 
                                 </div>
@@ -93,9 +93,9 @@
 
                         <div class="col-md-6 offset-md-2">
 
-                                <div class="col-md-12" style="text-align:justify;">
-                                        <input id="termo" type="checkbox" name="termos" value="concordo" > <strong> Aceito e me responsabilizo pelos termos contidos na <a href="http://ioes.dio.es.gov.br/js/tinymce/plugins/responsivefilemanager/source/Instru%C3%A7%C3%A3o%20Normativa%20001-2016.pdf" style="color:blue;">Instrução Normativa DIO/ES nº 001/2016</a> , publicada no D.O. do dia 02 de Maio de 2016. </strong>
-                                </div>
+                            <div class="col-md-12" style="text-align:justify;">
+                                <input id="termo" type="checkbox" name="termos" value="concordo" > <strong> Aceito e me responsabilizo pelos termos contidos na <a href="http://ioes.dio.es.gov.br/js/tinymce/plugins/responsivefilemanager/source/Instru%C3%A7%C3%A3o%20Normativa%20001-2016.pdf" style="color:blue;">Instrução Normativa DIO/ES nº 001/2016</a> , publicada no D.O. do dia 02 de Maio de 2016. </strong>
+                            </div>
 
                         </div>
 
@@ -144,10 +144,13 @@
 @endauth
 
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript">
 
     $(document).ready(function($) {
+
+
+        $("#documentoSelect").select2();
 
         $("#diario").val("");
         $('#file').val("");

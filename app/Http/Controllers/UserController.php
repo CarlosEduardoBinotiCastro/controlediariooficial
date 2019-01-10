@@ -34,7 +34,8 @@ class UserController extends Controller
 
             $usuarios = User::orderBy('name');
             $usuarios->join('status', 'status.statusID', 'users.statusID');
-            $usuarios->select('users.*', 'status.descricao');
+            $usuarios->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'users.orgaoID');
+            $usuarios->select('users.*', 'status.descricao', 'orgaorequisitante.orgaoNome as orgao');
 
             if(!is_numeric($filtro)){
                 $arrayPalavras = explode(' ', $filtro);

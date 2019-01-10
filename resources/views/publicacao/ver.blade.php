@@ -128,7 +128,7 @@
 
                             <br>
                             <div class="col-md-12">
-                                    <a href="#" class="btn btn-success">Comprovante</a>
+                                    <a href="/publicacao/gerarComprovante/{{$publicacao->protocoloCompleto}}" target="_blank" class="btn btn-success">Comprovante</a>
                             </div>
 
                             <br><br>

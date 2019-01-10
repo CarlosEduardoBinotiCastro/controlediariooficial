@@ -30,7 +30,7 @@
         </div>
 </div>
 
-<br/><br/>
+<br/>
 
 
 <div id="Erro" class="container">
@@ -47,9 +47,9 @@
         </div>
 </div>
 
-<br><br>
+<br>
 
-<div class="container">
+<div class="container col-md-10">
 
         <br>
         <div class="row">
@@ -69,10 +69,11 @@
 
                             <tbody>
                                 <tr style="background-color:transparent;">
-                                    <td style="border-color:transparent;"><input style="resize:none; width: 200px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usário"></td>
-                                    <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
+                                    <td style="border-color:transparent;"><input style="resize:none; width: 175px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usário"></td>
+                                    <td><input style="resize:none; width: 175px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
+                                    <td><input style="resize:none; width: 175px;" type="text" class="form-control" name="titulo" placeholder="Título"></td>
                                     <td>
-                                        <select style="resize:none; width: 200px;" class="custom-select" name="orgao" placeholder="Órgão Requisitante">
+                                        <select style="resize:none; width: 175px;" class="custom-select" name="orgao" placeholder="Órgão Requisitante">
                                             <option slected value="tudo">Órgãos</option>
                                             @foreach ($orgaos as $orgao)
                                                 <option value=" {{$orgao->orgaoID}}"> {{$orgao->orgaoNome}} </option>
@@ -80,7 +81,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input style="resize:none; width: 200px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
+                                        <input style="resize:none; width: 150px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
                                         <input type="hidden" name="diario" value="tudo" id="diario">
                                     </td>
                                     <td>
@@ -105,6 +106,10 @@
                             <tbody>
                                 <tr style="background-color:transparent;">
                                     <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
+
+
+                                    <td><input style="resize:none; width: 200px;" type="text" class="form-control" name="titulo" placeholder="Título"></td>
+
                                     <td>
                                         <input style="resize:none; width: 200px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarData()" onfocusout="checarData()" id="date">
                                         <input type="hidden" name="diario" value="tudo" id="diario">
@@ -117,6 +122,7 @@
                                             @endforeach
                                         </select>
                                     </td>
+
                                     {{-- compensar tamanho do filtro --}}
                                     <td style="resize:none; width: 200px;"></td>
                                     {{-- compensar tamanho do filtro --}}
@@ -141,8 +147,9 @@
 
                        <thead>
                        <th>Protocolo</th>
+                       <th>Título</th>
                        <th>Diário</th>
-                       <th>Órgão Requisitante</th>
+                       <th>Órgão</th>
                        <th>Data Envio</th>
                        <th>Usuário</th>
                        <th style="white-space:nowrap;">Situação  <a style="color:red;" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle"></i></a> </th>
@@ -170,12 +177,14 @@
 
          <tr>
 
-            <td>{{$publicacao->protocoloCompleto}}</td>
-            <td>N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</td>
-            <td> {{$publicacao->orgaoNome}}</td>
-            <td> {{$dataEnviado}} </td>
-            <td style="text-transform:capitalize;"> {{$publicacao->nomeUsuario}} </td>
+            <td style="width:10%;">{{$publicacao->protocoloCompleto}}</td>
+            <td style="width:20%;"> {{$publicacao->titulo}} </td>
+            <td style="width:10%;">N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</td>
+            <td style="width:15%;"> {{$publicacao->orgaoNome}}</td>
+            <td style="width:10%;"> {{$dataEnviado}} </td>
+            <td style="text-transform:capitalize; width:15%;"> {{$publicacao->nomeUsuario}} </td>
 
+            {{-- Verifica a situação e muda a cor do texto --}}
             @if($publicacao->situacaoNome == "Enviada")
                                     <td> <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;"><b>{{$publicacao->situacaoNome}}</b> </p> </td>
                                 @else
@@ -195,20 +204,20 @@
                                     @endif
                                 @endif
 
-            <td style="white-space:nowrap;">
-                <a href='/publicacao/ver/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
+            <td style="white-space:nowrap; width:10%; ">
+                <a href='/publicacao/ver/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:65px; font-size:12px">Ver</a>
 
             {{-- Verifica se o usuario é administrador e se não for, verifica se a situação permita ele editar --}}
 
             @if (Gate::allows('administrador', Auth::user()))
                 @if ($publicacao->situacaoNome == "Apagada" || date('Y-m-d') >= $publicacao->diarioData)
                 @else
-                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:75px">Editar</a>
+                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
             @else
                 @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" ||  date('Y-m-d') >= $publicacao->diarioData)
                 @else
-                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:75px">Editar</a>
+                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
             @endif
 
@@ -218,7 +227,7 @@
                 @php
                     $modalApagar = true;
                 @endphp
-                <button class="btn btn-danger" data-toggle="modal" data-target="#modalApagar{{$publicacao->protocoloCompleto}}" style="width:75px">Apagar</button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#modalApagar{{$publicacao->protocoloCompleto}}" style="width:65px; font-size:12px; text-align:center;">Apagar</button>
             @endif
 
             {{-- Verifica se é administrador e se pode publicar o arquivo --}}
@@ -227,7 +236,7 @@
                     @php
                         $modalPublicar = true;
                     @endphp
-                    <button class="btn btn-success" data-toggle="modal" data-target="#modalPublicar{{$publicacao->protocoloCompleto}}" style="width:75px">Publicar</button>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#modalPublicar{{$publicacao->protocoloCompleto}}" style="width:65px; font-size:12px; text-align:center;">Publicar</button>
 
             @endif
 
