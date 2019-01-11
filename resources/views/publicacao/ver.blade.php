@@ -110,18 +110,11 @@
                                 <p style="text-align:justify;">  Descrição:  <strong> {{$publicacao->descricao}} </strong></p>
                             </div>
 
-                            <div class="col-md-12">
-                                @php
-                                    $arquivo = explode('.', $publicacao->arquivo);
-                                @endphp
-                                    <p>Formato do arquivo: <strong style="text-transform:uppercase;">{{$arquivo[1]}}</strong></p>
-                            </div>
-
 
                             @if ($publicacao->usuarioIDApagou == null)
                             <br>
                                 <div class="col-md-12">
-                                <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" style="width:110px">Download</a>
+                                <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
                                 </div>
                             @endif
 

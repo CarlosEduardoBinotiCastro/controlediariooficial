@@ -18,15 +18,17 @@ use Illuminate\Support\Facades\Session;
 use DateTime;
 use Illuminate\Support\Collection;
 use App\Fatura;
+use Illuminate\Support\Facades\File;
 use BPDF;
-
+use Zipper;
 
 
 class PublicacoesController extends Controller
 {
     //
     private $paginacao = 10;
-    public $fileName = "";
+    public $arquivos = array();
+    public $diretorio = "";
 
     public function __construct()
     {
@@ -318,7 +320,29 @@ class PublicacoesController extends Controller
 
     public function salvar(Request $request){
 
-        switch ($this->validar($request)){
+        // organiza os arquivos em um array
+
+        $contador = 0;
+        $post = $request->all();
+
+        if(!isset($request->manterArquivo)){
+
+            $files = array();
+            foreach ($request->all() as $key => $value) {
+                $pattern = '/arquivo/';
+                if(preg_match($pattern, $key)){
+
+                    array_push($files, $value);
+                    unset($post[$key]);
+                }
+                $contador += 1;
+            }
+            // o index do array de arquivo sempre será 0
+            array_push($post, $files);
+
+        }
+
+        switch ($this->validar($post)){
 
             case 1:
                 return redirect()->back()->with('erro', "Arquivo não deve exceder o tamanho de 30 MB!")->withInput();
@@ -360,18 +384,55 @@ class PublicacoesController extends Controller
                     }
 
 
-
-
                     try {
-                        DB::beginTransaction();
+
                         if(!isset($request->manterArquivo)){
 
-                            $this->fileName =  Auth::user()->id.date('Y-m-d-H-i-s').".".pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
-                            $request->arquivo->storeAs("", $this->fileName);
+                            DB::beginTransaction();
 
-                            DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4]);
+                            // buscando arquivos antigos no banco
+
+                            $arquivosAntigos =  DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->select('arquivo')->get();
+
+                            // deletando arquivos no servidor
+                            foreach($arquivosAntigos as $arquivoAntigo){
+                                if(file_exists(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo))){
+                                    File::delete(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo));
+                                }
+                            }
+
+                            // deletando os arquivos antigos no banco
+                            DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
+
+                            // Mudança no estilo de upload de arquivos, agora pode salvar varios
+                            $contadorArquivo = 0;
+                            foreach ($post[0] as $arquivo) {
+                                $file = Auth::user()->id.date('Y-m-d-H-i-s').'-'.$contadorArquivo.".".pathinfo($arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
+                                array_push($this->arquivos,$file);
+                                $arquivo->storeAs("", $file);
+                                $contadorArquivo += 1;
+                            }
+                            // fim do metodo de salvar na pasta app
+
+                            // salvando os novos no banco
+                            $contador = 0;
+                            foreach ($this->arquivos as $arquivo) {
+                                DB::table('publicacaoarquivo')->insert(['protocoloCompleto' =>$request->protocolo, 'arquivo' =>$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)]);
+                                $contador++;
+                            }
+
+                            // salvando os novos no servidor
+                            $contador = 0;
+                            foreach ($this->arquivos as $arquivo) {
+                                $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$request->protocolo."/".$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
+                                $contador++;
+                            }
+
+                            // alterando no banco
+                            DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4]);
                         }else{
 
+                            DB::beginTransaction();
                             DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4]);
                         }
 
@@ -383,20 +444,47 @@ class PublicacoesController extends Controller
 
                     } catch (\Exception $e) {
 
-                        if(file_exists(storage_path("app/".$this->fileName))){
-                            Storage::delete([$this->fileName]);
+                        if(!isset($request->manterArquivo)){
+                            DB::rollBack();
+
+                            $this->diretorio = $request->protocolo;
+
+                            if(file_exists(storage_path("app/".$this->diretorio))){
+                                Storage::deleteDirectory($this->diretorio);
+                            }
+
+                            DB::beginTransaction();
+                                DB::table('publicacao')->where('protocoloCompleto', '=', $request->protocolo)->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id, 'dataApagada' => date('Y-m-d H:i:s')]);
+                                DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
+                            DB::commit();
+
+
+                            return redirect('home')->with('erro', "Um erro crítico durante a operação ocorreu! Foi necessário a remoção da publicação no sistema. Por favor tente enviar novamente!".$e->getMessage());
+                        }else{
+                            DB::rollBack();
+                            return redirect()->back()->with('erro', "Um erro durante a operação ocorreu!".$e->getMessage())->withInput();
                         }
-                        DB::rollBack();
-                        return redirect()->back()->with('erro', "Um erro durante a operação ocorreu!".$e->getMessage())->withInput();
+
                     }
 
 
                 }else{
-
-                    $this->fileName =  Auth::user()->id.date('Y-m-d-H-i-s').".".pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
-
                     try {
-                        $request->arquivo->storeAs("", $this->fileName);
+
+                        // Mudança no estilo de upload de arquivos, agora pode salvar varios
+
+                        $contadorArquivo = 0;
+                        foreach ($post[0] as $arquivo) {
+                            $file = Auth::user()->id.date('Y-m-d-H-i-s').'-'.$contadorArquivo.".".pathinfo($arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
+                            array_push($this->arquivos,$file);
+                            $arquivo->storeAs("", $file);
+                            $contadorArquivo += 1;
+                        }
+
+
+                        // fim do metodo de salvar na pasta app
+
+
                         if(DB::table('publicacao')->where('protocoloAno', '=', date('Y'))->count() ){
                             $protocolo = DB::table('publicacao')->where('protocoloAno', '=', date('Y'))->max('protocolo') + 1;
                         }else{
@@ -404,14 +492,25 @@ class PublicacoesController extends Controller
                         }
 
                         DB::beginTransaction();
-                        $this->verificaProtocolo($protocolo, $request);
+                        $this->verificaProtocolo($protocolo, $post);
 
                         return redirect('/home')->with('sucesso', 'Publicação Enviada com Sucesso');
+
                     } catch (\Exception $e) {
 
-                        if(file_exists(storage_path("app/".$this->fileName))){
-                            Storage::delete([$this->fileName]);
+
+                        foreach ($this->arquivos as $arquivo) {
+                            if(file_exists(storage_path("app/".$arquivo))){
+                                Storage::delete([$arquivo]);
+                            }
                         }
+
+
+                        if(file_exists(storage_path("app/".$this->diretorio))){
+                            Storage::deleteDirectory($this->diretorio);
+                        }
+
+
                         DB::rollBack();
                         return redirect()->back()->with('erro', "Um erro durante a operação ocorreu!".$e->getMessage())->withInput();
                     }
@@ -429,40 +528,63 @@ class PublicacoesController extends Controller
             $protocolo++;
             $this->verificaProtocolo($protocolo, $request);
         }else {
-            DB::table('publicacao')->insert(['situacaoID' => 4, 'cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'arquivo' => $this->fileName, 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'PUB']);
+            DB::table('publicacao')->insert(['situacaoID' => 4, 'cadernoID' => $request['cadernoID'], 'tipoID' => $request['tipoID'], 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request['diarioDataID'], 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request['titulo'], 'descricao' => $request['descricao'], 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'PUB']);
+
+            $contador = 0;
+            foreach ($this->arquivos as $arquivo) {
+                DB::table('publicacaoarquivo')->insert(['protocoloCompleto' => $protocolo.date('Y').'PUB', 'arquivo' =>$protocolo.date('Y').'PUB'.'-'.$contador.'.'.pathinfo($request[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)]);
+                $contador++;
+            }
+
+            $this->diretorio =  $protocolo.date('Y').'PUB';
+            File::makeDirectory(storage_path("app/".$this->diretorio));
+
+            $contador = 0;
+            foreach ($this->arquivos as $arquivo) {
+                $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$this->diretorio."/".$protocolo.date('Y').'PUB'.'-'.$contador.'.'.pathinfo($request[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
+                $contador++;
+            }
+
             DB::commit();
         }
     }
 
     public function validar($request){
 
-        $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request->diarioDataID)->first();
+        $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request['diarioDataID'])->first();
 
-        if(!isset($request->manterArquivo)){
-            $extensões = array('pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx', 'xls');
-            $extensao = pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
+        if(!isset($request['manterArquivo'])){
 
-            if(!in_array($extensao, $extensões)){
-                return 2;
-            }
+            // Foreach para cada arquivo no upload
 
-            $tamanhoArquivo = ((filesize($request->arquivo) / 1024)/1024);
-            if($tamanhoArquivo >= 30){
-                return 1;
+            foreach ($request[0] as $arquivo) {
+
+                $extensões = array('pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx', 'xls');
+                $extensao = pathinfo($arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
+
+                if(!in_array($extensao, $extensões)){
+                    return 2;
+                }
+
+                $tamanhoArquivo = ((filesize($arquivo) / 1024)/1024);
+                if($tamanhoArquivo >= 30){
+                    return 1;
+                }
+
             }
         }
 
-        if(strlen($request->descricao) > 255){
+        if(strlen($request['descricao']) > 255){
             return 3;
         }
 
-        if(strlen($request->titulo) > 100){
+        if(strlen($request['titulo']) > 100){
             return 4;
         }
 
         // Verificação do lado do servidor sobre a data do envio par o diario !
 
-        $diaDiarioDate = new DateTime($diarioTemp->diarioData);
+        $diaDiarioDate = new DateTime($diarioTemp['diarioData']);
         $verificaDiaUtil = false;
         $diaUtil = date('Y-m-d', strtotime($diaDiarioDate->format('Y-m-d')));
 
@@ -737,8 +859,13 @@ class PublicacoesController extends Controller
 
         $arquivoExtensao = explode('.', $publicacao->arquivo);
 
-        if(file_exists(storage_path("app/".$publicacao->arquivo))){
-            return Response::download(storage_path("app/".$publicacao->arquivo), ''.$protocolo.'-'.$publicacao->name.'-'.'Diario-'.$publicacao->numeroDiario.'.'.$arquivoExtensao[1].'');
+        if(file_exists(storage_path("app/".$protocolo))){
+
+            $files = glob(storage_path("app/".$protocolo."/*"));
+            Zipper::make(storage_path("app/".$protocolo."/").$protocolo.'.zip')->add($files)->close();
+
+            return response()->download(storage_path("app/".$protocolo."/".$protocolo.'.zip'))->deleteFileAfterSend(true);
+
         }else{
             return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
         }
@@ -787,11 +914,12 @@ class PublicacoesController extends Controller
 
         // verifica se existe o arquivo e o deleta;
 
-        if(file_exists(storage_path("app/".$request->arquivo))){
-            Storage::delete([$request->arquivo]);
+        if(file_exists(storage_path("app/".$request->protocolo))){
+            Storage::deleteDirectory($request->protocolo);
         }
-
+        DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
         $publicacao->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id, 'dataApagada' => date('Y-m-d H:i:s')]);
+
         return redirect()->back()->with('sucesso', 'Publicação Apagada!');
 
     }
@@ -906,6 +1034,5 @@ class PublicacoesController extends Controller
             return redirect('/home')->with('erro', 'Você não tem permissão!');
         }
     }
-
 
 }

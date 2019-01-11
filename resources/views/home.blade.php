@@ -33,7 +33,7 @@
         <div class="col-md-8 offset-md-2">
                 <br>
                 <div class="form-group row mb-0 alert alert-danger" style="font-size:20px">
-                        Aplicação em alteração, sujeito a erros críticos durante o período dessa mensagem!
+                        A area de publicação não estará funcionando corretamente durante o período desta mensagem!
                 </div>
             </div>
         </div>

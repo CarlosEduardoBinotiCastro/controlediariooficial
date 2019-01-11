@@ -107,7 +107,14 @@
 
                                 <div class="col-md-8">
                                 <br>
-                                <input type="file" class="form-control-file" name="arquivo" id="file" required>
+                                <a id="btnArquivo" class="btn btn-success" style="color: white;"> Adicionar Arquivo </a>
+
+                                <br> <br>
+
+                                <div id="divArquivo">
+                                    <input type="file" class="form-control-file" name="arquivo0" id="file" required>
+                                </div>
+
                                 <strong><sub style="font-size:90%;">Somente arquivos nas extensões 'pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx' e 'xls'. <br>
                                 Tamanho máximo: 30 MB</sub></strong>
                             </div>
@@ -149,25 +156,17 @@
 
     $(document).ready(function($) {
 
-
+        var numeroArquivos = 0;
         $("#documentoSelect").select2();
 
         $("#diario").val("");
         $('#file').val("");
-        var canUpload = false;
+
 
         $('#form').validate({
             errorClass: "my-error-class"
         });
 
-
-        $('#file').bind('change', function() {
-            if( ((this.files[0].size / 1024)/1024) > 30){
-                canUpload = false;
-            }else{
-                canUpload = true;
-            }
-        });
 
         $("#cadernoSelect").val("");
         $("#documentoSelect").val("");
@@ -207,14 +206,9 @@
 
          $('#form').submit( function(e){
              if($("#form").valid()){
-                if(canUpload){
                     $("#carregando").css('display', 'block');
                     $("#pagina").css('display', 'none');
                     $('#Erro').css('display', 'none');
-                }else{
-                    e.preventDefault();
-                    alert("Upload somente de arquivos até 30 MB!");
-                }
              }
          });
 
@@ -281,6 +275,12 @@
              }
 
          }
+
+         $("#btnArquivo").click(function (){
+             numeroArquivos++;
+            var div = $("#divArquivo");
+            div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;" required>');
+         });
 
 
     });

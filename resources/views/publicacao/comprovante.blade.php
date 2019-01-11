@@ -200,9 +200,11 @@
                     $dataPub = $dataPub->format('d/m/Y');
                 @endphp
 
+                @if ($publicacao->situacaoNome == "Publicada")
                     <tr>
                         <td style="width: 50% !important; margin-top:1% !important;">Data Publicação</td>
                         <td style="width: 50% !important; margin-top:1% !important;">{{$dataPub}}</td></tr>
+                @endif
 
                     <tr>
                         <td style="width: 50% !important; margin-top:1% !important;">Número Diário</td>

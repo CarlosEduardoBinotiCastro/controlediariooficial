@@ -33,6 +33,7 @@ class FaturaController extends Controller
     public $fileOriginal = "";
     public $fileFormatado = "";
     public $fileVisualizado = "";
+    public $diretorio = "";
 
     public function __construct()
     {
@@ -405,7 +406,7 @@ class FaturaController extends Controller
 
     public function salvar(Request $request){
 
-        // dd($request);
+
 
         switch ($this->validar($request)){
 
@@ -478,6 +479,11 @@ class FaturaController extends Controller
                     if(file_exists(storage_path("app/".$this->fileVisualizado))){
                         Storage::delete([$this->fileVisualizado]);
                     }
+
+                    if(file_exists(storage_path("app/".$this->diretorio))){
+                        Storage::delete($this->diretorio);
+                    }
+
                     DB::rollBack();
 
                     return redirect('home')->with('erro', "Um erro durante a operação ocorreu!".$e->getMessage());
@@ -499,7 +505,7 @@ class FaturaController extends Controller
             }
             DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'arquivoFormatado' => $this->fileFormatado, 'arquivoVisualizacao' => $this->fileVisualizado, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id]);
 
-            $dir = $protocolo.date('Y').'FAT';
+            $this->diretorio = $protocolo.date('Y').'FAT';
 
             $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$this->fileFormatado));
             $arquivo->getSections()[0]->addText('Protocolo: '.$protocolo.date('Y').'FAT', array('bold'=>true, 'size'=>10, 'name'=>'Times'));
@@ -507,11 +513,11 @@ class FaturaController extends Controller
             $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($arquivo, "Word2007");
             $objectWriter->save(storage_path("app/".$this->fileFormatado));
 
-            File::makeDirectory(storage_path("app/".$dir));
+            File::makeDirectory(storage_path("app/".$this->diretorio));
 
-            $copiaOriginal = File::move(storage_path("app/".$this->fileOriginal),storage_path("app/".$dir."/".$this->fileOriginal));
-            $copiaFormatado = File::move(storage_path("app/".$this->fileFormatado),storage_path("app/".$dir."/".$this->fileFormatado));
-            $copiaVisualizado = File::move(storage_path("app/".$this->fileVisualizado),storage_path("app/".$dir."/".$this->fileVisualizado));
+            $copiaOriginal = File::move(storage_path("app/".$this->fileOriginal),storage_path("app/".$this->diretorio."/".$this->fileOriginal));
+            $copiaFormatado = File::move(storage_path("app/".$this->fileFormatado),storage_path("app/".$this->diretorio."/".$this->fileFormatado));
+            $copiaVisualizado = File::move(storage_path("app/".$this->fileVisualizado),storage_path("app/".$this->diretorio."/".$this->fileVisualizado));
 
             DB::commit();
         }

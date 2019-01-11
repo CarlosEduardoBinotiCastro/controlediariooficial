@@ -133,14 +133,14 @@
                             <br><br>
 
                             <div class="form-group row">
-                                    <label class="col-md-5 col-form-label text-md-right"> <strong> {{ __('Manter Arqui Original ?') }} </strong> </label>
+                                    <label class="col-md-4 col-form-label text-md-right"> <strong> {{ __('Manter Arquivos ?') }} </strong> </label>
 
                                     <div class="col-md-1">
                                         <input id="manterArquivo" type="checkbox" name="manterArquivo" value="sim"> <span>SIM</span>
                                     </div>
 
-                                    <div class="col-md-3">
-                                        <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" style="width:110px">Download</a>
+                                    <div class="col-md-4">
+                                        <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
                                     </div>
                             </div>
 
@@ -150,14 +150,15 @@
 
                                 {{-- Relecionado com o lado do input --}}
 
-
-                                    <div class="col-md-8" >
-                                        <br>
-                                        <input style="display:none;" type="file" class="form-control-file" id="divInputArquivo" name="arquivo" id="file" required>
+                                    <div class="col-md-8" id="divInputArquivo" style="display:none;">
+                                        <a id="btnArquivo" class="btn btn-success" style="color: white;"> Adicionar Arquivo </a>
+                                        <br><br>
+                                        <input  type="file" class="form-control-file" id="divInputArquivo" name="arquivo0"  required>
                                     </div>
+                                </div>
 
-                                    {{-- Relecionado com o lado do botão --}}
-
+                                {{-- Relecionado com o lado do botão --}}
+                                <div class="form-group row mb-0 justify-content-center">
                                     <div class="col-md-4" id="divBotao">
                                         <br>
                                         <input id="btnEnviar" type="submit" class="btn btn-success" value="Editar Publicação">
@@ -168,7 +169,6 @@
                                         <Strong><span id="label" style="color:red; white-space:nowrap;"></span></Strong>
                                     </div>
                                 </div>
-
 
                             </div>
 
@@ -197,10 +197,10 @@
 
         $(document).ready(function($) {
 
-            var canUpload = false;
             var enviar = true;
             var diaLimite;
             var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
+            var numeroArquivos = 0;
 
             $("#documentoSelect").select2();
 
@@ -211,18 +211,6 @@
             $("#btnVoltar").click(function(){
                 window.history.back();
             });
-
-            $('#file').bind('change', function() {
-
-                if( ((this.files[0].size / 1024)/1024) > 30){
-                    canUpload = false;
-                }else{
-                    canUpload = true;
-                }
-
-            });
-
-
 
             // verifica se o diario atual carregado pode editar pela data
 
@@ -293,10 +281,6 @@
             $("#manterArquivo").prop('checked', true);
 
 
-            if($("#manterArquivo").prop("checked")){
-                canUpload = true;
-            }
-
             $("#manterArquivo").click(function () {
 
                 if($("#divInputArquivo").css('display') == 'none'){
@@ -310,7 +294,7 @@
                         $('#divBotao').css('display', 'block');
                     }
                 }else{
-                    canUpload = true;
+
                     $('#divInputArquivo').css('display', 'none');
                     $('#divInputArquivo').prop('disabled', true);
                     $('#divInputArquivo-error').text('');
@@ -362,14 +346,11 @@
 
              $('#form').submit( function(e){
                 if($("#form").valid()){
-                if(canUpload){
-                    $("#carregando").css('display', 'block');
-                    $("#pagina").css('display', 'none');
-                    $('#Erro').css('display', 'none');
-                }else{
-                    e.preventDefault();
-                    alert("Upload somente de arquivos até 30 MB!");
-                }
+
+                $("#carregando").css('display', 'block');
+                $("#pagina").css('display', 'none');
+                $('#Erro').css('display', 'none');
+
              }
              });
 
@@ -443,7 +424,11 @@
                 }
             }
 
-
+            $("#btnArquivo").click(function (){
+                 numeroArquivos++;
+                var div = $("#divInputArquivo");
+                div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;" required>');
+            });
 
         });
 

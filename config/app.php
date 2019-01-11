@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class,
 
 
 
@@ -229,6 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'BPDF' => Barryvdh\DomPDF\Facade::class,
         'TPDF' => Elibyy\TCPDF\Facades\TCPDF::class,
+        'Zipper' => Chumper\Zipper\Zipper::class,
 
     ],
 

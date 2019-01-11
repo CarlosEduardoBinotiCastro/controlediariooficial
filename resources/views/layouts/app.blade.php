@@ -202,12 +202,12 @@
                               <a class="dropdown-item" href="/diasnaouteis/listar">Feriados/Pontos Facultativos</a>
                             </div>
                         </div>
+
+                        <div class="nav-item" >
+                            <a style="color:black;"  class="nav-link" style="float:right;" href="/comunicado/listar">Comunicados <span class="sr-only">(current)</span></a>
+                        </div>
+
                     @endcan
-
-                    <div class="nav-item" >
-                        <a style="color:black;"  class="nav-link" style="float:right;" href="/comunicado/listar">Comunicados <span class="sr-only">(current)</span></a>
-                    </div>
-
 
                     <div class="nav-item" >
                         <a  style="color:black;" class="nav-link" style="float:right;" href="/usuario/editar/{{Auth::user()->id}}">Meus Dados <span class="sr-only">(current)</span></a>
