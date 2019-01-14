@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 09-Jan-2019 às 11:58
+-- Generation Time: 14-Jan-2019 às 14:47
 -- Versão do servidor: 10.1.36-MariaDB
 -- versão do PHP: 7.2.10
 
@@ -65,13 +65,11 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (1, 5),
 (1, 6),
 (3, 1),
-(3, 3),
 (3, 4),
 (3, 5),
 (4, 1),
 (4, 5),
 (7, 1),
-(7, 3),
 (7, 5),
 (9, 4),
 (9, 5),
@@ -100,6 +98,7 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (21, 1),
 (21, 5),
 (22, 1),
+(22, 3),
 (22, 5),
 (23, 1),
 (23, 5),
@@ -125,6 +124,7 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (33, 5),
 (34, 5),
 (34, 6),
+(35, 3),
 (35, 5),
 (35, 6),
 (36, 5),
@@ -133,8 +133,10 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (37, 6),
 (38, 5),
 (38, 6),
+(39, 3),
 (39, 5),
 (39, 6),
+(40, 3),
 (40, 5),
 (40, 6),
 (41, 5),
@@ -152,8 +154,46 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (48, 5),
 (49, 5),
 (50, 5),
+(51, 3),
 (51, 5),
 (53, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `comunicado`
+--
+
+CREATE TABLE `comunicado` (
+  `comunicadoID` int(11) NOT NULL,
+  `usuarioID` int(11) NOT NULL,
+  `tituloMensagem` varchar(150) NOT NULL,
+  `mensagem` varchar(255) NOT NULL,
+  `dataComunicado` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `comunicadogrupousuario`
+--
+
+CREATE TABLE `comunicadogrupousuario` (
+  `grupoID` int(11) NOT NULL,
+  `comunicadoID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `comunicadousuario`
+--
+
+CREATE TABLE `comunicadousuario` (
+  `comunicadoID` int(11) NOT NULL,
+  `usuarioID` int(11) NOT NULL,
+  `visualizado` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -194,7 +234,9 @@ CREATE TABLE `diariodata` (
 INSERT INTO `diariodata` (`diarioDataID`, `diarioData`, `numeroDiario`) VALUES
 (35, '2019-01-07', '5735'),
 (36, '2019-01-08', '5736'),
-(37, '2019-01-09', '5737');
+(37, '2019-01-09', '5737'),
+(38, '2019-01-10', '5738'),
+(39, '2019-01-31', 'teste');
 
 -- --------------------------------------------------------
 
@@ -265,13 +307,9 @@ CREATE TABLE `fatura` (
 --
 
 INSERT INTO `fatura` (`protocolo`, `protocoloAno`, `protocoloCompleto`, `dataEnvioFatura`, `tipoID`, `subcategoriaID`, `usuarioID`, `largura`, `centimetragem`, `valorColuna`, `valor`, `diarioDataID`, `observacao`, `cpfCnpj`, `empresa`, `requisitante`, `arquivoOriginal`, `arquivoFormatado`, `arquivoVisualizacao`, `comprovantePago`, `situacaoID`, `descricaoCancelamento`) VALUES
-(0, 2019, '02019FAT', '2019-01-07 11:45:45', 46, NULL, 1, 9.2, 2.82, 18.85, 53.16, 37, 'As experiências acumuladas demonstram que a mobilidade dos capitais internacionais não pode mais se dissociar de alternativas às soluções ortodoxas.', '12111444444444', 'A Praça é NoSsaaaA', 'Carlos Alberto de Nóbrega da Çilva Túlio aaaaaaaaa', '12111444444444-2019-01-07-11-44-27.docx', '12111444444444-2019-01-07-11-44-27_format.docx', '12111444444444-2019-01-07-11-44-27_visualizacao.pdf', '02019FAT_comprovantePago.pdf', 2, NULL),
-(1, 2019, '12019FAT', '2019-01-07 12:12:22', 42, NULL, 1, 9.2, 1.41, 18.85, 26.58, NULL, NULL, '98654798565', 'asdasd', 'Eduardo Castro', '98654798565-2019-01-07-12-12-18.docx', '98654798565-2019-01-07-12-12-18_format.docx', '98654798565-2019-01-07-12-12-19_visualizacao.pdf', '12019FAT_comprovantePago.pdf', 2, 'dfsdfs'),
-(2, 2019, '22019FAT', '2019-01-07 13:23:23', 20, NULL, 1, 9.2, 1.41, 18.85, 26.58, NULL, NULL, '12313131231', 'asda', 'dedu', '12313131231-2019-01-07-13-23-21.docx', '12313131231-2019-01-07-13-23-21_format.docx', '12313131231-2019-01-07-13-23-21_visualizacao.pdf', NULL, 2, 'teste'),
-(3, 2019, '32019FAT', '2019-01-07 13:35:44', 44, NULL, 1, 9.2, 1.41, 18.85, 26.58, NULL, NULL, '13131231231', 'teste', 'teste4', '13131231231-2019-01-07-13-35-42.docx', '13131231231-2019-01-07-13-35-42_format.docx', '13131231231-2019-01-07-13-35-43_visualizacao.pdf', NULL, 2, NULL),
-(4, 2019, '42019FAT', '2019-01-08 10:56:28', 53, 10, 13, 9.2, 1.41, 18.85, 26.58, NULL, NULL, '9999999999999', 'xxxxx', 'xxxx', '9999999999999-2019-01-08-10-56-22.docx', '9999999999999-2019-01-08-10-56-22_format.docx', '9999999999999-2019-01-08-10-56-22_visualizacao.pdf', '42019FAT_comprovantePago.pdf', 3, NULL),
-(5, 2019, '52019FAT', '2019-01-08 11:03:06', 20, NULL, 1, 9.2, 1.41, 18.85, 26.58, NULL, 'aaaaaa', '65446546546', 'teste', 'teste', '65446546546-2019-01-08-11-02-51.docx', '65446546546-2019-01-08-11-02-51_format.docx', '65446546546-2019-01-08-11-02-51_visualizacao.pdf', NULL, 4, NULL),
-(6, 2019, '62019FAT', '2019-01-08 11:05:46', 20, NULL, 1, 9.2, 1.41, 18.85, 26.58, NULL, 'ta', '12312312312', 'teste2', 'teste2', '12312312312-2019-01-08-11-05-44.docx', '12312312312-2019-01-08-11-05-44_format.docx', '12312312312-2019-01-08-11-05-44_visualizacao.pdf', NULL, 4, NULL);
+(0, 2019, '02019FAT', '2019-01-10 10:34:55', 53, 10, 17, 9.2, 2.84, 18.85, 53.53, NULL, NULL, '12532983000196', 'Lava Jato Boa Aparência', 'Júlio Cesar da Silva', '12532983000196-2019-01-10-10-34-16.docx', '12532983000196-2019-01-10-10-34-16_format.docx', '12532983000196-2019-01-10-10-34-16_visualizacao.pdf', NULL, 4, NULL),
+(1, 2019, '12019FAT', '2019-01-10 10:56:15', 53, 10, 17, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '06895138000182', 'J.S. Industria de Carrocerias Ltda', 'Maria Helena Martelete', '06895138000182-2019-01-10-10-56-06.docx', '06895138000182-2019-01-10-10-56-06_format.docx', '06895138000182-2019-01-10-10-56-06_visualizacao.pdf', NULL, 4, NULL),
+(2, 2019, '22019FAT', '2019-01-10 11:14:06', 53, 10, 17, 9.2, 3.65, 18.85, 68.8, NULL, NULL, '03996973000110', 'Mocapri Marmores e Granitos Ltda', 'Maria Helena Martelete', '03996973000110-2019-01-10-11-14-00.docx', '03996973000110-2019-01-10-11-14-00_format.docx', '03996973000110-2019-01-10-11-14-00_visualizacao.pdf', NULL, 4, NULL);
 
 -- --------------------------------------------------------
 
@@ -362,7 +400,6 @@ CREATE TABLE `publicacao` (
   `usuarioID` int(11) NOT NULL,
   `diarioDataID` int(11) NOT NULL,
   `dataEnvio` datetime NOT NULL,
-  `arquivo` varchar(255) NOT NULL,
   `descricao` varchar(255) NOT NULL,
   `titulo` varchar(100) NOT NULL,
   `protocolo` int(11) NOT NULL,
@@ -378,12 +415,28 @@ CREATE TABLE `publicacao` (
 -- Extraindo dados da tabela `publicacao`
 --
 
-INSERT INTO `publicacao` (`situacaoID`, `cadernoID`, `tipoID`, `usuarioID`, `diarioDataID`, `dataEnvio`, `arquivo`, `descricao`, `titulo`, `protocolo`, `protocoloAno`, `protocoloCompleto`, `pub`, `usuarioIDApagou`, `dataApagada`, `rejeitadaDescricao`) VALUES
-(2, 6, 42, 1, 37, '2019-01-07 13:34:45', '12019-01-07-13-34-45.pdf', 'asdasdasd', 'dddd', 0, 2019, '02019PUB', 'pub', 1, '2019-01-08 09:54:10', NULL),
-(3, 1, 10, 9, 37, '2019-01-08 08:55:09', '92019-01-08-08-55-09.doc', 'SUPLEMENTAÇÃO DE DOTAÇÕES ORÇAMENTÁRIAS', 'Decreto nº 27.443/2017', 1, 2019, '12019PUB', 'pub', NULL, NULL, NULL),
-(3, 1, 11, 9, 36, '2019-01-08 08:59:16', '92019-01-08-08-59-16.doc', 'Afastamento em virtude de luto da servidora Marília Barboza Fernandes', 'Portaria nº 1.015/2017', 2, 2019, '22019PUB', 'pub', NULL, NULL, NULL),
-(2, 6, 34, 1, 37, '2019-01-08 09:54:54', '12019-01-08-09-54-54.pdf', 'teste teste teste teste teste', 'teste de licitação para teste de titulo', 3, 2019, '32019PUB', 'pub', 1, '2019-01-08 09:55:02', NULL),
-(4, 1, 3, 1, 37, '2019-01-08 11:29:15', '92019-01-08-10-48-39.doc', 'teste', 'Lei 76/2019', 4, 2019, '42019PUB', 'pub', NULL, NULL, 'art 1');
+INSERT INTO `publicacao` (`situacaoID`, `cadernoID`, `tipoID`, `usuarioID`, `diarioDataID`, `dataEnvio`, `descricao`, `titulo`, `protocolo`, `protocoloAno`, `protocoloCompleto`, `pub`, `usuarioIDApagou`, `dataApagada`, `rejeitadaDescricao`) VALUES
+(4, 6, 42, 1, 39, '2019-01-14 10:41:22', '954', 'dddd', 0, 2019, '02019PUB', 'pub', NULL, NULL, NULL),
+(2, 1, 20, 1, 39, '2019-01-14 10:34:46', 'k', 'dddd', 1, 2019, '12019PUB', 'pub', 1, '2019-01-14 10:42:08', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `publicacaoarquivo`
+--
+
+CREATE TABLE `publicacaoarquivo` (
+  `protocoloCompleto` varchar(80) NOT NULL,
+  `arquivoID` int(11) NOT NULL,
+  `arquivo` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `publicacaoarquivo`
+--
+
+INSERT INTO `publicacaoarquivo` (`protocoloCompleto`, `arquivoID`, `arquivo`) VALUES
+('02019PUB', 8, '02019PUB-0.pdf');
 
 -- --------------------------------------------------------
 
@@ -546,12 +599,14 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `cpf`, `telefoneSetor`, `telefoneCelular`, `password`, `remember_token`, `created_at`, `updated_at`, `grupoID`, `orgaoID`, `statusID`, `horaEnvio`, `login`, `primeiroLogin`) VALUES
-(1, 'carlos eduardo castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', 'oO25IncjDwfaVsXQ1MRCqGAVLts7Hh1GguPQL7YqqSMpVhpCdp16RlNdDTzc', NULL, '2018-11-13 17:36:26', 1, 1, 1, '17:00:00', 'dedu', 0),
-(8, 'mauricio', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'JWKf78vhUyPcQNbgenV7B2wh149aEohMVVhFK37XYqK1uK4h4vK15GDvd6hu', NULL, '2018-12-05 12:12:59', 1, 4, 1, '17:00:00', 'diario', 0),
-(9, 'cliente', 'cliente@gmail.com', '86886479091', '4444444444', '44444444444', '$2y$10$sMt76Ggii4/JrL03hhxPmeDdwgNKeSqfjuHJbk7cKvQiy0EAtkqpa', 'VC7xqzHQfhjMV6yeexLsiKsnaVMUVCYZzKqHhRboJ2qLwkZL1diTCi8e1sOQ', NULL, '2018-12-05 13:39:10', 2, 4, 1, '17:00:00', 'cliente', 0),
-(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'pQs4HVC9gvqdWetyYvRW6bqlHRStrSwpnYZctMFWRWmeunkRY5PlwpaS35IL', NULL, '2019-01-02 19:14:46', 1, 5, 1, '17:00:00', 'informatica', 0),
-(15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$BsV8y5hdAfLPPcDep8lofOvoA9xtMEiE3gDUsWMs9.wvB19GdR6Dm', NULL, NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
-(16, 'Araci da Cunha', 'camara@cmci.es.gov.br', '53595025687', '2899999999', '99999999999', '$2y$10$m0t6XacYy/oUK8yQwgtlr.8ZsXVgKxjeCsDOQGbtZ5kKPdG9vjCvK', '3k2AR5K1HRKVHKevn0xvIDdrdmtxdZGFqaiQiVOrw4QJTcgqUWiNqrhkIu3s', NULL, '2019-01-08 11:20:55', 2, 5, 1, '17:00:00', 'araci', 0);
+(1, 'carlos eduardo castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', 'xQt7taYWEglyrt2KlAuZop8nOKgeaUBuKgmRky66AL43gvQoedxyatgyclOs', NULL, '2018-11-13 17:36:26', 1, 1, 1, '17:00:00', 'dedu', 0),
+(8, 'mauricio', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'JWKf78vhUyPcQNbgenV7B2wh149aEohMVVhFK37XYqK1uK4h4vK15GDvd6hu', NULL, '2018-12-05 12:12:59', 1, 4, 2, '17:00:00', 'diario', 0),
+(9, 'cliente', 'cliente@gmail.com', '86886479091', '4444444444', '44444444444', '$2y$10$sMt76Ggii4/JrL03hhxPmeDdwgNKeSqfjuHJbk7cKvQiy0EAtkqpa', '5RwA48LDzcjm7FTuXQmQt5blZEOHqti4lqzCwJARGffeI7vHUPIhWnvKHYBF', NULL, '2018-12-05 13:39:10', 2, 4, 2, '17:00:00', 'cliente', 0),
+(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'SSp3xpQvtL4y8eBxGO3PTjjjiZfRGTWyUPzmNVUMBdCm2B59XqgFFDekLOst', NULL, '2019-01-02 19:14:46', 1, 5, 1, '17:00:00', 'informatica', 0),
+(15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$TXfsbYl4Dj3To.KaoSxCrOZMD/WjH3mYgvwJmwhjok18MYFRxiLpS', 'DP6gAnK6PAO5lq51WVnuzLSizX9Vs50RUsSowuNQxh5TEn5GoqP3GKS0WfV1', NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
+(16, 'Araci da Cunha', 'camara@cmci.es.gov.br', '53595025687', '2899999999', '99999999999', '$2y$10$m0t6XacYy/oUK8yQwgtlr.8ZsXVgKxjeCsDOQGbtZ5kKPdG9vjCvK', '3k2AR5K1HRKVHKevn0xvIDdrdmtxdZGFqaiQiVOrw4QJTcgqUWiNqrhkIu3s', NULL, '2019-01-08 11:20:55', 2, 5, 2, '17:00:00', 'araci', 0),
+(17, 'Talia Ferreira Guerra', 'taliafguerra@gmail.com', '96201894772', '2835224708', '28999250709', '$2y$10$U5dVmQrcI4ls8b/hROFm6eWM2ZNVaXEUc7g02PMMLRcHfE2OqaVAy', NULL, NULL, '2019-01-10 11:42:11', 3, 8, 1, '17:00:00', 'talia', 0),
+(18, 'Teste Usuário', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', NULL, NULL, '2019-01-10 18:23:58', 2, 4, 1, '17:00:00', 'dedubr', 0);
 
 -- --------------------------------------------------------
 
@@ -596,7 +651,9 @@ INSERT INTO `usuariocaderno` (`usuarioID`, `cadernoID`) VALUES
 (15, 4),
 (15, 5),
 (15, 6),
-(16, 1);
+(16, 1),
+(17, 5),
+(18, 1);
 
 --
 -- Indexes for dumped tables
@@ -613,6 +670,24 @@ ALTER TABLE `caderno`
 --
 ALTER TABLE `cadernotipodocumento`
   ADD PRIMARY KEY (`tipoID`,`cadernoID`);
+
+--
+-- Indexes for table `comunicado`
+--
+ALTER TABLE `comunicado`
+  ADD PRIMARY KEY (`comunicadoID`);
+
+--
+-- Indexes for table `comunicadogrupousuario`
+--
+ALTER TABLE `comunicadogrupousuario`
+  ADD PRIMARY KEY (`grupoID`,`comunicadoID`);
+
+--
+-- Indexes for table `comunicadousuario`
+--
+ALTER TABLE `comunicadousuario`
+  ADD PRIMARY KEY (`comunicadoID`,`usuarioID`);
 
 --
 -- Indexes for table `configuracaofatura`
@@ -664,6 +739,13 @@ ALTER TABLE `publicacao`
   ADD UNIQUE KEY `protocoloCompleto` (`protocoloCompleto`);
 
 --
+-- Indexes for table `publicacaoarquivo`
+--
+ALTER TABLE `publicacaoarquivo`
+  ADD PRIMARY KEY (`arquivoID`,`protocoloCompleto`),
+  ADD UNIQUE KEY `arquivo` (`arquivo`);
+
+--
 -- Indexes for table `situacao`
 --
 ALTER TABLE `situacao`
@@ -711,6 +793,12 @@ ALTER TABLE `caderno`
   MODIFY `cadernoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `comunicado`
+--
+ALTER TABLE `comunicado`
+  MODIFY `comunicadoID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `configuracaofatura`
 --
 ALTER TABLE `configuracaofatura`
@@ -720,7 +808,7 @@ ALTER TABLE `configuracaofatura`
 -- AUTO_INCREMENT for table `diariodata`
 --
 ALTER TABLE `diariodata`
-  MODIFY `diarioDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `diarioDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `diasnaouteis`
@@ -745,6 +833,12 @@ ALTER TABLE `migrations`
 --
 ALTER TABLE `orgaorequisitante`
   MODIFY `orgaoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `publicacaoarquivo`
+--
+ALTER TABLE `publicacaoarquivo`
+  MODIFY `arquivoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `situacao`
@@ -774,7 +868,7 @@ ALTER TABLE `tipodocumento`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

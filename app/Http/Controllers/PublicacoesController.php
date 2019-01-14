@@ -345,7 +345,7 @@ class PublicacoesController extends Controller
         switch ($this->validar($post)){
 
             case 1:
-                return redirect()->back()->with('erro', "Arquivo não deve exceder o tamanho de 30 MB!")->withInput();
+                return redirect()->back()->with('erro', "Arquivos não devem exceder o tamanho de 30 MB!")->withInput();
             break;
 
             case 2:

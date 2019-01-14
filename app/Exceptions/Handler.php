@@ -50,9 +50,7 @@ class Handler extends ExceptionHandler
     {
 
         if ($exception instanceof  \Illuminate\Http\Exceptions\PostTooLargeException) {
-
-            return redirect()->back()->with('erro', 'Erro de tamanho');
-
+            return response('file size error', '422');
         }
 
         return parent::render($request, $exception);
