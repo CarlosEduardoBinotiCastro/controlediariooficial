@@ -12,6 +12,8 @@ class Handler extends ExceptionHandler
      *
      * @var array
      */
+
+
     protected $dontReport = [
         //
     ];
@@ -46,6 +48,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+
+        if ($exception instanceof  \Illuminate\Http\Exceptions\PostTooLargeException) {
+
+            return redirect()->back()->with('erro', 'Erro de tamanho');
+
+        }
+
         return parent::render($request, $exception);
     }
 

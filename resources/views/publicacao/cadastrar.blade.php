@@ -112,11 +112,11 @@
                                 <br> <br>
 
                                 <div id="divArquivo">
-                                    <input type="file" class="form-control-file" name="arquivo0" id="file" required>
+                                    <input type="file" class="form-control-file" name="arquivo0" id="file0" required>
                                 </div>
 
                                 <strong><sub style="font-size:90%;">Somente arquivos nas extensões 'pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx' e 'xls'. <br>
-                                Tamanho máximo: 30 MB</sub></strong>
+                                Tamanho máximo dos arquivos somados: 30 MB</sub></strong>
                             </div>
 
                             {{-- Relecionado com o lado do botão --}}
@@ -206,9 +206,23 @@
 
          $('#form').submit( function(e){
              if($("#form").valid()){
+                var filesSize = 0;
+                var i;
+                for( i = 0; i <= numeroArquivos; i++){
+                    var fileNumber = "file"+i;
+                    filesSize += ($("#"+fileNumber+""))[0].files[0].size;
+                }
+                filesSize = (filesSize/1024/1024);
+
+                if(filesSize < 30){
                     $("#carregando").css('display', 'block');
                     $("#pagina").css('display', 'none');
                     $('#Erro').css('display', 'none');
+                }else{
+                    e.preventDefault();
+                    alert("O tamanho dos arquivos não podem passar de 30MB!");
+                }
+
              }
          });
 
@@ -281,7 +295,6 @@
             var div = $("#divArquivo");
             div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;" required>');
          });
-
 
     });
 </script>

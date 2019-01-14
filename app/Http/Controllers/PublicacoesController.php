@@ -498,7 +498,6 @@ class PublicacoesController extends Controller
 
                     } catch (\Exception $e) {
 
-
                         foreach ($this->arquivos as $arquivo) {
                             if(file_exists(storage_path("app/".$arquivo))){
                                 Storage::delete([$arquivo]);
@@ -556,7 +555,7 @@ class PublicacoesController extends Controller
         if(!isset($request['manterArquivo'])){
 
             // Foreach para cada arquivo no upload
-
+            $tamanhoArquivo = 0;
             foreach ($request[0] as $arquivo) {
 
                 $extensões = array('pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx', 'xls');
@@ -566,11 +565,11 @@ class PublicacoesController extends Controller
                     return 2;
                 }
 
-                $tamanhoArquivo = ((filesize($arquivo) / 1024)/1024);
-                if($tamanhoArquivo >= 30){
-                    return 1;
-                }
+                $tamanhoArquivo += ((filesize($arquivo) / 1024)/1024);
+            }
 
+            if($tamanhoArquivo > 30){
+                return 1;
             }
         }
 

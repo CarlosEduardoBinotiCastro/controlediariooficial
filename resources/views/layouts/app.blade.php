@@ -82,7 +82,7 @@
             color: gray !important;
          }
         .select2 {
-
+            width: 100% !important;
             border-width: 1px !important;
             border-radius: 5px !important;
         }
@@ -97,7 +97,6 @@
             font-size: 15px!important;
             border-width: 1px !important;
             margin-left: -1px!important;
-
         }
 
     </style>
