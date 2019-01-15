@@ -174,7 +174,9 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                           <a class="dropdown-item" href="/fatura/listar">Listar</a>
                                           <a class="dropdown-item" href="/fatura/cadastrar">Cadastrar</a>
-                                          <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
+                                            @if (Gate::allows('administrador', Auth::user()))
+                                                <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
+                                            @endif
                                           <a class="dropdown-item" href="/fatura/relatorio">Relatório Quantitativo Por Período</a>
                                           <a class="dropdown-item" href="/fatura/relatorioDetalhado">Relatório Detalhado</a>
                                         </div>

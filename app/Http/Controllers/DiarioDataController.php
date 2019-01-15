@@ -84,7 +84,7 @@ class DiarioDataController extends Controller
             $data = $data->format('d/m/Y');
 
 
-            if($data <= date('d/m/Y')){
+            if($data < date('d/m/Y')){
                 return redirect()->back()->with(["erro" => "Impossível editar datas passadas !"]);
             }else{
                 return view('diariodata.editar', ['diarioData' => $diarioData, 'publicacoes' => $publicacoes]);
@@ -109,7 +109,7 @@ class DiarioDataController extends Controller
 
             $publicacoes = Publicacao::orderBy('dataEnvio');
             $publicacoes = $publicacoes->where('diarioDataID', '=', $id)->get();
-            $faturas = Fatura::orderBy('dataEnvio');
+            $faturas = Fatura::orderBy('dataEnvioFatura');
             $faturas = $faturas->where('diarioDataID', '=', $id)->get();
 
             // validar deletar OBS**
@@ -119,7 +119,7 @@ class DiarioDataController extends Controller
                     $data = new DateTime($dataDiario->diarioData);
                     $data = $data->format('d/m/Y');
 
-                    if($data <= date('d/m/Y')){
+                    if($data < date('d/m/Y')){
                         return redirect()->back()->with(["erro" => "Impossível deletar datas passadas !"]);
                     }else{
                         $diarioData->where('diarioDataID', '=', $id)->delete();

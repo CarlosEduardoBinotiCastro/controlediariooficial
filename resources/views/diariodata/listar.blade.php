@@ -79,7 +79,7 @@
                 $data = new DateTime($diario->diarioData);
                 $data = $data->format('d/m/Y');
 
-                if($diario->diarioData <= date('Y-m-d')){
+                if($diario->diarioData < date('Y-m-d')){
                     $dataPassada = true;
                 }else{
                     $dataPassada = false;

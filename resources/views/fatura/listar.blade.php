@@ -70,7 +70,16 @@
                                         <select style="resize:none; width: 100px;" class="custom-select" name="situacao" >
                                                 <option slected value="tudo">Situação</option>
                                             @foreach ($situacoes as $situacao)
-                                                <option value=" {{$situacao->situacaoNome}} "> {{$situacao->situacaoNome}} </option>
+                                                <option value=" {{$situacao->situacaoNome}} "> @if ($situacao->situacaoNome == "Aceita")
+                                                    Paga
+                                                @else
+                                                    @if ($situacao->situacaoNome == "Enviada")
+                                                        Cadastrada
+                                                    @else
+                                                        {{$situacao->situacaoNome}}
+                                                    @endif
+                                                @endif
+                                                 </option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -94,6 +103,7 @@
                         <thead>
 
                             <th>Protocolo</th>
+                            <th>Data Envio</th>
                             <th>CPF/CNPJ</th>
                             <th>Empresa</th>
                             <th>Subcategoria</th>
@@ -115,6 +125,13 @@
 
                             <tr>
                                 <td>{{$fatura->protocoloCompleto}}</td>
+
+                                @php
+                                    $dataEnvioFatura = new DateTime($fatura->dataEnvioFatura);
+                                    $dataEnvioFatura = $dataEnvioFatura->format('d/m/Y H:i:s');
+                                @endphp
+
+                                <td> {{$dataEnvioFatura}}</td>
 
                                 @php
                                     // Calculo da mascara do cpf ou cnpj
@@ -160,10 +177,10 @@
 
                                 {{-- Trocar a Cor da situação de acordo com o valor --}}
                                 @if($fatura->situacaoNome == "Enviada")
-                                    <td> <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                    <td> <p  class="form-control" style="text-align:center; border-color:blue; background-color:transparent; color:blue;"><b>Cadastrada</b> </p> </td>
                                 @else
                                     @if($fatura->situacaoNome == "Aceita")
-                                        <td> <p  class="form-control" style="text-align:center; border-color:darkgreen; background-color:transparent; color:darkgreen;"><b>{{$fatura->situacaoNome}}</b> </p> </td>
+                                        <td> <p  class="form-control" style="text-align:center; border-color:darkgreen; background-color:transparent; color:darkgreen;"><b>Paga</b> </p> </td>
                                     @else
                                         @if($fatura->situacaoNome == "Publicada")
                                             <td> <p  class="form-control" style="text-align:center; border-color:limegreen; background-color:transparent; color:limegreen;"> <b> {{$fatura->situacaoNome}} </b> </p> </td>
@@ -189,7 +206,7 @@
                                         <button class="btn btn-success" data-toggle="modal" data-target="#modalPublicar{{$fatura->protocoloCompleto}}" style="width:75px">Publicar</button>
                                     @endif
 
-                                    @if ($fatura->situacaoNome != "Apagada")
+                                    @if ($fatura->situacaoNome != "Apagada"  && Gate::allows('administrador', Auth::user()) && $fatura->situacaoNome != "Publicada")
                                         @php
                                             $modalApagar = true;
                                         @endphp
@@ -340,10 +357,10 @@
                             </div>
                             <div class="modal-body">
 
-                                <p> <strong> Enviada: </strong> </p>
+                                <p> <strong> Cadastrada: </strong> </p>
                                 <p> Fatura enviada para o sistema, aguardando pagamento, para ser aceita.</p>
 
-                                <p> <strong> Aceita: </strong> </p>
+                                <p> <strong> Paga: </strong> </p>
                                 <p> Fatura paga, aguardando ser publicada</p>
 
                                 <p> <strong> Rejeitada: </strong> </p>

@@ -49,6 +49,33 @@
                             </div>
                         </div>
 
+                        {{--Teste--}}
+
+                        <div class="form-group row">
+                                <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Email') }} </label>
+
+                                <div class="col-md-6">
+                                    <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" minlength="7" placeholder="exemplo@exemplo.com" autofocus>
+                                </div>
+                        </div>
+
+                        <div class="form-group row">
+                                <label for="telefoneFixo" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Fixo') }} </label>
+
+                                <div class="col-md-6">
+                                    <input id="telefoneFixo" type="text" class="form-control{{ $errors->has('telefoneFixo') ? ' is-invalid' : '' }}" name="telefoneFixo" value="{{ old('telefoneFixo') }}" minlength="10" placeholder="(XX)XXXX-XXXX" autofocus>
+                                </div>
+                        </div>
+
+                        <div class="form-group row">
+                                <label for="telefoneCelular" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Celular') }} </label>
+                                <div class="col-md-6">
+                                    <input id="telefoneCelular" type="text" class="form-control{{ $errors->has('telefoneCelular') ? ' is-invalid' : '' }}" name="telefoneCelular" value="{{ old('telefoneCelular') }}" minlength="11" placeholder="(XX)XXXXX-XXXX" autofocus>
+                                </div>
+                        </div>
+
+                        {{--Teste--}}
+
                         <div class="form-group row">
                             <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('CPF / CNPJ') }} <span style="color:red;">*</span></label>
 
@@ -221,6 +248,11 @@
             }
         });
 
+        $("#telefoneFixo").attr('maxlength',10);
+        $("#telefoneFixo").mask('(00)0000-0000');
+
+        $("#telefoneCelular").attr('maxlength',11);
+        $("#telefoneCelular").mask('(00)00000-0000');
 
         $("#numeroDoc").attr('maxlength',11);
         $("#numeroDoc").mask('000.000.000-00', {reverse: true});

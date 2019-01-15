@@ -23,7 +23,6 @@
 
                 <div class="card-body">
 
-
                     <form id="form" action="/fatura/salvar" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="arquivoOriginal" value=" {{$fatura['arquivoOriginal']}} ">
@@ -47,6 +46,40 @@
                                     <input  id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }}" name="empresa" value="{{$fatura['empresa']}}" readonly autofocus>
                                 </div>
                             </div>
+
+
+
+                            @if ($fatura['email'] != null)
+                                <div class="form-group row">
+                                        <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('email') }}</label>
+
+                                        <div class="col-md-6">
+                                            <input  id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{$fatura['email']}}" readonly autofocus>
+                                        </div>
+                                </div>
+                            @endif
+
+                            @if ($fatura['telefoneFixo'] != null)
+                                <div class="form-group row">
+                                        <label for="telefoneFixo" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Fixo') }}</label>
+
+                                        <div class="col-md-6">
+                                            <input  id="telefoneFixo" type="text" class="form-control{{ $errors->has('telefoneFixo') ? ' is-invalid' : '' }}" name="telefoneFixo" value="{{$fatura['telefoneFixo']}}" readonly autofocus>
+                                        </div>
+                                </div>
+                            @endif
+
+                            @if ($fatura['telefoneCelular'] != null)
+                                <div class="form-group row">
+                                        <label for="telefoneCelular" class="col-md-4 col-form-label text-md-right">{{ __('Telefone Celular') }}</label>
+
+                                        <div class="col-md-6">
+                                            <input  id="telefoneCelular" type="text" class="form-control{{ $errors->has('telefoneCelular') ? ' is-invalid' : '' }}" name="telefoneCelular" value="{{$fatura['telefoneCelular']}}" readonly autofocus>
+                                        </div>
+                                </div>
+                            @endif
+
+
 
                             <div class="form-group row">
                                 <label for="tipoDoc" class="col-md-4 col-form-label text-md-right">{{ __('Documento') }}</label>

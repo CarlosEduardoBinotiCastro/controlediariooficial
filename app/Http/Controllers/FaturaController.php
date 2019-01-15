@@ -503,7 +503,7 @@ class FaturaController extends Controller
             if($request->subcategoriaID == "NaoPossui"){
                 $request->subcategoriaID = null;
             }
-            DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'arquivoFormatado' => $this->fileFormatado, 'arquivoVisualizacao' => $this->fileVisualizado, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id]);
+            DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'arquivoFormatado' => $this->fileFormatado, 'arquivoVisualizacao' => $this->fileVisualizado, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id, 'telefoneFixo' => $request->telefoneFixo, 'telefoneCelular' => $request->telefoneCelular, 'email' => $request->email]);
 
             $this->diretorio = $protocolo.date('Y').'FAT';
 
@@ -1633,8 +1633,8 @@ class FaturaController extends Controller
         }
     }
 
-    public function chamarAceita(){
-        return redirect()->route('listarFaturas', ['cpfCnpj' => "tudo", 'protocolo' => "tudo", 'diario' => "tudo", 'situacao' => "Aceita", 'empresa' => "tudo", 'subcategoria' => "tudo"]);
+    public function chamarCadastradas(){
+        return redirect()->route('listarFaturas', ['cpfCnpj' => "tudo", 'protocolo' => "tudo", 'diario' => "tudo", 'situacao' => "Enviada", 'empresa' => "tudo", 'subcategoria' => "tudo"]);
     }
 
 
@@ -1676,12 +1676,79 @@ class FaturaController extends Controller
 
     }
 
+    public function editarAnotacao(Request $request){
+
+        $fatura = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $request->protocolo)->first();
+
+        if(strlen($request->anotacao) > 255){
+            return redirect()->back()->with('erro', 'Observação com tamanho excedido!');
+        }
+
+        if($fatura != null){
+            if($fatura->situacaoID != 4){
+                return redirect()->back()->with('erro', 'Somente faturas Cadastradas podem realizar essa ação!');
+            }
+        }else{
+            return redirect()->back()->with('erro', 'Protocolo Não Existente!');
+        }
+
+        $faturaEdit = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $request->protocolo)->update(['observacao' => $request->observacao]);
+        return redirect()->back()->with('sucesso', 'Observação Adicionada!');
+    }
 
 
+    public function anexarDAM(Request $request){
+
+        $fatura = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $request->protocolo)->first();
+
+        if(((filesize($request->arquivo) / 1024)/1024) > 30){
+            return redirect()->back()->with('erro', 'Tamanho do arquivo excedido!');
+        }
+
+        if($fatura != null){
+            if($fatura->situacaoID != 4){
+                return redirect()->back()->with('erro', 'Somente faturas Cadastradas podem realizar essa ação!');
+            }
+        }else{
+            return redirect()->back()->with('erro', 'Protocolo Não Existente!');
+        }
+
+        try {
+            $fileName = "DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
+            $request->arquivo->storeAs($request->protocolo."/", $fileName);
+
+            $faturaEdit = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $request->protocolo)->update(['dam' => $fileName]);
+
+            return redirect()->back()->with('DAM', 'Dam Anexado!');
+
+        } catch (\Exception $e) {
+
+            if(file_exists(storage_path($request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION))){
+                File::delete(storage_path($request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION));
+            }
+
+            return redirect()->back()->with('erro', 'Erro ao Anexar o DAM!'.$e->getMessage());
+
+        }
+
+    }
 
 
+    public function downloadDAM($protocolo){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
+                $fatura = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $protocolo)->first();
+                try {
+                    return Response::download(storage_path("app/".$protocolo."/".$fatura->dam));
 
+                } catch (\Exception $e) {
 
+                    return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
+
+                }
+        }else{
+            return redirect('home');
+        }
+    }
 
 
 

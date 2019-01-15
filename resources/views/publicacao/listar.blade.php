@@ -38,8 +38,8 @@
             @if(sizeof($faturas) > 0 && Gate::allows('cadernoFatura', Auth::user()))
                 <br>
                 <div class="form-group mb-0 alert alert-success" style="font-size:20px">
-                    Existem Faturas aceitas e esperando para serem publicadas !
-                    <a href="/fatura/irParaAceita" class="btn btn-success" style="margin-left:2%;">Ver Faturas</a>
+                    Existem Faturas esperando para serem aceitas!
+                    <a href="/fatura/irParaCadastradas" class="btn btn-success" style="margin-left:2%; float:right;">Ver Faturas</a>
                 </div>
 
             @endif

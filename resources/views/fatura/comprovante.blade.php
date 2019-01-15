@@ -10,6 +10,7 @@
     p:last-child { page-break-after: never; }
     .spanFooter{color:white; font-weight: bold; text-align: center;}
 
+    .infoRows{margin: 2px !important;}
 
     table.blueTable {
       border: 1px solid #1C6EA4;
@@ -138,17 +139,16 @@
         <span class="spanFooter"> Atendimento: Segunda à Sexta, 09:00h às 18:00h </span>
   </footer>
   <main>
-        <h2> Comprovante De Envio de Fatura </h2> <br>
+        <h2> Comprovante De Envio de Fatura </h2>
 
         <span>Protocolo: <b>{{$fatura->protocoloCompleto}}</b> </span> {{--Protocolo--}}
 
         <br><br>
 
         <span> O <b>DEPARTAMENTO DO DIÁRIO OFICIAL</b> declara que o conteúdo abaixo foi recebido pelo sistema Diário Oficial de Cachoeiro de Itapemirim, para publicação
-                no Diário Oficial na Categoria e Data descritas abaixo, sendo de exclusiva responsabilidade do Usuário Publicador o conteúdo da
-                matéria e a data de publicação selecionada.</span>
+                no Diário Oficial na Categoria e Data descritas abaixo. </span>
 
-        <br><br>
+
 
         <h3>Remetente</h3>
 
@@ -156,15 +156,15 @@
                 <tbody>
 
                 <tr>
-                     <td style="width: 50% !important; margin-top:1% !important;">Nome do Cliente</td>
-                     <td style="width: 50% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->requisitante}} </td></tr>
+                     <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Nome do Cliente</td>
+                     <td class="infoRows" style="width: 50% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->requisitante}} </td></tr>
 
                 <tr>
-                       <td style="width: 50% !important; margin-top:1% !important;">Empresa</td>
-                       <td style="width: 50% !important; margin-top:1% !important;"> {{$fatura->empresa}} </td></tr>
+                       <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Empresa</td>
+                       <td class="infoRows" style="width: 50% !important; margin-top:1% !important;"> {{$fatura->empresa}} </td></tr>
 
                 <tr>
-                     <td style="width: 50% !important; margin-top:1% !important;">CPF/CNPJ</td>
+                     <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">CPF/CNPJ</td>
 
                      @php
                      // Calculo da mascara do cpf ou cnpj
@@ -194,11 +194,11 @@
 
                      @endphp
 
-                     <td style="width: 50% !important; margin-top:1% !important;"> {{$maskared}} </td></tr>
+                     <td class="infoRows" style="width: 50% !important; margin-top:1% !important;"> {{$maskared}} </td></tr>
 
                 <tr>
-                    <td style="width: 50% !important; margin-top:1% !important;">Publicador</td>
-                    <td style="width: 50% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->usuarioNome}} </td></tr>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Publicador</td>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->usuarioNome}} </td></tr>
 
 
                     @php
@@ -207,14 +207,35 @@
                     @endphp
 
                 <tr>
-                    <td style="width: 50% !important; margin-top:1% !important;">Data Recebimento</td>
-                    <td style="width: 50% !important; margin-top:1% !important;"> {{$data}} </td></tr>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Data Recebimento</td>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important;"> {{$data}} </td></tr>
+
+
+                    @if ($fatura->email != null)
+                        <tr>
+                            <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Email</td>
+                            <td class="infoRows" style="width: 50% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->email}} </td></tr>
+
+                    @endif
+
+                    @if ($fatura->telefoneFixo != null)
+                        <tr>
+                            <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Telefone Fixo</td>
+                            <td class="infoRows" style="width: 50% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->telefoneFixo}} </td></tr>
+
+                    @endif
+
+                    @if ($fatura->telefoneCelular != null)
+                        <tr>
+                            <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Telefone Celular</td>
+                            <td class="infoRows" style="width: 50% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->telefoneCelular}} </td></tr>
+                    @endif
 
                   </tbody>
 
         </table>
 
-        <br>
+
 
         <h3>Identificação da Matéria</h3>
 
@@ -223,17 +244,17 @@
 
 
                 <tr>
-                    <td style="width: 50% !important; margin-top:1% !important;">Matéria</td>
-                    <td style="width: 50% !important; margin-top:1% !important;"> {{$fatura->tipoDocumento}} </td></tr>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Matéria</td>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important;"> {{$fatura->tipoDocumento}} </td></tr>
 
                 @if ($fatura->subcategoriaNome != null)
                     <tr>
-                        <td style="width: 50% !important; margin-top:1% !important;">Subcategoria</td>
-                        <td style="width: 50% !important; margin-top:1% !important;">{{$fatura->subcategoriaNome}}</td></tr>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Subcategoria</td>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">{{$fatura->subcategoriaNome}}</td></tr>
                 @else
                     <tr>
-                        <td style="width: 50% !important; margin-top:1% !important;">Subcategoria</td>
-                        <td style="width: 50% !important; margin-top:1% !important;">Não Possui</td></tr>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Subcategoria</td>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Não Possui</td></tr>
                 @endif
 
 
@@ -245,18 +266,18 @@
                 @endphp
 
                     <tr>
-                        <td style="width: 50% !important; margin-top:1% !important;">Data Publicação</td>
-                        <td style="width: 50% !important; margin-top:1% !important;">{{$dataPub}}</td></tr>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Data Publicação</td>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">{{$dataPub}}</td></tr>
 
                     <tr>
-                        <td style="width: 50% !important; margin-top:1% !important;">Número Diário</td>
-                        <td style="width: 50% !important; margin-top:1% !important;">{{$fatura->numeroDiario}}</td></tr>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Número Diário</td>
+                        <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">{{$fatura->numeroDiario}}</td></tr>
 
                 @endif
 
                 <tr>
-                    <td style="width: 50% !important; margin-top:1% !important;">Situação</td>
-                    <td style="width: 50% !important; margin-top:1% !important;"> {{$fatura->situacaoNome}} </td></tr>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important;">Situação</td>
+                    <td class="infoRows" style="width: 50% !important; margin-top:1% !important;"> {{$fatura->situacaoNome}} </td></tr>
 
                   </tbody>
 
@@ -282,6 +303,11 @@
 
         </table>
 
+        <br>
+        <div id="informações" style="text-align:justify !important; ">
+                <b>
+                   A publicação do conteúdo será efetivada após a confirmaçõa do pagamento do boleto (DAM), que pode levar até 72 horas após o pagamento. </b>
+        </div>
 
   </main>
 </body>

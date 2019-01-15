@@ -39,9 +39,18 @@
                                 <label class="col-md-3 text-md-right">Situação</label>
                                 <select class="custom-select col-md-6" name="situacao" >
                                         <option slected value="tudo">Todos</option>
-                                        <option  value="Aceita-Publicada">Aceita e Publicada</option>
+                                        <option  value="Aceita-Publicada">Paga e Publicada</option>
                                     @foreach ($situacoes as $situacao)
-                                        <option value=" {{$situacao->situacaoNome}} "> {{$situacao->situacaoNome}} </option>
+                                        <option value=" {{$situacao->situacaoNome}} "> @if ($situacao->situacaoNome == "Aceita")
+                                            Paga
+                                        @else
+                                            @if ($situacao->situacaoNome == "Enviada")
+                                                Cadastrada
+                                            @else
+                                                {{$situacao->situacaoNome}}
+                                            @endif
+                                        @endif
+                                         </option>
                                     @endforeach
                                 </select>
                             </div>

@@ -86,7 +86,7 @@
         var today = new Date().toISOString().split('T')[0];
 
         var date =  today.split('-');
-        var dia = parseInt(date[2])+1;
+        var dia = parseInt(date[2]);
 
         if(dia <= 9){
             dia = "0"+(parseInt(date[2])+1).toString();

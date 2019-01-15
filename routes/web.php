@@ -162,6 +162,7 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::post('/chamarListar', 'FaturaController@listarFiltro');
 
     Route::get('/downloadOriginal/{protocolo}', 'FaturaController@downloadOriginal');
+    Route::get('/downloadDAM/{protocolo}', 'FaturaController@downloadDAM');
     Route::get('/downloadFormatado/{protocolo}', 'FaturaController@downloadFormatado');
     Route::get('/downloadComprovantePago/{protocolo}', 'FaturaController@downloadComprovantePago');
     Route::get('/downloadTemp/{arquivoFormatadoTemp}', 'FaturaController@downloadTemp');
@@ -181,8 +182,13 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::post('/relatorioDetalhadoFiltro', 'FaturaController@relatorioDetalhadoFiltro');
 
     // chamar aceitas
-    Route::get('/irParaAceita', 'FaturaController@chamarAceita');
+    Route::get('/irParaCadastradas', 'FaturaController@chamarCadastradas');
 
+    //editar anotações
+    Route::post('/editarAnotacao', 'FaturaController@editarAnotacao');
+
+    //editar anotações
+    Route::post('/anexarDam', 'FaturaController@anexarDAM');
 
     // Area de teste
     Route::get('/testeDoc', 'FaturaController@convertToText');

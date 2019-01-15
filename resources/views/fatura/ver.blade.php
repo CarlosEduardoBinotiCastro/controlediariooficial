@@ -16,6 +16,19 @@
 
 <br>
 
+<div id="DAM" class="container">
+        <div class="col-md-8 offset-md-2">
+            @if(session()->has('DAM'))
+                <br>
+                <div class="form-group row mb-0 alert alert-success" style="font-size:20px">
+                    {{ session()->get('DAM') }}
+                </div>
+            @endif
+            </div>
+</div>
+
+<br>
+
 <div class="container" id="pagina">
     <div class="row justify-content-center">
         <div class="col-md-7">
@@ -46,6 +59,30 @@
                                     </div>
                             </div>
 
+                            @if ($fatura->email != null)
+                                <div class="form-group row">
+                                        <div class="col-md-10">
+                                            <p>Email: <strong>{{$fatura->email}} </strong></p>
+                                        </div>
+                                </div>
+                            @endif
+
+                            @if ($fatura->telefoneFixo != null)
+                                <div class="form-group row">
+                                        <div class="col-md-10">
+                                            <p>Telefone Fixo: <strong>{{$fatura->telefoneFixo}}</strong></p>
+                                        </div>
+                                </div>
+                            @endif
+
+                            @if ($fatura->telefoneCelular != null)
+
+                                <div class="form-group row">
+                                        <div class="col-md-10">
+                                            <p>Telefone Celular: <strong>{{$fatura->telefoneCelular}}</strong></p>
+                                        </div>
+                                </div>
+                            @endif
 
                             @php
                                     // Calculo da mascara do cpf ou cnpj
@@ -99,12 +136,35 @@
 
 
                             <div class="form-group row">
+
                                     <div class="col-md-10">
                                         <span>Observações: </span>
                                     </div>
-                                    <div class="col-md-10">
-                                        <textarea disabled cols="60" rows="4" class="form-control"> {{$fatura->observacao}} </textarea>
+                                    <div class="col-md-8">
+                                            @if(session()->has('sucesso'))
+
+                                                <div class="alert alert-success" style="font-size:15px;">
+                                                    {{ session()->get('sucesso') }}
+                                                </div>
+                                            @endif
                                     </div>
+                                    @if (Gate::allows('administrador', Auth::user()) && $fatura->situacaoID == 4)
+
+                                        <form action="/fatura/editarAnotacao" method="POST">
+                                            @csrf
+                                            <div class="col-md-10">
+                                                <textarea cols="60" rows="4" class="form-control" name="observacao"> {{$fatura->observacao}} </textarea>
+                                                <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
+                                                <input type="submit" value="Adicionar Anotação" name="enviar" class="btn btn-primary" style="margin-top:2%; margin-left:2%;">
+                                            </div>
+
+                                        </form>
+                                    @else
+                                        <div class="col-md-10">
+                                            <textarea disabled cols="60" rows="4" class="form-control"> {{$fatura->observacao}} </textarea>
+                                        </div>
+                                    @endif
+
                             </div>
 
 
@@ -177,7 +237,17 @@
 
                             <div class="form-group row">
                                     <div class="col-md-10">
-                                        <p>Situação: <strong>{{$fatura->situacaoNome}} </strong> </p>
+                                        <p>Situação: <strong> @if ($fatura->situacaoNome == "Aceita")
+                                                                    Paga
+                                                                @else
+                                                                    @if ($fatura->situacaoNome == "Enviada")
+                                                                        Cadastrada
+                                                                    @else
+                                                                        {{$fatura->situacaoNome}}
+                                                                    @endif
+                                                                @endif
+                                                    </strong>
+                                        </p>
                                     </div>
                             </div>
 
@@ -195,6 +265,30 @@
                             @endif
 
 
+                            @if ($fatura->dam == null && Gate::allows('faturas', Auth::user()) && $fatura->situacaoID == 4)
+
+                                <form action="/fatura/anexarDam" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-group row">
+                                        <div class="col-md-10">
+                                                <p><b> Anexar DAM: </b></p>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="file" name="arquivo" required>
+                                        </div>
+                                        <div class="col-md-10">
+                                                <strong><sub style="font-size:90%;">Tamanho máximo: 30 MB</sub></strong>
+                                                <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
+                                        </div>
+                                        <div class="col-md-10">
+                                                <input type="submit" value="Anexar" name="enviar" class="btn btn-primary" style="margin-top:2%;">
+                                                <a target="_blank" href="http://www.cachoeiro.es.gov.br/servicos/site.php?nomePagina=SERDAMTP" class="btn btn-primary" style="color:white; margin-top:2%;" >Emitir DAM</a>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            @endif
+
                             <div class="form-group row">
 
                                     @php
@@ -203,7 +297,7 @@
                                         $modalRejeitar = false;
                                     @endphp
 
-                                    @if ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome == "Rejeitada")
+                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome == "Rejeitada") && Gate::allows('administrador', Auth::user()))
                                         @php
                                             $modalAceitar = true;
                                         @endphp
@@ -212,7 +306,7 @@
                                         </div>
                                     @endif
 
-                                    @if ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome =="Aceita")
+                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome =="Aceita")  && Gate::allows('administrador', Auth::user()) )
                                         @php
                                             $modalRejeitar = true;
                                         @endphp
@@ -253,6 +347,14 @@
                                         <div class="form-group row">
                                                 <div class="col-md-6 offset-md-4">
                                                     <a href="/fatura/downloadComprovantePago/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Comprovante Pago</a>
+                                                </div>
+                                        </div>
+                                    @endif
+
+                                    @if ($fatura->dam != null)
+                                        <div class="form-group row">
+                                                <div class="col-md-6 offset-md-4">
+                                                    <a href="/fatura/downloadDAM/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Download DAM</a>
                                                 </div>
                                         </div>
                                     @endif
@@ -419,7 +521,7 @@
                     <div class='modal-dialog row justify-content-center'>
                         <div class="modal-content">
                                 <div class="modal-header">
-                                    <Strong class=" offset-md-4" > Confirmar Aceitar </Strong>
+                                    <Strong class=" offset-md-4" > Confirmar Pagamento </Strong>
                                 </div>
                                 <div class="modal-body">
 
@@ -436,12 +538,12 @@
                                     <br> <br> <br>
 
                                     <p> Ao realizar esta ação, você confirma que ouve pagamento dessa fatura!</p>
-                                    <p><strong>Deseja realmente Aceitar?</strong></p>
+                                    <p><strong>Deseja realmente confirmar?</strong></p>
 
                                     <div>
                                             <div style="float: left;" class="offset-md-3">
                                                 <div>
-                                                    <button id="btnAceitar" class="btn btn-success" name="publicar">Confirmar Aceitar</button>
+                                                    <button id="btnAceitar" class="btn btn-success" name="publicar">Confirmar</button>
                                                 </div>
                                             </div>
                                             <div style="float: left; margin-left:2%;">
