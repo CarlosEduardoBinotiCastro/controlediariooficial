@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 14-Jan-2019 às 14:47
+-- Generation Time: 16-Jan-2019 às 17:00
 -- Versão do servidor: 10.1.36-MariaDB
 -- versão do PHP: 7.2.10
 
@@ -236,7 +236,21 @@ INSERT INTO `diariodata` (`diarioDataID`, `diarioData`, `numeroDiario`) VALUES
 (36, '2019-01-08', '5736'),
 (37, '2019-01-09', '5737'),
 (38, '2019-01-10', '5738'),
-(39, '2019-01-31', 'teste');
+(41, '2019-01-16', '5742'),
+(42, '2019-01-17', '5743'),
+(43, '2019-01-18', '5744'),
+(44, '2019-01-11', '5739'),
+(45, '2019-01-14', '5740'),
+(46, '2019-01-15', '5741'),
+(47, '2019-01-21', '5745'),
+(48, '2019-01-22', '5746'),
+(49, '2019-01-23', '5747'),
+(50, '2019-01-24', '5748'),
+(51, '2019-01-25', '5749'),
+(52, '2019-01-28', '5750'),
+(53, '2019-01-29', '5751'),
+(54, '2019-01-30', '5752'),
+(55, '2019-01-31', '5753');
 
 -- --------------------------------------------------------
 
@@ -297,19 +311,24 @@ CREATE TABLE `fatura` (
   `arquivoOriginal` varchar(255) NOT NULL,
   `arquivoFormatado` varchar(255) NOT NULL,
   `arquivoVisualizacao` varchar(255) NOT NULL,
+  `dam` varchar(255) DEFAULT NULL,
   `comprovantePago` varchar(150) DEFAULT NULL,
   `situacaoID` int(11) NOT NULL,
-  `descricaoCancelamento` varchar(255) DEFAULT NULL
+  `descricaoCancelamento` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `telefoneFixo` varchar(13) DEFAULT NULL,
+  `telefoneCelular` varchar(14) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `fatura`
 --
 
-INSERT INTO `fatura` (`protocolo`, `protocoloAno`, `protocoloCompleto`, `dataEnvioFatura`, `tipoID`, `subcategoriaID`, `usuarioID`, `largura`, `centimetragem`, `valorColuna`, `valor`, `diarioDataID`, `observacao`, `cpfCnpj`, `empresa`, `requisitante`, `arquivoOriginal`, `arquivoFormatado`, `arquivoVisualizacao`, `comprovantePago`, `situacaoID`, `descricaoCancelamento`) VALUES
-(0, 2019, '02019FAT', '2019-01-10 10:34:55', 53, 10, 17, 9.2, 2.84, 18.85, 53.53, NULL, NULL, '12532983000196', 'Lava Jato Boa Aparência', 'Júlio Cesar da Silva', '12532983000196-2019-01-10-10-34-16.docx', '12532983000196-2019-01-10-10-34-16_format.docx', '12532983000196-2019-01-10-10-34-16_visualizacao.pdf', NULL, 4, NULL),
-(1, 2019, '12019FAT', '2019-01-10 10:56:15', 53, 10, 17, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '06895138000182', 'J.S. Industria de Carrocerias Ltda', 'Maria Helena Martelete', '06895138000182-2019-01-10-10-56-06.docx', '06895138000182-2019-01-10-10-56-06_format.docx', '06895138000182-2019-01-10-10-56-06_visualizacao.pdf', NULL, 4, NULL),
-(2, 2019, '22019FAT', '2019-01-10 11:14:06', 53, 10, 17, 9.2, 3.65, 18.85, 68.8, NULL, NULL, '03996973000110', 'Mocapri Marmores e Granitos Ltda', 'Maria Helena Martelete', '03996973000110-2019-01-10-11-14-00.docx', '03996973000110-2019-01-10-11-14-00_format.docx', '03996973000110-2019-01-10-11-14-00_visualizacao.pdf', NULL, 4, NULL);
+INSERT INTO `fatura` (`protocolo`, `protocoloAno`, `protocoloCompleto`, `dataEnvioFatura`, `tipoID`, `subcategoriaID`, `usuarioID`, `largura`, `centimetragem`, `valorColuna`, `valor`, `diarioDataID`, `observacao`, `cpfCnpj`, `empresa`, `requisitante`, `arquivoOriginal`, `arquivoFormatado`, `arquivoVisualizacao`, `dam`, `comprovantePago`, `situacaoID`, `descricaoCancelamento`, `email`, `telefoneFixo`, `telefoneCelular`) VALUES
+(0, 2019, '02019FAT', '2019-01-10 10:34:55', 53, 10, 17, 9.2, 2.84, 18.85, 53.53, 45, NULL, '12532983000196', 'Lava Jato Boa Aparência', 'Júlio Cesar da Silva', '12532983000196-2019-01-10-10-34-16.docx', '12532983000196-2019-01-10-10-34-16_format.docx', '12532983000196-2019-01-10-10-34-16_visualizacao.pdf', NULL, '02019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
+(1, 2019, '12019FAT', '2019-01-10 10:56:15', 53, 10, 17, 9.2, 4.06, 18.85, 76.53, 45, NULL, '06895138000182', 'J.S. Industria de Carrocerias Ltda', 'Maria Helena Martelete', '06895138000182-2019-01-10-10-56-06.docx', '06895138000182-2019-01-10-10-56-06_format.docx', '06895138000182-2019-01-10-10-56-06_visualizacao.pdf', NULL, '12019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
+(2, 2019, '22019FAT', '2019-01-10 11:14:06', 53, 10, 17, 9.2, 3.65, 18.85, 68.8, 45, NULL, '03996973000110', 'Mocapri Marmores e Granitos Ltda', 'Maria Helena Martelete', '03996973000110-2019-01-10-11-14-00.docx', '03996973000110-2019-01-10-11-14-00_format.docx', '03996973000110-2019-01-10-11-14-00_visualizacao.pdf', NULL, '22019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
+(5, 2019, '52019FAT', '2019-01-14 17:36:03', 53, 11, 15, 9.2, 4.06, 18.85, 112.93, 37, NULL, '28129260000857', 'Drift Comércio de Alimentos S/A', 'Jerlen', '28129260000857-2019-01-14-17-34-39.docx', '28129260000857-2019-01-14-17-34-39_format.docx', '28129260000857-2019-01-14-17-34-40_visualizacao.pdf', NULL, '52019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -365,7 +384,8 @@ INSERT INTO `orgaorequisitante` (`orgaoID`, `orgaoNome`) VALUES
 (5, 'Câmara'),
 (6, 'SEMAD - GTI'),
 (7, 'Gabinete do Prefeito'),
-(8, 'Diario Oficial');
+(8, 'Diario Oficial'),
+(9, 'SEMMA');
 
 -- --------------------------------------------------------
 
@@ -384,8 +404,8 @@ CREATE TABLE `password_resets` (
 --
 
 INSERT INTO `password_resets` (`email`, `token`, `created_at`) VALUES
-('eduardbinoti@gmail.com', '$2y$10$jhgW63tP7BoVaWvULtQVw.RVGsbe4iafOpMV8LT6ht6AjucnjNU3S', '2018-12-05 13:55:06'),
-('pmci.diario.oficial@gmail.com', '$2y$10$n5P1/OxN/FZaaSkF0e7t3.ylOKVWw.cz96SfXWrFWjGOpXYKQA7eu', '2019-01-08 12:43:21');
+('pmci.diario.oficial@gmail.com', '$2y$10$n5P1/OxN/FZaaSkF0e7t3.ylOKVWw.cz96SfXWrFWjGOpXYKQA7eu', '2019-01-08 12:43:21'),
+('eduardbinoti@gmail.com', '$2y$10$08//aDRA6uVU.GDd5w0of.Td8to9RTNYcoG3KPoebIbLzDKEVakRm', '2019-01-15 12:53:11');
 
 -- --------------------------------------------------------
 
@@ -411,14 +431,6 @@ CREATE TABLE `publicacao` (
   `rejeitadaDescricao` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Extraindo dados da tabela `publicacao`
---
-
-INSERT INTO `publicacao` (`situacaoID`, `cadernoID`, `tipoID`, `usuarioID`, `diarioDataID`, `dataEnvio`, `descricao`, `titulo`, `protocolo`, `protocoloAno`, `protocoloCompleto`, `pub`, `usuarioIDApagou`, `dataApagada`, `rejeitadaDescricao`) VALUES
-(4, 6, 42, 1, 39, '2019-01-14 10:41:22', '954', 'dddd', 0, 2019, '02019PUB', 'pub', NULL, NULL, NULL),
-(2, 1, 20, 1, 39, '2019-01-14 10:34:46', 'k', 'dddd', 1, 2019, '12019PUB', 'pub', 1, '2019-01-14 10:42:08', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -430,13 +442,6 @@ CREATE TABLE `publicacaoarquivo` (
   `arquivoID` int(11) NOT NULL,
   `arquivo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Extraindo dados da tabela `publicacaoarquivo`
---
-
-INSERT INTO `publicacaoarquivo` (`protocoloCompleto`, `arquivoID`, `arquivo`) VALUES
-('02019PUB', 8, '02019PUB-0.pdf');
 
 -- --------------------------------------------------------
 
@@ -500,9 +505,11 @@ INSERT INTO `subcategoria` (`subcategoriaID`, `subcategoriaNome`, `tipoID`) VALU
 (10, 'Licença de Operação', 53),
 (11, 'Licença Prévia', 53),
 (12, 'Licença Prévia, de Instalação e de Operação', 53),
-(13, 'Licença de Instalação e AMPLIAÇÃO da Licença de Operação', 53),
-(14, 'Licença de Operação Corretiva', 53),
-(15, 'AMPLIAÇÃO da Licença de Instalação e a AMPLIAÇÃO e RENOVAÇÃO da Licença de Operação', 53);
+(13, 'Renovação da Licença de Operação', 53),
+(14, 'Licença de Operação (Por Procedimento Corretivo)', 53),
+(15, 'Ampliação da Licença', 53),
+(16, 'Transferência de Titularidade', 53),
+(17, 'Prorrogação da Licença', 53);
 
 -- --------------------------------------------------------
 
@@ -599,14 +606,16 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `cpf`, `telefoneSetor`, `telefoneCelular`, `password`, `remember_token`, `created_at`, `updated_at`, `grupoID`, `orgaoID`, `statusID`, `horaEnvio`, `login`, `primeiroLogin`) VALUES
-(1, 'carlos eduardo castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', 'xQt7taYWEglyrt2KlAuZop8nOKgeaUBuKgmRky66AL43gvQoedxyatgyclOs', NULL, '2018-11-13 17:36:26', 1, 1, 1, '17:00:00', 'dedu', 0),
-(8, 'mauricio', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'JWKf78vhUyPcQNbgenV7B2wh149aEohMVVhFK37XYqK1uK4h4vK15GDvd6hu', NULL, '2018-12-05 12:12:59', 1, 4, 2, '17:00:00', 'diario', 0),
-(9, 'cliente', 'cliente@gmail.com', '86886479091', '4444444444', '44444444444', '$2y$10$sMt76Ggii4/JrL03hhxPmeDdwgNKeSqfjuHJbk7cKvQiy0EAtkqpa', '5RwA48LDzcjm7FTuXQmQt5blZEOHqti4lqzCwJARGffeI7vHUPIhWnvKHYBF', NULL, '2018-12-05 13:39:10', 2, 4, 2, '17:00:00', 'cliente', 0),
-(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'SSp3xpQvtL4y8eBxGO3PTjjjiZfRGTWyUPzmNVUMBdCm2B59XqgFFDekLOst', NULL, '2019-01-02 19:14:46', 1, 5, 1, '17:00:00', 'informatica', 0),
-(15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$TXfsbYl4Dj3To.KaoSxCrOZMD/WjH3mYgvwJmwhjok18MYFRxiLpS', 'DP6gAnK6PAO5lq51WVnuzLSizX9Vs50RUsSowuNQxh5TEn5GoqP3GKS0WfV1', NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
-(16, 'Araci da Cunha', 'camara@cmci.es.gov.br', '53595025687', '2899999999', '99999999999', '$2y$10$m0t6XacYy/oUK8yQwgtlr.8ZsXVgKxjeCsDOQGbtZ5kKPdG9vjCvK', '3k2AR5K1HRKVHKevn0xvIDdrdmtxdZGFqaiQiVOrw4QJTcgqUWiNqrhkIu3s', NULL, '2019-01-08 11:20:55', 2, 5, 2, '17:00:00', 'araci', 0),
-(17, 'Talia Ferreira Guerra', 'taliafguerra@gmail.com', '96201894772', '2835224708', '28999250709', '$2y$10$U5dVmQrcI4ls8b/hROFm6eWM2ZNVaXEUc7g02PMMLRcHfE2OqaVAy', NULL, NULL, '2019-01-10 11:42:11', 3, 8, 1, '17:00:00', 'talia', 0),
-(18, 'Teste Usuário', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', NULL, NULL, '2019-01-10 18:23:58', 2, 4, 1, '17:00:00', 'dedubr', 0);
+(1, 'carlos eduardo castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', '8oBecLRujUBXP3fUEixHi3ezQmo0M3F6bZA4m1JmkdFnqh7JBbEKmsEfXVMU', NULL, '2018-11-13 17:36:26', 1, 1, 1, '17:00:00', 'dedu', 0),
+(8, 'mauricio', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'dEkfBJFHPJf5c9HYM1DSVDR9StB38Nu0NtioyN2lzu1RSgUVtlVMpdFNdp0M', NULL, '2018-12-05 12:12:59', 3, 4, 1, '17:00:00', 'fatura', 0),
+(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'BxQG6idR832x3ydkpzr5GCXqnfsa4oEMhtvCW7qidLiW0vEgjobaavZfVVUL', NULL, '2019-01-02 19:14:46', 1, 5, 1, '17:00:00', 'informatica', 0),
+(15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$TXfsbYl4Dj3To.KaoSxCrOZMD/WjH3mYgvwJmwhjok18MYFRxiLpS', 'oD3wHBsY2F1c5X2A30Waljb6SFrtpeIVdDHoEauVmqU9SqamSX2E5BfH4Rvm', NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
+(17, 'Talia Ferreira Guerra', 'taliafguerra@gmail.com', '96201894772', '2835224708', '28999250709', '$2y$10$U5dVmQrcI4ls8b/hROFm6eWM2ZNVaXEUc7g02PMMLRcHfE2OqaVAy', 'eJa4j9RFKom2qZGwnwrUpq5xc3Fwp2KBu2TUs1wCbdmQWGsLROUhN2Qycq1r', NULL, '2019-01-10 11:42:11', 1, 8, 1, '17:00:00', 'talia', 0),
+(18, 'Teste Usuário', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', 'uoEUlYfjiQF9AqF8vYx7t6dip3ljY9IvS2OMTM5lk4ZzSvH3gIEPZvoatIQw', NULL, '2019-01-10 18:23:58', 3, 4, 1, '17:00:00', 'dedubr', 0),
+(20, 'Valéria Araujo Fraga', 'semma.vafraga@cachoeiro.es.gov.br', '76178838700', '2831555326', '99999999999', '$2y$10$OzNkKcxljVt8IrpBER2Rs.t99un6LunFZ6YXiMEnCITKn/9JKLcVu', 'Co2oz573ZJxPb4c8A73smtOyhYZ3ObpFxQ9HjNxu3dJc2L2bXJwr1vtIdeXI', NULL, '2019-01-15 13:05:08', 3, 9, 1, '19:00:00', 'vafraga', 0),
+(21, 'Elisandra Baiense', 'semma.elisandra@cachoeiro.es.gov.br', '03463169797', '2831555311', '28999182220', '$2y$10$24z4z51PqRZ8raHoplwTHOHCBtGf0EYqA6G9PINQ9s9xC9MCPmzcC', NULL, NULL, NULL, 3, 9, 1, '19:00:00', 'elisandra', 1),
+(22, 'José Roberto Pereira Cardoso', 'betaocardoso38@gmail.com', '95203958734', '2831555326', '28988031118', '$2y$10$TD1PYhq4TWNq6ZZwRy1P5OfebQXXVcfZWMKoHo0KB5IcE4c68MZ5a', NULL, NULL, NULL, 3, 9, 1, '19:58:00', 'jrpereira', 1),
+(23, 'Gustavo Dal Rio Figueiredo', 'gustavof.semma@gmail.com', '14006331762', '2831555326', '28999999999', '$2y$10$2YWmYpFMKjADNOqZI9dEreTjllkP/k4iL6mONYESovQfSZBaCzq9G', NULL, NULL, '2019-01-15 19:13:56', 1, 9, 1, '17:00:00', 'gustavod', 0);
 
 -- --------------------------------------------------------
 
@@ -633,8 +642,6 @@ INSERT INTO `usuariocaderno` (`usuarioID`, `cadernoID`) VALUES
 (5, 5),
 (6, 3),
 (7, 1),
-(8, 1),
-(8, 4),
 (8, 5),
 (9, 1),
 (9, 4),
@@ -653,7 +660,12 @@ INSERT INTO `usuariocaderno` (`usuarioID`, `cadernoID`) VALUES
 (15, 6),
 (16, 1),
 (17, 5),
-(18, 1);
+(18, 5),
+(19, 5),
+(20, 5),
+(21, 5),
+(22, 5),
+(23, 5);
 
 --
 -- Indexes for dumped tables
@@ -808,7 +820,7 @@ ALTER TABLE `configuracaofatura`
 -- AUTO_INCREMENT for table `diariodata`
 --
 ALTER TABLE `diariodata`
-  MODIFY `diarioDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `diarioDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `diasnaouteis`
@@ -832,13 +844,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `orgaorequisitante`
 --
 ALTER TABLE `orgaorequisitante`
-  MODIFY `orgaoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `orgaoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `publicacaoarquivo`
 --
 ALTER TABLE `publicacaoarquivo`
-  MODIFY `arquivoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `arquivoID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `situacao`
@@ -856,7 +868,7 @@ ALTER TABLE `status`
 -- AUTO_INCREMENT for table `subcategoria`
 --
 ALTER TABLE `subcategoria`
-  MODIFY `subcategoriaID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `subcategoriaID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `tipodocumento`
@@ -868,7 +880,7 @@ ALTER TABLE `tipodocumento`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

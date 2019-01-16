@@ -243,7 +243,6 @@
                     $comunicados = $comunicadoController->verificarComunicados();
                 @endphp
 
-
                 <div id="Erro" class="container">
                         <div class="col-md-12 offset-md-0">
                             @if(sizeof($comunicados))
