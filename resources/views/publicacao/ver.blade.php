@@ -127,7 +127,7 @@
                             <br><br>
 
 
-                                @if (Gate::allows('administrador', Auth::user()) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Aceita" && $publicacao->situacaoNome != "Apagada")
+                                @if ((Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Aceita" && $publicacao->situacaoNome != "Apagada")
                                     @php
                                         $modalAceitar = true;
                                     @endphp
@@ -135,7 +135,7 @@
                                 @endif
 
 
-                                @if (Gate::allows('administrador', Auth::user()) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Apagada" && $publicacao->situacaoNome != "Rejeitada")
+                                @if ((Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Apagada" && $publicacao->situacaoNome != "Rejeitada")
                                     @php
                                         $modalRejeitar = true;
                                     @endphp

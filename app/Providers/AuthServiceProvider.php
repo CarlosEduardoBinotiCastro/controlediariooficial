@@ -35,6 +35,9 @@ class AuthServiceProvider extends ServiceProvider
             return $user->getCaderno();
         });
 
+        Gate::define('publicador', function ($user) {
+            return $user->grupoID == 4;
+        });
 
         Gate::define('faturas', function ($user) {
             return $user->grupoID == 3;

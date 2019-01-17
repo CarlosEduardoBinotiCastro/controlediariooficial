@@ -98,16 +98,20 @@
                                         <select style="resize:none; width: 100px;" class="custom-select" name="situacao" >
                                                 <option slected value="tudo">Situação</option>
                                             @foreach ($situacoes as $situacao)
-                                                <option value=" {{$situacao->situacaoNome}} "> @if ($situacao->situacaoNome == "Aceita")
-                                                    Paga
-                                                    @else
-                                                        @if ($situacao->situacaoNome == "Enviada")
-                                                            Cadastrada
+                                                @if ( ($situacao->situacaoNome == "Apagada") && (Gate::allows('publicador', Auth::user()) || Gate::allows('faturas', Auth::user())))
+
+                                                @else
+                                                    <option value=" {{$situacao->situacaoNome}} "> @if ($situacao->situacaoNome == "Aceita")
+                                                        Paga
                                                         @else
-                                                            {{$situacao->situacaoNome}}
+                                                            @if ($situacao->situacaoNome == "Enviada")
+                                                                Cadastrada
+                                                            @else
+                                                                {{$situacao->situacaoNome}}
+                                                            @endif
                                                         @endif
-                                                    @endif
-                                                </option>
+                                                    </option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </td>
@@ -230,7 +234,7 @@
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#modalEditar{{$fatura->protocoloCompleto}}" style="width:75px">Editar</button>
                                     @endif --}}
 
-                                    @if ($fatura->diarioData <= date('Y-m-d') && $fatura->situacaoNome != "Publicada" && $fatura->situacaoNome != "Apagada" && $fatura->situacaoNome == "Aceita" && Gate::allows('administrador', Auth::user()))
+                                    @if ($fatura->diarioData <= date('Y-m-d') && $fatura->situacaoNome != "Publicada" && $fatura->situacaoNome != "Apagada" && $fatura->situacaoNome == "Aceita" &&  ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ) )
                                         @php
                                             $modalPublicar = true;
                                         @endphp

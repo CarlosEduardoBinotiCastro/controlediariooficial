@@ -22,7 +22,7 @@ class SubCategoriaController extends Controller
 
     public function listar(){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $subcategorias = SubCategoria::orderBy('subcategoriaNome');
             $subcategorias->join('tipodocumento', 'tipodocumento.tipoID', 'subcategoria.tipoID');
@@ -38,7 +38,7 @@ class SubCategoriaController extends Controller
 
     public function cadastrar(){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $documentos = TipoDocumento::orderBy('tipoDocumento');
             $documentos = $documentos->get();
@@ -108,7 +108,7 @@ class SubCategoriaController extends Controller
 
     public function editar($subcategoriaID){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $documentos = TipoDocumento::orderBy('tipoDocumento');
             $documentos = $documentos->get();
@@ -125,7 +125,7 @@ class SubCategoriaController extends Controller
 
     public function deletar($subcategoriaID){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $subcategoria = SubCategoria::orderBy('subcategoriaNome');
             $faturas = Fatura::orderBy('protocoloCompleto')->where('subcategoriaID', '=', $subcategoriaID)->get();

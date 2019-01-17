@@ -29,7 +29,7 @@ class FaturaController extends Controller
 {
     //
 
-    private $paginacao = 10;
+    private $paginacao = 20;
     public $fileOriginal = "";
     public $fileFormatado = "";
     public $fileVisualizado = "";
@@ -41,7 +41,7 @@ class FaturaController extends Controller
     }
 
     public function carregarConfiguracao(){
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 $confFatura = DB::table('configuracaofatura')->first();
                 $cadernos = Caderno::orderBy('cadernoNome')->get();
@@ -81,7 +81,7 @@ class FaturaController extends Controller
 
     public function cadastrar(){
 
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 $horaEnvio = Auth::user()->horaEnvio;
 
@@ -765,7 +765,7 @@ class FaturaController extends Controller
 
     public function listar($cpfCnpj = null, $protocolo = null, $diario = null, $situacao = null, $empresa = null,  $subcategoria = null){
 
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -799,8 +799,21 @@ class FaturaController extends Controller
                     $faturas->where('diariodata.diarioData', '=', $diario);
                 }
 
-                if($situacao != null && $situacao != "tudo"){
-                    $faturas->where('situacao.situacaoNome', '=', $situacao);
+
+
+                if(Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
+                    $faturas->where('situacao.situacaoNome', '!=', "Apagada");
+
+                    if($situacao != null && $situacao != "tudo"){
+                        if($situacao != "Apagada"){
+                            $faturas->where('situacao.situacaoNome', '=', $situacao);
+                        }
+                    }
+
+                }else{
+                    if($situacao != null && $situacao != "tudo"){
+                        $faturas->where('situacao.situacaoNome', '=', $situacao);
+                    }
                 }
 
                 if($subcategoria != null && $subcategoria != "tudo"){
@@ -917,18 +930,20 @@ class FaturaController extends Controller
     public function ver($protocolo){
 
 
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
             $fatura = Fatura::orderBy('diariodata.diarioData', 'desc');
             $fatura->leftJoin('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+            $fatura->leftJoin('users as usuariopub', 'usuariopub.id', 'fatura.usuarioIDPublicou');
+            $fatura->leftJoin('users as usuariodel', 'usuariodel.id', 'fatura.usuarioIDApagou');
             $fatura->join('users as usuario', 'usuario.id', 'fatura.usuarioID');
             $fatura->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $fatura->join('tipodocumento', 'tipodocumento.tipoID', 'fatura.tipoID');
             $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
             $fatura->where('protocoloCompleto', '=', $protocolo);
-            $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome');
+            $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome', 'usuariopub.name as usuarioNomePublicou', 'usuariodel.name as usuarioNomeApagou');
             $fatura = $fatura->first();
 
             // pega a url voltar e salva
@@ -938,6 +953,12 @@ class FaturaController extends Controller
 
             if($fatura == null){
                 return redirect('home')->with('erro', 'Fatura Não Encontrada!');
+            }else{
+                if(Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
+                    if($fatura->situacaoNome == "Apagada"){
+                        return redirect('home')->with('erro', 'Fatura Apagada!');
+                    }
+                }
             }
 
             $faturaConfig = DB::table('configuracaofatura')->get();
@@ -1084,7 +1105,7 @@ class FaturaController extends Controller
                 $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID]);
                 return redirect()->back()->with('sucesso', 'Fatura Publicada!');
             }else{
-                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID]);
+                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID, 'usuarioIDPublicou' => Auth::user()->id]);
                 return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Fatura Publicada!');
             }
 
@@ -1098,7 +1119,7 @@ class FaturaController extends Controller
 
     public function downloadOriginal($protocolo){
 
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1144,7 +1165,7 @@ class FaturaController extends Controller
 
     public function downloadFormatado($protocolo){
 
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1189,7 +1210,7 @@ class FaturaController extends Controller
 
     public function downloadComprovantePago($protocolo){
 
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1264,7 +1285,7 @@ class FaturaController extends Controller
                 Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago)]);
             }
             File::deleteDirectory(storage_path("app/".$fatura->protocoloCompleto));
-            $faturaApagar->update(['situacaoID' => 2]);
+            $faturaApagar->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id]);
             return redirect()->back()->with('sucesso', 'Fatura Apagada!');
 
         } catch (\Exception $e) {
@@ -1274,7 +1295,7 @@ class FaturaController extends Controller
     }
 
     public function carregarRelatorio($dataInicio = null, $dataFinal = null, $situacao = null){
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1452,7 +1473,7 @@ class FaturaController extends Controller
     }
 
     public function downloadVisualizacao($arquivoVisualizacao, $protocolo){
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 try {
                     return Response::download(storage_path("app/".$protocolo."/".$arquivoVisualizacao));
@@ -1473,7 +1494,7 @@ class FaturaController extends Controller
 
     public function relatorioDetalhado($cpfCnpj = null, $protocolo = null, $dataInicial = null, $dataFinal = null, $situacao = null, $empresa = null,  $subcategoria = null){
 
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())){
 
             if(Gate::allows('cadernoFatura', Auth::user())){
 
@@ -1641,16 +1662,18 @@ class FaturaController extends Controller
 
     public function gerarComprovante($protocolo){
 
-        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $fatura = Fatura::orderBy('diariodata.diarioData', 'desc');
             $fatura->leftJoin('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+            $fatura->leftJoin('users as usuariopub', 'usuariopub.id', 'fatura.usuarioIDPublicou');
+            $fatura->leftJoin('users as usuariodel', 'usuariodel.id', 'fatura.usuarioIDApagou');
             $fatura->join('users as usuario', 'usuario.id', 'fatura.usuarioID');
             $fatura->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $fatura->join('tipodocumento', 'tipodocumento.tipoID', 'fatura.tipoID');
             $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
             $fatura->where('protocoloCompleto', '=', $protocolo);
-            $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome');
+            $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome', 'usuariopub.name as usuarioNomePublicou', 'usuariodel.name as usuarioNomeApagou');
             $fatura = $fatura->first();
 
             if($fatura != null){
@@ -1735,7 +1758,7 @@ class FaturaController extends Controller
 
 
     public function downloadDAM($protocolo){
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
                 $fatura = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $protocolo)->first();
                 try {
                     return Response::download(storage_path("app/".$protocolo."/".$fatura->dam));
@@ -1749,9 +1772,6 @@ class FaturaController extends Controller
             return redirect('home');
         }
     }
-
-
-
 
 
 

@@ -25,7 +25,7 @@ class ComunicadoController extends Controller
 
     public function listar($filtro = null){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
         $comunicados = Comunicado::orderBy('dataComunicado', 'desc');
         $comunicados->join('users', 'users.id', 'comunicado.usuarioID');
@@ -51,7 +51,7 @@ class ComunicadoController extends Controller
 
 
     public function cadastrar(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
             $grupos = DB::table('grupousuario')->orderBy('grupoDescricao')->get();
             return view('comunicado.cadastrar', ['grupos' => $grupos]);
         }else{
@@ -181,7 +181,7 @@ class ComunicadoController extends Controller
 
     public function editar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $comunicado = Comunicado::orderBy('dataComunicado')->where('comunicadoID', '=', $id)->first();
 
@@ -215,7 +215,7 @@ class ComunicadoController extends Controller
 
     public function deletar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             try {
 

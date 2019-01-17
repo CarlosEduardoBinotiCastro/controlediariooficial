@@ -20,7 +20,7 @@ class OrgaoRequisitanteController extends Controller
 
     public function listar(){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $orgaosRequisitantes = OrgaoRequisitante::orderBy('orgaoNome', 'desc');
             $orgaosRequisitantes = $orgaosRequisitantes->paginate($this->paginacao);
@@ -33,7 +33,7 @@ class OrgaoRequisitanteController extends Controller
 
 
     public function cadastrar(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
             return view('orgaorequisitante.cadastrar');
         }else{
             return redirect('/home');
@@ -69,7 +69,7 @@ class OrgaoRequisitanteController extends Controller
 
     public function editar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $orgaoRequisitante = OrgaoRequisitante::orderBy('orgaoID');
             $orgaoRequisitante->select('*')->where('orgaoID', '=', $id);
@@ -115,7 +115,7 @@ class OrgaoRequisitanteController extends Controller
 
     public function deletar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $orgaoRequisitante = OrgaoRequisitante::orderBy('orgaoID');
 

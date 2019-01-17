@@ -21,7 +21,7 @@ class DiasNaoUteisController extends Controller
     private $paginacao = 10;
 
     public function listar(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
             $diasNaoUteis = DiasNaoUteis::orderBy('diaID');
             $diasNaoUteis = $diasNaoUteis->paginate($this->paginacao);
             return view('diasnaouteis.listar', ['diasNaoUteis' => $diasNaoUteis]);
@@ -32,7 +32,7 @@ class DiasNaoUteisController extends Controller
     }
 
     public function cadastrar(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
             return view('diasnaouteis.cadastrar');
         }else{
             return redirect('/home');
@@ -68,7 +68,7 @@ class DiasNaoUteisController extends Controller
 
     public function editar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $diasNaoUteis = DiasNaoUteis::orderBy('diaID', 'desc');
             $diasNaoUteis->select('*')->where('diaID', '=', $id);
@@ -91,7 +91,7 @@ class DiasNaoUteisController extends Controller
 
     public function deletar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $diasNaoUteis = DiasNaoUteis::orderBy('diaID');
             $diasNaoUteis->select('*')->where('diaID', '=', $id);

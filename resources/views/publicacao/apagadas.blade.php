@@ -64,7 +64,7 @@
             <form id="formFiltro" action="{{url("publicacao/chamarApagadas")}}" method="POST">
                 @csrf
 
-                @if (Gate::allows('administrador', Auth::user()))
+                @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
 
                 <div class="table-responsive">
                         <table class="table table-bordred table-striped" style="background-color:#DEDDDD; border-radius: 20px;">

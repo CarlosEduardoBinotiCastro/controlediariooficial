@@ -26,7 +26,7 @@ use Zipper;
 class PublicacoesController extends Controller
 {
     //
-    private $paginacao = 10;
+    private $paginacao = 20;
     public $arquivos = array();
     public $diretorio = "";
 
@@ -121,7 +121,7 @@ class PublicacoesController extends Controller
 
         $publicacoes->where('situacao.situacaoNome', '=', "Apagada");
 
-        if(!Gate::allows('administrador', Auth::user())){
+        if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) ){
             $publicacoes->where('usuarioID', '=', Auth::user()->id);
 
         }
@@ -189,7 +189,7 @@ class PublicacoesController extends Controller
 
 
 
-        if(!Gate::allows('administrador', Auth::user())){
+        if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) ){
             $publicacoes->where('usuarioID', '=', Auth::user()->id);
         }
 
@@ -641,7 +641,7 @@ class PublicacoesController extends Controller
         //se não, verifica se o usuario é comum e esta tentando entrar com protocolo de uma publicação que não é dele
 
         if($usuarioIDApagou != null){
-            if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $usuarioIDApagou->usuarioID){
+            if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $usuarioIDApagou->usuarioID){
                 return redirect('/home')->with('erro', 'Você não tem permissão!');
               }
             // Busca todos os dados da visualização
@@ -675,7 +675,7 @@ class PublicacoesController extends Controller
         if($usuarioIDApagou->usuarioIDApagou != null){
             $podeEditar = false;
         }else{
-            if(Gate::allows('administrador', Auth::user()) && date('Y-m-d') < $publicacao->diarioData){
+            if(  ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && date('Y-m-d') < $publicacao->diarioData){
                 $podeEditar = true;
             }else{
                 if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || date('Y-m-d') >= $publicacao->diarioData){
@@ -772,7 +772,7 @@ class PublicacoesController extends Controller
         //se não, verifica se o usuario é comum e esta tentando entrar com protocolo de uma publicação que não é dele
 
         if($usuarioIDApagou != null){
-            if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $usuarioIDApagou->usuarioID){
+            if(!(  Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $usuarioIDApagou->usuarioID){
                 return redirect('/home')->with('erro', 'Você não tem permissão!');
               }
             // Busca todos os dados da visualização
@@ -849,7 +849,7 @@ class PublicacoesController extends Controller
         }
 
         if ($publicacao != null) {
-            if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $publicacao->usuarioID){
+            if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $publicacao->usuarioID){
                 return redirect()->back()->with('erro', 'Você não tem permissão!');
             }
         }else{
@@ -991,7 +991,7 @@ class PublicacoesController extends Controller
             //se não, verifica se o usuario é comum e esta tentando entrar com protocolo de uma publicação que não é dele
 
             if($usuarioIDApagou != null){
-                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $usuarioIDApagou->usuarioID){
+                if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $usuarioIDApagou->usuarioID){
                     return redirect('/home')->with('erro', 'Você não tem permissão!');
                   }
                 // Busca todos os dados da visualização

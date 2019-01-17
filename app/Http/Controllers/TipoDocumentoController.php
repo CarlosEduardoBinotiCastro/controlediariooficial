@@ -23,7 +23,7 @@ class TipoDocumentoController extends Controller
 
     public function listar(){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $tiposDocumentos = TipoDocumento::orderBy('tipoDocumento');
             $tiposDocumentos = $tiposDocumentos->paginate($this->paginacao);
@@ -35,7 +35,7 @@ class TipoDocumentoController extends Controller
     }
 
     public function cadastrar(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
             return view('tipodocumento.cadastrar');
         }else{
             return redirect('/home');
@@ -99,7 +99,7 @@ class TipoDocumentoController extends Controller
 
     public function editar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $tipoDocumento = TipoDocumento::orderBy('tipoID');
             $tipoDocumento->select('*')->where('tipoID', '=', $id);
@@ -126,7 +126,7 @@ class TipoDocumentoController extends Controller
 
     public function deletar($id){
 
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $tipoDocumento = TipoDocumento::orderBy('tipoID');
             $cadernoTipoDocumento = CadernoTipoDocumento::orderby('tipoID');

@@ -196,10 +196,12 @@
 
                      <td class="infoRows" style="width: 70% !important; margin-top:1% !important;"> {{$maskared}} </td></tr>
 
-                <tr>
-                    <td class="infoRows" style="width: 30% !important; margin-top:1% !important;">Publicador</td>
-                    <td class="infoRows" style="width: 70% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->usuarioNome}} </td></tr>
 
+                         @if ($fatura->usuarioNomePublicador != null)
+                            <tr>
+                                <td class="infoRows" style="width: 30% !important; margin-top:1% !important;">Publicador</td>
+                                <td class="infoRows" style="width: 70% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->usuarioNomePublicador}} </td></tr>
+                        @endif
 
                     @php
                         $data = new DateTime($fatura->dataEnvioFatura);
@@ -278,7 +280,17 @@
 
                 <tr>
                     <td class="infoRows" style="width: 30% !important; margin-top:1% !important;">Situação</td>
-                    <td class="infoRows" style="width: 70% !important; margin-top:1% !important;"> {{$fatura->situacaoNome}} </td></tr>
+                    <td class="infoRows" style="width: 70% !important; margin-top:1% !important;">
+                        @if ($fatura->situacaoNome == "Aceita")
+                            Paga
+                        @else
+                            @if ($fatura->situacaoNome == "Enviada")
+                                Cadastrada
+                            @else
+                                {{$fatura->situacaoNome}}
+                            @endif
+                        @endif
+                     </td></tr>
 
                   </tbody>
 
@@ -317,7 +329,7 @@
 
             <br>
 
-            <b>  A publicação do conteúdo será efetivada após a confirmaçõa do pagamento do boleto (DAM), que pode
+            <b>  A publicação do conteúdo será efetivada após a confirmação do pagamento do boleto (DAM), que pode
                  levar até 72 horas após o pagamento.  </b>
 
         </div>

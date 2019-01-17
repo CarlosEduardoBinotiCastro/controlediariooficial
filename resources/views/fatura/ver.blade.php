@@ -251,6 +251,27 @@
                                     </div>
                             </div>
 
+                            @if ($fatura->situacaoNome == "Apagada")
+
+                                <div class="form-group row">
+                                        <div class="col-md-10">
+                                                <p>Apagada por: <strong>{{$fatura->usuarioIDApagou}}</strong> </p>
+                                        </div>
+                                </div>
+
+                            @endif
+
+                            @if ($fatura->situacaoNome == "Publicada")
+
+                            <div class="form-group row">
+                                    <div class="col-md-10">
+                                            <p>Publicada por: <strong>{{$fatura->usuarioIDPublicou}}</strong> </p>
+                                    </div>
+                            </div>
+
+                            @endif
+
+
                             @if ($fatura->situacaoNome == "Rejeitada")
 
                                 <div class="form-group row">
@@ -297,7 +318,7 @@
                                         $modalRejeitar = false;
                                     @endphp
 
-                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome == "Rejeitada") && Gate::allows('administrador', Auth::user()))
+                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome == "Rejeitada") && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ))
                                         @php
                                             $modalAceitar = true;
                                         @endphp
@@ -306,7 +327,7 @@
                                         </div>
                                     @endif
 
-                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome =="Aceita")  && Gate::allows('administrador', Auth::user()) )
+                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome =="Aceita")  && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ) )
                                         @php
                                             $modalRejeitar = true;
                                         @endphp
@@ -315,7 +336,7 @@
                                         </div>
                                     @endif
 
-                                    @if ($fatura->situacaoNome == "Aceita" && Gate::allows('administrador', Auth::user()))
+                                    @if ($fatura->situacaoNome == "Aceita" && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ))
                                         @php
                                             $modalPublicar = true;
                                         @endphp

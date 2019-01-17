@@ -130,6 +130,7 @@
                                     <option slected value="1">Administrador</option>
                                     <option value="2">Usuário</option>
                                     <option value="3">Fatura</option>
+                                    <option value="4">Publicador</option>
                                     </select>
                                 </div>
 

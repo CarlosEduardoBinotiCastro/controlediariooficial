@@ -23,7 +23,7 @@ class CadernoController extends Controller
     }
 
     public function listar(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $cadernos = Caderno::orderBy('cadernoNome');
             $cadernos = $cadernos->paginate($this->paginacao);
@@ -37,7 +37,7 @@ class CadernoController extends Controller
     }
 
     public function cadastrar(){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $documentos = TipoDocumento::orderBy('tipoDocumento');
             $documentos = $documentos->get();
@@ -111,7 +111,7 @@ class CadernoController extends Controller
     }
 
     public function editar($id){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $documentosCaderno = TipoDocumento::orderBy('tipoDocumento');
             $documentosCaderno->join('cadernotipodocumento', 'cadernotipodocumento.tipoID', 'tipodocumento.tipoID');
@@ -157,7 +157,7 @@ class CadernoController extends Controller
     }
 
     public function deletar($id){
-        if(Gate::allows('administrador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $publicacoes = Publicacao::orderBy('dataEnvio');
             $publicacoes->where('cadernoID', '=', $id);

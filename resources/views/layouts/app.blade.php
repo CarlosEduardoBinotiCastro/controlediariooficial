@@ -162,7 +162,7 @@
 
                         @endif
 
-                              @if (Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user()))
+                              @if (Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user()) ||  Gate::allows('publicador', Auth::user()))
 
                                 @can('cadernoFatura', Auth::user())
 
@@ -174,11 +174,14 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                           <a class="dropdown-item" href="/fatura/listar">Listar</a>
                                           <a class="dropdown-item" href="/fatura/cadastrar">Cadastrar</a>
-                                            @if (Gate::allows('administrador', Auth::user()))
+                                            @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
                                                 <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
                                             @endif
+
+                                        @if (Gate::allows('administrador', Auth::user()))
                                           <a class="dropdown-item" href="/fatura/relatorio">Relatório Quantitativo Por Período</a>
                                           <a class="dropdown-item" href="/fatura/relatorioDetalhado">Relatório Detalhado</a>
+                                        @endif
                                         </div>
                                     </div>
                                  </li>
@@ -188,13 +191,16 @@
                               @endif
                     </ul>
 
-                    @can('administrador', Auth::user())
+                    @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
                         <div class="dropdown nav-item" >
                             <button style="background-color: transparent; border-color:transparent; color:black;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               Cadastros
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                              <a class="dropdown-item" href="{{url("/usuario/listar")}}">Usuários</a>
+
+                             @if (Gate::allows('administrador', Auth::user()))
+                                <a class="dropdown-item" href="{{url("/usuario/listar")}}">Usuários</a>
+                             @endif
                               <a class="dropdown-item" href="/orgaorequisitante/listar">Órgão Requisitante</a>
                               <a class="dropdown-item" href="/caderno/listar">Caderno</a>
                               <a class="dropdown-item" href="/tipodocumento/listar">Matéria</a>
@@ -208,7 +214,7 @@
                             <a style="color:black;"  class="nav-link" style="float:right;" href="/comunicado/listar">Comunicados <span class="sr-only">(current)</span></a>
                         </div>
 
-                    @endcan
+                    @endif
 
                     <div class="nav-item" >
                         <a  style="color:black;" class="nav-link" style="float:right;" href="/usuario/editar/{{Auth::user()->id}}">Meus Dados <span class="sr-only">(current)</span></a>

@@ -149,6 +149,7 @@
                                     <option @if ($usuario->grupoID == 1) selected @endif value="1">Administrador</option>
                                     <option @if ($usuario->grupoID == 2) selected @endif value="2">Usuário</option>
                                     <option @if ($usuario->grupoID == 3) selected @endif value="3">Fatura</option>
+                                    <option @if ($usuario->grupoID == 4) selected @endif value="4">Publicador</option>
                                     </select>
                                 </div>
 
