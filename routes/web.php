@@ -32,6 +32,7 @@ Route::get('/register', function(){
 
 Route::get('/home', 'HomeController@carregarHome')->name('home');
 Route::get('/logo', 'HomeController@pegarLogo');
+Route::get('/logoSis', 'HomeController@pegarLogoSis');
 
 Route::get('/', function () {
     return redirect()->route('home');

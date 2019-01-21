@@ -38,11 +38,13 @@ class HomeController extends Controller
     }
 
     public function pegarLogo(){
-        $file_path = storage_path("app/"."Brasão_de_Cachoeiro_de_Itapemirim_ES.png");
+        $file_path = storage_path("app/"."logoSEMAD.png");
         return response()->file($file_path);
     }
 
-
-
+    public function pegarLogoSis(){
+        $file_path = storage_path("app/"."LogoSISPUDIO.png");
+        return response()->file($file_path);
+    }
 
 }

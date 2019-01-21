@@ -188,16 +188,8 @@ class FaturaController extends Controller
                 $request->arquivo->storeAs("public/temp/", $fileName);
 
 
-                // if(pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) == 'doc'){
-                //     $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $fileName), 'MsDoc');
-
-                //     // $arquivoTeste = \PhpOffice\PhpWord\IOFactory::createWriter($arquivo, "Word2007");
-                //     // $newDocx = str_replace('.doc', '.docx', $fileName);
-                //     // $arquivoTeste->save(storage_path("app/public/temp/".$newDocx));
-                //     // $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $newDocx));
-                // }else{
                 $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/public/temp/". $fileName));
-                // }
+
 
 
 
@@ -505,7 +497,11 @@ class FaturaController extends Controller
             }
             DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'arquivoFormatado' => $this->fileFormatado, 'arquivoVisualizacao' => $this->fileVisualizado, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id, 'telefoneFixo' => $request->telefoneFixo, 'telefoneCelular' => $request->telefoneCelular, 'email' => $request->email]);
 
-            $this->diretorio = $protocolo.date('Y').'FAT';
+            //@mudar
+            // mudança no storage dos arquivos
+            $this->diretorio = date('Y').'/'.$protocolo.date('Y').'FAT';
+
+            // $this->diretorio = $protocolo.date('Y').'FAT';
 
             $arquivo = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$this->fileFormatado));
             $arquivo->getSections()[0]->addText('Protocolo: '.$protocolo.date('Y').'FAT', array('bold'=>true, 'size'=>10, 'name'=>'Times'));
@@ -993,15 +989,24 @@ class FaturaController extends Controller
                 }
                 // fim dos limites para os diarios
 
-                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
+                // @mudar
+                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
                 return view('fatura.ver', ['diarioDatas' => json_encode($diariosDatasLimites), 'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
             }
 
             if($fatura->situacaoNome != "Apagada"){
-                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
+
+                //@mudar
+                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
                 return view('fatura.ver', ['diarioDatas' => json_encode("vazio"),'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
 
             }else{
+
+                // Verifica se a fatura foi apagada e se o usuário é o adm
+                if(!(Gate::allows('administrador', Auth::user()))){
+                    return redirect('home')->with('erro', ' Você não tem permissão!');
+                }
+
                 return view('fatura.ver', ['diarioDatas' => json_encode("vazio"),'fatura' => $fatura, 'faturaConfig' => $faturaConfig]);
             }
 
@@ -1046,6 +1051,8 @@ class FaturaController extends Controller
 
     public function aceitar(Request $request){
         $protocolo = $request->protocolo;
+        $faturaAceitar = Fatura::orderBy('protocoloAno', 'desc')->where('protocoloCompleto', '=', $protocolo)->first();
+
         $fatura = Fatura::orderBy('protocoloAno', 'desc');
 
         if($protocolo != null){
@@ -1068,8 +1075,8 @@ class FaturaController extends Controller
         }
 
         try {
-
-            $request->arquivo->storeAs("".$request->protocolo."",$request->protocolo."_comprovantePago.pdf");
+            //@mudar
+            $request->arquivo->storeAs($faturaAceitar->protocoloAno."/".$protocolo."/",$protocolo."_comprovantePago.pdf");
             $fatura->update(['situacaoID' => 3, 'comprovantePago' => $request->protocolo."_comprovantePago.pdf"]);
 
             return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Fatura Aceita!');
@@ -1139,7 +1146,7 @@ class FaturaController extends Controller
             }
 
             if ($fatura != null) {
-                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
+                if( ( Gate::allows('publicador', Auth::user()) || Gate::allows('fatura', Auth::user()) ) && $fatura->situacaoID == 2 ){
                     return redirect()->back()->with('erro', 'Você não tem permissão!');
                 }
             }else{
@@ -1147,12 +1154,17 @@ class FaturaController extends Controller
             }
 
             $arquivoExtensao = explode('.', $fatura->arquivoOriginal);
-
-            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
-                return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal), ''.$protocolo.'-'.'Original'.'.'.$arquivoExtensao[1]);
+            //@mudar
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
+                return Response::download(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal), ''.$protocolo.'-'.'Original'.'.'.$arquivoExtensao[1]);
             }else{
                 return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
             }
+            // if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
+            //     return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal), ''.$protocolo.'-'.'Original'.'.'.$arquivoExtensao[1]);
+            // }else{
+            //     return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
+            // }
 
         }else{
             return redirect('home');
@@ -1185,7 +1197,7 @@ class FaturaController extends Controller
             }
 
             if ($fatura != null) {
-                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
+                if( ( Gate::allows('publicador', Auth::user()) || Gate::allows('fatura', Auth::user()) ) && $fatura->situacaoID == 2 ){
                     return redirect()->back()->with('erro', 'Você não tem permissão!');
                 }
             }else{
@@ -1194,11 +1206,18 @@ class FaturaController extends Controller
 
             $arquivoExtensao = explode('.', $fatura->arquivoFormatado);
 
-            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
-                return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado), ''.$protocolo.'-'.'Formatado'.'.'.$arquivoExtensao[1]);
+            //@mudar
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
+                return Response::download(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado), ''.$protocolo.'-'.'Formatado'.'.'.$arquivoExtensao[1]);
             }else{
                 return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
             }
+
+            // if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
+            //     return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado), ''.$protocolo.'-'.'Formatado'.'.'.$arquivoExtensao[1]);
+            // }else{
+            //     return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
+            // }
 
         }else{
             return redirect('home');
@@ -1230,7 +1249,7 @@ class FaturaController extends Controller
             }
 
             if ($fatura != null) {
-                if(!Gate::allows('administrador', Auth::user()) && Auth::user()->id != $fatura->usuarioID){
+                if( ( Gate::allows('publicador', Auth::user()) || Gate::allows('fatura', Auth::user()) ) && $fatura->situacaoID == 2 ){
                     return redirect()->back()->with('erro', 'Você não tem permissão!');
                 }
             }else{
@@ -1238,11 +1257,19 @@ class FaturaController extends Controller
             }
 
             $arquivoExtensao = explode('.', $fatura->comprovantePago);
-            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
-                return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago), ''.$protocolo.'-'.'ComprovantePago'.'.'.$arquivoExtensao[1]);
+
+            //@mudar
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
+                return Response::download(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->comprovantePago), ''.$protocolo.'-'.'ComprovantePago'.'.'.$arquivoExtensao[1]);
             }else{
                 return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
             }
+
+            // if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
+            //     return Response::download(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago), ''.$protocolo.'-'.'ComprovantePago'.'.'.$arquivoExtensao[1]);
+            // }else{
+            //     return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
+            // }
 
         }else{
             return redirect('home');
@@ -1274,17 +1301,30 @@ class FaturaController extends Controller
 
 
         try {
+            //@mudar
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
+                Storage::delete([storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal)]);
+            }
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
+                Storage::delete([storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado)]);
+            }
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
+                Storage::delete([storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->comprovantePago)]);
+            }
 
-            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
-                Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal)]);
-            }
-            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
-                Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado)]);
-            }
-            if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
-                Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago)]);
-            }
-            File::deleteDirectory(storage_path("app/".$fatura->protocoloCompleto));
+            File::deleteDirectory(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto));
+
+            // if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
+            //     Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal)]);
+            // }
+            // if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado))){
+            //     Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->arquivoFormatado)]);
+            // }
+            // if(file_exists(storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago))){
+            //     Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago)]);
+            // }
+            // File::deleteDirectory(storage_path("app/".$fatura->protocoloCompleto));
+
             $faturaApagar->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id]);
             return redirect()->back()->with('sucesso', 'Fatura Apagada!');
 
@@ -1476,7 +1516,15 @@ class FaturaController extends Controller
         if(Gate::allows('administrador', Auth::user())|| Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
             if(Gate::allows('cadernoFatura', Auth::user())){
                 try {
-                    return Response::download(storage_path("app/".$protocolo."/".$arquivoVisualizacao));
+                    //@mudar
+                    $fatura = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $protocolo)->first();
+                    if($fatura != null ){
+                        return Response::download(storage_path("app/".$fatura->protocoloAno."/".$protocolo."/".$arquivoVisualizacao));
+                    }else{
+                        return redirect()->back()->with(['erro' => 'Protocolo de fatura nao existente!']);
+                    }
+
+                    // return Response::download(storage_path("app/".$protocolo."/".$arquivoVisualizacao));
 
                 } catch (\Exception $e) {
 
@@ -1527,6 +1575,7 @@ class FaturaController extends Controller
                 // if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
                 //     $faturas->whereBetween('diariodata.diarioData',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
                 // }
+
                 if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
                     $faturas->whereBetween('fatura.dataEnvioFatura',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
                 }
@@ -1678,6 +1727,13 @@ class FaturaController extends Controller
 
             if($fatura != null){
 
+                // Verifica se a fatura foi apagada e se o usuário é o adm
+                if($fatura->situacaoID == 2){
+                    if(!(Gate::allows('administrador', Auth::user()))){
+                        return redirect('home')->with('erro', ' Você não tem permissão!');
+                    }
+                }
+
                 // foto do cabeçalho do comprovante
                 $path = storage_path("app/"."top.jpg");
 
@@ -1722,6 +1778,7 @@ class FaturaController extends Controller
 
     public function anexarDAM(Request $request){
 
+
         $fatura = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $request->protocolo)->first();
 
         if(((filesize($request->arquivo) / 1024)/1024) > 30){
@@ -1738,7 +1795,10 @@ class FaturaController extends Controller
 
         try {
             $fileName = "DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
-            $request->arquivo->storeAs($request->protocolo."/", $fileName);
+            //@mudar
+            $request->arquivo->storeAs($fatura->protocoloAno."/".$request->protocolo."/", $fileName);
+
+            // $request->arquivo->storeAs($request->protocolo."/", $fileName);
 
             $faturaEdit = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $request->protocolo)->update(['dam' => $fileName]);
 
@@ -1746,10 +1806,13 @@ class FaturaController extends Controller
 
         } catch (\Exception $e) {
 
-            if(file_exists(storage_path($request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION))){
-                File::delete(storage_path($request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION));
+            // @Mudar
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION))){
+                File::delete(storage_path("app/".$fatura->protocoloAno."/".$request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION));
             }
-
+            // if(file_exists(storage_path("app/".$request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION))){
+            //     File::delete(storage_path("app/".$request->protocolo."/")."DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION));
+            // }
             return redirect()->back()->with('erro', 'Erro ao Anexar o DAM!'.$e->getMessage());
 
         }
@@ -1761,7 +1824,10 @@ class FaturaController extends Controller
         if(Gate::allows('administrador', Auth::user()) || Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
                 $fatura = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $protocolo)->first();
                 try {
-                    return Response::download(storage_path("app/".$protocolo."/".$fatura->dam));
+
+                    //@mudar
+                    return Response::download(storage_path("app/".$fatura->protocoloAno."/".$protocolo."/".$fatura->dam));
+                    // return Response::download(storage_path("app/".$protocolo."/".$fatura->dam));
 
                 } catch (\Exception $e) {
 
@@ -1772,8 +1838,6 @@ class FaturaController extends Controller
             return redirect('home');
         }
     }
-
-
 
 
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 16-Jan-2019 às 17:00
+-- Generation Time: 17-Jan-2019 às 19:51
 -- Versão do servidor: 10.1.36-MariaDB
 -- versão do PHP: 7.2.10
 
@@ -172,6 +172,13 @@ CREATE TABLE `comunicado` (
   `dataComunicado` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `comunicado`
+--
+
+INSERT INTO `comunicado` (`comunicadoID`, `usuarioID`, `tituloMensagem`, `mensagem`, `dataComunicado`) VALUES
+(1, 13, 'Erro no Diário', 'Santa após cadastrar o diário no site da prefeitura, favor abrir e conferir para verificar se está tudo certo.\r\n\r\nsds... Maurício', '2019-01-17 09:27:47');
+
 -- --------------------------------------------------------
 
 --
@@ -182,6 +189,14 @@ CREATE TABLE `comunicadogrupousuario` (
   `grupoID` int(11) NOT NULL,
   `comunicadoID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `comunicadogrupousuario`
+--
+
+INSERT INTO `comunicadogrupousuario` (`grupoID`, `comunicadoID`) VALUES
+(1, 1),
+(4, 1);
 
 -- --------------------------------------------------------
 
@@ -194,6 +209,17 @@ CREATE TABLE `comunicadousuario` (
   `usuarioID` int(11) NOT NULL,
   `visualizado` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `comunicadousuario`
+--
+
+INSERT INTO `comunicadousuario` (`comunicadoID`, `usuarioID`, `visualizado`) VALUES
+(1, 1, 1),
+(1, 13, 1),
+(1, 15, 1),
+(1, 17, 1),
+(1, 23, 1);
 
 -- --------------------------------------------------------
 
@@ -299,6 +325,8 @@ CREATE TABLE `fatura` (
   `tipoID` int(11) NOT NULL,
   `subcategoriaID` int(11) DEFAULT NULL,
   `usuarioID` int(11) NOT NULL,
+  `usuarioIDApagou` int(11) DEFAULT NULL,
+  `usuarioIDPublicou` int(11) DEFAULT NULL,
   `largura` double NOT NULL,
   `centimetragem` double NOT NULL,
   `valorColuna` double NOT NULL,
@@ -324,11 +352,22 @@ CREATE TABLE `fatura` (
 -- Extraindo dados da tabela `fatura`
 --
 
-INSERT INTO `fatura` (`protocolo`, `protocoloAno`, `protocoloCompleto`, `dataEnvioFatura`, `tipoID`, `subcategoriaID`, `usuarioID`, `largura`, `centimetragem`, `valorColuna`, `valor`, `diarioDataID`, `observacao`, `cpfCnpj`, `empresa`, `requisitante`, `arquivoOriginal`, `arquivoFormatado`, `arquivoVisualizacao`, `dam`, `comprovantePago`, `situacaoID`, `descricaoCancelamento`, `email`, `telefoneFixo`, `telefoneCelular`) VALUES
-(0, 2019, '02019FAT', '2019-01-10 10:34:55', 53, 10, 17, 9.2, 2.84, 18.85, 53.53, 45, NULL, '12532983000196', 'Lava Jato Boa Aparência', 'Júlio Cesar da Silva', '12532983000196-2019-01-10-10-34-16.docx', '12532983000196-2019-01-10-10-34-16_format.docx', '12532983000196-2019-01-10-10-34-16_visualizacao.pdf', NULL, '02019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
-(1, 2019, '12019FAT', '2019-01-10 10:56:15', 53, 10, 17, 9.2, 4.06, 18.85, 76.53, 45, NULL, '06895138000182', 'J.S. Industria de Carrocerias Ltda', 'Maria Helena Martelete', '06895138000182-2019-01-10-10-56-06.docx', '06895138000182-2019-01-10-10-56-06_format.docx', '06895138000182-2019-01-10-10-56-06_visualizacao.pdf', NULL, '12019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
-(2, 2019, '22019FAT', '2019-01-10 11:14:06', 53, 10, 17, 9.2, 3.65, 18.85, 68.8, 45, NULL, '03996973000110', 'Mocapri Marmores e Granitos Ltda', 'Maria Helena Martelete', '03996973000110-2019-01-10-11-14-00.docx', '03996973000110-2019-01-10-11-14-00_format.docx', '03996973000110-2019-01-10-11-14-00_visualizacao.pdf', NULL, '22019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
-(5, 2019, '52019FAT', '2019-01-14 17:36:03', 53, 11, 15, 9.2, 4.06, 18.85, 112.93, 37, NULL, '28129260000857', 'Drift Comércio de Alimentos S/A', 'Jerlen', '28129260000857-2019-01-14-17-34-39.docx', '28129260000857-2019-01-14-17-34-39_format.docx', '28129260000857-2019-01-14-17-34-40_visualizacao.pdf', NULL, '52019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL);
+INSERT INTO `fatura` (`protocolo`, `protocoloAno`, `protocoloCompleto`, `dataEnvioFatura`, `tipoID`, `subcategoriaID`, `usuarioID`, `usuarioIDApagou`, `usuarioIDPublicou`, `largura`, `centimetragem`, `valorColuna`, `valor`, `diarioDataID`, `observacao`, `cpfCnpj`, `empresa`, `requisitante`, `arquivoOriginal`, `arquivoFormatado`, `arquivoVisualizacao`, `dam`, `comprovantePago`, `situacaoID`, `descricaoCancelamento`, `email`, `telefoneFixo`, `telefoneCelular`) VALUES
+(0, 2019, '02019FAT', '2019-01-10 10:34:55', 53, 10, 17, NULL, NULL, 9.2, 2.84, 18.85, 53.53, 45, NULL, '12532983000196', 'Lava Jato Boa Aparência', 'Júlio Cesar da Silva', '12532983000196-2019-01-10-10-34-16.docx', '12532983000196-2019-01-10-10-34-16_format.docx', '12532983000196-2019-01-10-10-34-16_visualizacao.pdf', NULL, '02019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
+(1, 2019, '12019FAT', '2019-01-10 10:56:15', 53, 10, 17, NULL, NULL, 9.2, 4.06, 18.85, 76.53, 45, NULL, '06895138000182', 'J.S. Industria de Carrocerias Ltda', 'Maria Helena Martelete', '06895138000182-2019-01-10-10-56-06.docx', '06895138000182-2019-01-10-10-56-06_format.docx', '06895138000182-2019-01-10-10-56-06_visualizacao.pdf', NULL, '12019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
+(2, 2019, '22019FAT', '2019-01-10 11:14:06', 53, 10, 17, NULL, NULL, 9.2, 3.65, 18.85, 68.8, 45, NULL, '03996973000110', 'Mocapri Marmores e Granitos Ltda', 'Maria Helena Martelete', '03996973000110-2019-01-10-11-14-00.docx', '03996973000110-2019-01-10-11-14-00_format.docx', '03996973000110-2019-01-10-11-14-00_visualizacao.pdf', NULL, '22019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
+(5, 2019, '52019FAT', '2019-01-14 17:36:03', 53, 11, 15, NULL, NULL, 9.2, 4.06, 18.85, 112.93, 37, NULL, '28129260000857', 'Drift Comércio de Alimentos S/A', 'Jerlen', '28129260000857-2019-01-14-17-34-39.docx', '28129260000857-2019-01-14-17-34-39_format.docx', '28129260000857-2019-01-14-17-34-40_visualizacao.pdf', NULL, '52019FAT_comprovantePago.pdf', 1, NULL, NULL, NULL, NULL),
+(6, 2019, '62019FAT', '2019-01-16 17:11:34', 53, 9, 20, NULL, NULL, 9.2, 4.46, 18.85, 84.07, NULL, NULL, '14467980709', 'CAPIXABA GRANITOS LTDA.', 'Eduarda Andrade Bayerl', '14467980709-2019-01-16-17-11-16.docx', '14467980709-2019-01-16-17-11-16_format.docx', '14467980709-2019-01-16-17-11-17_visualizacao.pdf', 'DAM-62019FAT.pdf', NULL, 4, NULL, 'ambiental@icgprojetos.com.br', '(28)3036-8326', '(28)99962-2960'),
+(7, 2019, '72019FAT', '2019-01-16 17:29:59', 53, 13, 20, NULL, NULL, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '14467880709', 'FIORI PEDRAS MARM E GRAN LTDA', 'Eduarda Andrade Bayerl', '14467880709-2019-01-16-17-29-50.docx', '14467880709-2019-01-16-17-29-50_format.docx', '14467880709-2019-01-16-17-29-50_visualizacao.pdf', 'DAM-72019FAT.pdf', NULL, 4, NULL, 'ambiental@icgprojetos.com.br', '(28)3036-8326', '(29)99962-2960'),
+(8, 2019, '82019FAT', '2019-01-16 17:45:20', 53, 10, 20, NULL, NULL, 9.2, 4.46, 18.85, 84.07, NULL, NULL, '28129260000857', 'DRIFT Com Alim S/A', 'Italo Nicoli Calegário', '28129260000857-2019-01-16-17-44-58.docx', '28129260000857-2019-01-16-17-44-58_format.docx', '28129260000857-2019-01-16-17-44-58_visualizacao.pdf', 'DAM-82019FAT.pdf', NULL, 4, NULL, 'italonicoli8@gmail.com', NULL, NULL),
+(9, 2019, '92019FAT', '2019-01-17 09:19:35', 53, 10, 23, NULL, NULL, 9.2, 3.25, 18.85, 61.26, NULL, NULL, '12929417792', 'FÁBIO RIBEIRO GOMES 09303968719', 'Gleisson Gomes Fonseca', '12929417792-2019-01-17-09-19-08.docx', '12929417792-2019-01-17-09-19-08_format.docx', '12929417792-2019-01-17-09-19-08_visualizacao.pdf', 'DAM-92019FAT.pdf', NULL, 4, NULL, 'fenixconsultoriambiental@gmail.com', '(28)3521-0957', '(28)99945-1466'),
+(10, 2019, '102019FAT', '2019-01-17 09:28:13', 53, 14, 20, NULL, NULL, 9.2, 4.46, 18.85, 84.07, NULL, NULL, '12929417792', 'MECÂNICA MOTO SUL LTDA ME', 'Gleisson Gomes Fonseca', '12929417792-2019-01-17-09-27-57.docx', '12929417792-2019-01-17-09-27-57_format.docx', '12929417792-2019-01-17-09-27-57_visualizacao.pdf', 'DAM-102019FAT.pdf', NULL, 4, NULL, 'fenixconsultoriambiental@gmail.com', '(28)3521-0957', '(28)99945-1466'),
+(11, 2019, '112019FAT', '2019-01-17 09:33:26', 53, 10, 20, NULL, NULL, 9.2, 4.87, 18.85, 91.8, NULL, NULL, '12929417792', 'JUAREZ SATHLER DE RESENDE 75326868768', 'Gleisson Gomes Fonseca', '12929417792-2019-01-17-09-33-15.docx', '12929417792-2019-01-17-09-33-15_format.docx', '12929417792-2019-01-17-09-33-16_visualizacao.pdf', 'DAM-112019FAT.pdf', NULL, 4, NULL, 'fenixconsultoriaambiental@gmail.com', '(28)3521-0957', '(28)99945-1466'),
+(12, 2019, '122019FAT', '2019-01-17 09:38:52', 53, 10, 20, NULL, NULL, 9.2, 3.65, 18.85, 68.8, NULL, NULL, '12929417792', 'H. ROBSON DE OLIVEIRA – ME', 'Gleisson Gomes Fonseca', '12929417792-2019-01-17-09-38-49.docx', '12929417792-2019-01-17-09-38-49_format.docx', '12929417792-2019-01-17-09-38-49_visualizacao.pdf', 'DAM-122019FAT.pdf', NULL, 4, NULL, 'fenixconsultoriambiental@gmail.com', '(28)3521-0957', '(28)99945-1466'),
+(13, 2019, '132019FAT', '2019-01-17 09:44:38', 53, 13, 20, NULL, NULL, 9.2, 5.27, 18.85, 99.34, NULL, NULL, '12929417792', 'FÊNIX MOTO CENTER EIRELI', 'Gleisson Gomes Fonseca', '12929417792-2019-01-17-09-44-34.docx', '12929417792-2019-01-17-09-44-34_format.docx', '12929417792-2019-01-17-09-44-34_visualizacao.pdf', 'DAM-132019FAT.pdf', NULL, 4, NULL, 'fenixconsultoriambiental@gmail.com', '(28)3521-0957', '(28)99945-1466'),
+(14, 2019, '142019FAT', '2019-01-17 09:59:07', 53, 14, 20, NULL, NULL, 9.2, 3.25, 18.85, 61.26, NULL, NULL, '11948765799', 'U. DE S. SILVA SERVICOS', 'Lorranny Felipe Santos', '11948765799-2019-01-17-09-58-54.docx', '11948765799-2019-01-17-09-58-54_format.docx', '11948765799-2019-01-17-09-58-55_visualizacao.pdf', 'DAM-142019FAT.pdf', NULL, 4, NULL, 'mineracao@genesisconsult.com.br', '(28)3511-7282', NULL),
+(15, 2019, '152019FAT', '2019-01-17 10:07:00', 53, 10, 20, NULL, NULL, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '09797371760', 'GRAMAZINI GRANITOS E MARMORES THOMAZINI LTDA', 'Giovani Américo Tomé', '09797371760-2019-01-17-10-06-52.docx', '09797371760-2019-01-17-10-06-52_format.docx', '09797371760-2019-01-17-10-06-52_visualizacao.pdf', 'DAM-152019FAT.pdf', NULL, 4, NULL, 'eng.minas.giovani@gmail.com', NULL, '(28)99958-9242'),
+(16, 2019, '162019FAT', '2019-01-17 10:14:48', 53, 11, 20, NULL, NULL, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '28263183704', 'JANETE MESQUITA (282.531.837-04)', 'Janete Mesquita', '28263183704-2019-01-17-10-14-04.docx', '28263183704-2019-01-17-10-14-04_format.docx', '28263183704-2019-01-17-10-14-04_visualizacao.pdf', 'DAM-162019FAT.pdf', NULL, 4, NULL, 'kfengenharia@outlook.com', '(28)3036-1878', '(28)99222-3791');
 
 -- --------------------------------------------------------
 
@@ -348,7 +387,8 @@ CREATE TABLE `grupousuario` (
 INSERT INTO `grupousuario` (`grupoID`, `grupoDescricao`) VALUES
 (1, 'Administrador'),
 (2, 'Usuário'),
-(3, 'Fatura');
+(3, 'Fatura'),
+(4, 'Publicador');
 
 -- --------------------------------------------------------
 
@@ -606,16 +646,16 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `cpf`, `telefoneSetor`, `telefoneCelular`, `password`, `remember_token`, `created_at`, `updated_at`, `grupoID`, `orgaoID`, `statusID`, `horaEnvio`, `login`, `primeiroLogin`) VALUES
-(1, 'carlos eduardo castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', '8oBecLRujUBXP3fUEixHi3ezQmo0M3F6bZA4m1JmkdFnqh7JBbEKmsEfXVMU', NULL, '2018-11-13 17:36:26', 1, 1, 1, '17:00:00', 'dedu', 0),
-(8, 'mauricio', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'dEkfBJFHPJf5c9HYM1DSVDR9StB38Nu0NtioyN2lzu1RSgUVtlVMpdFNdp0M', NULL, '2018-12-05 12:12:59', 3, 4, 1, '17:00:00', 'fatura', 0),
-(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'BxQG6idR832x3ydkpzr5GCXqnfsa4oEMhtvCW7qidLiW0vEgjobaavZfVVUL', NULL, '2019-01-02 19:14:46', 1, 5, 1, '17:00:00', 'informatica', 0),
-(15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$TXfsbYl4Dj3To.KaoSxCrOZMD/WjH3mYgvwJmwhjok18MYFRxiLpS', 'oD3wHBsY2F1c5X2A30Waljb6SFrtpeIVdDHoEauVmqU9SqamSX2E5BfH4Rvm', NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
+(1, 'carlos eduardo castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', 'DFzr2WEDJaU3JNQZ4MucaBdSSowUVVXyie0whvu7HKbDHioxhXG2bLb3seGn', NULL, '2018-11-13 17:36:26', 1, 1, 1, '17:00:00', 'dedu', 0),
+(8, 'Maurício P. Lima', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'nkwk5xVlBCqjSktyBNqbfqU7LgX5FMNjUXKjYr9nTPX6PRfgO9s0eeYlATL5', NULL, '2018-12-05 12:12:59', 3, 6, 1, '17:00:00', 'mauricio', 0),
+(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'VVHnum0x48fifrZMTa8n7rWyOOdmApbdPYn6SjUIs2olQq5JFTKWW56KYN37', NULL, '2019-01-02 19:14:46', 1, 6, 1, '17:00:00', 'informatica', 0),
+(15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$TXfsbYl4Dj3To.KaoSxCrOZMD/WjH3mYgvwJmwhjok18MYFRxiLpS', 'gPo3Hz7iAVD4YclmDVLCyymfgHVewN7fqCzc9z3vX8ahuElEKoWWuxJIB7vV', NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
 (17, 'Talia Ferreira Guerra', 'taliafguerra@gmail.com', '96201894772', '2835224708', '28999250709', '$2y$10$U5dVmQrcI4ls8b/hROFm6eWM2ZNVaXEUc7g02PMMLRcHfE2OqaVAy', 'eJa4j9RFKom2qZGwnwrUpq5xc3Fwp2KBu2TUs1wCbdmQWGsLROUhN2Qycq1r', NULL, '2019-01-10 11:42:11', 1, 8, 1, '17:00:00', 'talia', 0),
-(18, 'Teste Usuário', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', 'uoEUlYfjiQF9AqF8vYx7t6dip3ljY9IvS2OMTM5lk4ZzSvH3gIEPZvoatIQw', NULL, '2019-01-10 18:23:58', 3, 4, 1, '17:00:00', 'dedubr', 0),
-(20, 'Valéria Araujo Fraga', 'semma.vafraga@cachoeiro.es.gov.br', '76178838700', '2831555326', '99999999999', '$2y$10$OzNkKcxljVt8IrpBER2Rs.t99un6LunFZ6YXiMEnCITKn/9JKLcVu', 'Co2oz573ZJxPb4c8A73smtOyhYZ3ObpFxQ9HjNxu3dJc2L2bXJwr1vtIdeXI', NULL, '2019-01-15 13:05:08', 3, 9, 1, '19:00:00', 'vafraga', 0),
+(18, 'Teste Usuário', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', '3qjPAoFOIJva6KHurv2yKoFz7J2intBpxj4iRrjz7guf2wjiseYqpaSwVjzb', NULL, '2019-01-10 18:23:58', 3, 4, 1, '17:00:00', 'dedubr', 0),
+(20, 'Valéria Araujo Fraga', 'semma.vafraga@cachoeiro.es.gov.br', '76178838700', '2831555326', '99999999999', '$2y$10$OzNkKcxljVt8IrpBER2Rs.t99un6LunFZ6YXiMEnCITKn/9JKLcVu', '6qcFaLNDzdab7JIw2PzKIgzXy8MIEaccpgtZFVQugkdkaYWfIsptM9bKm3K6', NULL, '2019-01-15 13:05:08', 3, 9, 1, '19:00:00', 'vafraga', 0),
 (21, 'Elisandra Baiense', 'semma.elisandra@cachoeiro.es.gov.br', '03463169797', '2831555311', '28999182220', '$2y$10$24z4z51PqRZ8raHoplwTHOHCBtGf0EYqA6G9PINQ9s9xC9MCPmzcC', NULL, NULL, NULL, 3, 9, 1, '19:00:00', 'elisandra', 1),
 (22, 'José Roberto Pereira Cardoso', 'betaocardoso38@gmail.com', '95203958734', '2831555326', '28988031118', '$2y$10$TD1PYhq4TWNq6ZZwRy1P5OfebQXXVcfZWMKoHo0KB5IcE4c68MZ5a', NULL, NULL, NULL, 3, 9, 1, '19:58:00', 'jrpereira', 1),
-(23, 'Gustavo Dal Rio Figueiredo', 'gustavof.semma@gmail.com', '14006331762', '2831555326', '28999999999', '$2y$10$2YWmYpFMKjADNOqZI9dEreTjllkP/k4iL6mONYESovQfSZBaCzq9G', NULL, NULL, '2019-01-15 19:13:56', 1, 9, 1, '17:00:00', 'gustavod', 0);
+(23, 'Gustavo Dal Rio Figueiredo', 'gustavof.semma@gmail.com', '14006331762', '2831555326', '28999999999', '$2y$10$2YWmYpFMKjADNOqZI9dEreTjllkP/k4iL6mONYESovQfSZBaCzq9G', 'onYtGpxIygqG3VoqBFfrEWbGFZr1BbYssmMN71N2Wf42rNddfROmvxITSbvR', NULL, '2019-01-15 19:13:56', 3, 9, 1, '17:00:00', 'gustavod', 0);
 
 -- --------------------------------------------------------
 
@@ -808,7 +848,7 @@ ALTER TABLE `caderno`
 -- AUTO_INCREMENT for table `comunicado`
 --
 ALTER TABLE `comunicado`
-  MODIFY `comunicadoID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `comunicadoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `configuracaofatura`
@@ -832,7 +872,7 @@ ALTER TABLE `diasnaouteis`
 -- AUTO_INCREMENT for table `grupousuario`
 --
 ALTER TABLE `grupousuario`
-  MODIFY `grupoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `grupoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -850,7 +890,7 @@ ALTER TABLE `orgaorequisitante`
 -- AUTO_INCREMENT for table `publicacaoarquivo`
 --
 ALTER TABLE `publicacaoarquivo`
-  MODIFY `arquivoID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `arquivoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `situacao`

@@ -108,34 +108,30 @@
     <div id="app">
         @auth
 
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="background: lightblue; padding: 0px">
+        <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="background: #F1F1F2; padding: 0px">
 
-            <span class="col-md-10" style="white-space: nowrap;"> Usuário Logado: <strong style="text-transform:capitalize;"> {{Auth::user()->name}} </strong> </span>
+            <div style="font-size: 14px; color:#1872B3;" class="col-md-5">
+               <b>SISPUDIO - Sistemas de Publicações do Diário Oficial de Cachoeiro de Itapemirim</b>
+            </div>
 
-            <div class="container col-md-2">
+            <div class="col-md-7">
 
-                    <ul class="navbar-nav ml-auto">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST"  style="float:right;">
+                        @csrf
+                        <span  style="white-space: nowrap; color:#1872B3;"> <b>Usuário Logado: </b> <span style="text-transform:capitalize; color:#1872B3;"> {{Auth::user()->name}} </span> </span>
+                        <input class="btn" id="inputLogout" style="background-color: #1872B3; border-color: transparent; color:white;  !important; margin: 3px;" type="submit" name="logout" value="Desconectar">
+                </form>
 
+            </div>
 
-                        <li class="nav-item">
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                                        @csrf
-                                        <input class="btn" id="inputLogout" style="background-color: transparent; border-color: transparent; color:black" type="submit" name="logout", value="Desconectar">
-                                </form>
-                        </li>
-                    </ul>
-                </div>
-
-
-
-            </nav>
+        </nav>
 
 
 
 
-        <nav class="navbar navbar-expand-md navbar-light" style="background-color: #e3f2fd;">
-                <a href="/home"><img src="/logo" alt="" width="60" height="50"></a>
-                <a class="nav-link" href="/home" style="float:left; color:black;">Home<span class="sr-only">(current)</span></a>
+        <nav class="navbar navbar-expand-md navbar-light" style="background-color: #1872B3; padding:0;">
+                <a href="/home"><img src="/logo" alt="home" width="130" height="60"></a>
+                <a class="nav-link" href="/home" style="float:left; text-transform:uppercase;">Home<span class="sr-only">(current)</span></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -148,16 +144,16 @@
 
                         @if (!Gate::allows('faturas', Auth::user()))
 
-                        <li class="nav-item active">
-                                <a class="nav-link" href="/publicacao/listar">Publicações<span class="sr-only">(current)</span></a>
+                        <li class="nav-item active" style="text-transform:uppercase;">
+                                <a class="nav-link" style="color:white;" href="/publicacao/listar">Publicações<span class="sr-only">(current)</span></a>
                               </li>
 
-                              <li class="nav-item active">
-                                  <a class="nav-link" href="/publicacao/cadastrar">Enviar <span class="sr-only">(current)</span></a>
+                              <li class="nav-item active" style="text-transform:uppercase;">
+                                  <a class="nav-link" style="color:white;" href="/publicacao/cadastrar">Enviar <span class="sr-only">(current)</span></a>
                               </li>
 
-                              <li class="nav-item active">
-                                  <a class="nav-link" href="/publicacao/apagadas">Apagadas <span class="sr-only">(current)</span></a>
+                              <li class="nav-item active" style="text-transform:uppercase;">
+                                  <a class="nav-link" style="color:white;" href="/publicacao/apagadas">Apagadas <span class="sr-only">(current)</span></a>
                               </li>
 
                         @endif
@@ -168,7 +164,7 @@
 
                                  <li class="nav-item active">
                                     <div class="dropdown nav-item" >
-                                        <a style="background-color: transparent; border-color:transparent; color:black;" class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <a style="background-color: transparent; border-color:transparent; color:white; text-transform:uppercase;" class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                           Faturas
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -193,7 +189,7 @@
 
                     @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
                         <div class="dropdown nav-item" >
-                            <button style="background-color: transparent; border-color:transparent; color:black;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button style="background-color: transparent; border-color:transparent; color:white; text-transform:uppercase;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               Cadastros
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -211,13 +207,13 @@
                         </div>
 
                         <div class="nav-item" >
-                            <a style="color:black;"  class="nav-link" style="float:right;" href="/comunicado/listar">Comunicados <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="/comunicado/listar">Comunicados <span class="sr-only">(current)</span></a>
                         </div>
 
                     @endif
 
                     <div class="nav-item" >
-                        <a  style="color:black;" class="nav-link" style="float:right;" href="/usuario/editar/{{Auth::user()->id}}">Meus Dados <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="/usuario/editar/{{Auth::user()->id}}">Meus Dados <span class="sr-only">(current)</span></a>
                     </div>
 
 
@@ -227,14 +223,13 @@
 
 
                     @else
-            <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="background-color: #e3f2fd;">
+            <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="background-color: #1872B3; padding: 0">
 
                     <div class="container">
-
-                        <div class="col-md-12">
-                        <h3 style="text-align: center;"><strong>Diário Oficial de Cachoeiro de Itapemirim</strong></h3>
-                    </div>
-
+                        <div class="col-md-12 row" >
+                            <img src="/logo" alt="home" width="130" height="60">
+                            <h4 style="text-align: center; color:white; margin-top:15px; margin-left: 1%;"><strong>SISPUDIO - Sistemas de Publicações do Diário Oficial de Cachoeiro de Itapemirim</strong></h4>
+                        </div>
                     @endauth
                 </div>
                 </div>
@@ -288,13 +283,29 @@
     </div>
 
     <footer class="border-top">
-        <div class="container">
-            <div class="row justify-content-center">
-
-                    <p style="margin-top:1%;">Desenvolvido por Carlos Eduardo B. de Castro (CGM), Matheus Mauricio de S. Araujo (CGM) e Mauricio P. Lima (SEMAD) - {{date('Y')}}</p>
-
+        <div class="col-md-12" style="background-color:#DEDDDD">
+            <div class="row col-md-12">
+                    <div class="col-md-10">
+                        <p style=" font-size: 12px; margin-top:20px; text-align:left;"> <b> Publicações de matérias INTERNAS e EXTERNAS:</b>  SEMAD - DIÁRIO OFICIAL - (28) 3522 4708 <br> <b>Publicação de LICENÇAS AMBIENTAIS:</b> SEMMA - (28) 3155 5326</p>
+                    </div>
+                    <div class="col-md-2">
+                        <img style="margin-top:5px;" src="/logoSis" alt="home" height="60px">
+                    </div>
             </div>
         </div>
+        <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="background: #1872B3; padding: 0px">
+
+            <span class="col-md-7" style="color:white; font-size:12px;">
+                Desenvolvido por Carlos Eduardo B. de Castro (CGM), Matheus Mauricio de S. Araujo (CGM) e Mauricio P. Lima (SEMAD) - {{date('Y')}}
+            </span>
+
+            <span class="col-md-5" style="color:white; font-size:12px;">
+                    Copyright © 2019 Prefeitura Municipal de Cachoeiro de Itapemirim - Todos os direitos reservados
+            </span>
+
+
+
+            </nav>
     </footer>
 
 </body>

@@ -390,16 +390,30 @@ class PublicacoesController extends Controller
 
                             DB::beginTransaction();
 
+                            // @mudar
+                            $publicacao = Publicacao::orderBy('dataEnvio')->where('protocoloCompleto', '=', $request->protocolo)->first();
+                            $this->diretorio = $publicacao->protocoloAno."/".$request->protocolo;
+
                             // buscando arquivos antigos no banco
 
                             $arquivosAntigos =  DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->select('arquivo')->get();
 
                             // deletando arquivos no servidor
+                            // foreach($arquivosAntigos as $arquivoAntigo){
+                            //     if(file_exists(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo))){
+                            //         File::delete(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo));
+                            //     }
+                            // }
+
+
                             foreach($arquivosAntigos as $arquivoAntigo){
                                 if(file_exists(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo))){
-                                    File::delete(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo));
+                                    File::delete(storage_path("app/".$publicacao->protocoloAno."/".$request->protocolo."/".$arquivoAntigo->arquivo));
                                 }
                             }
+
+
+
 
                             // deletando os arquivos antigos no banco
                             DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
@@ -422,9 +436,15 @@ class PublicacoesController extends Controller
                             }
 
                             // salvando os novos no servidor
+                            // $contador = 0;
+                            // foreach ($this->arquivos as $arquivo) {
+                            //     $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$request->protocolo."/".$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
+                            //     $contador++;
+                            // }
+
                             $contador = 0;
                             foreach ($this->arquivos as $arquivo) {
-                                $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$request->protocolo."/".$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
+                                $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$publicacao->protocoloAno."/".$request->protocolo."/".$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
                                 $contador++;
                             }
 
@@ -435,7 +455,6 @@ class PublicacoesController extends Controller
                             DB::beginTransaction();
                             DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4]);
                         }
-
                         DB::commit();
 
                         Session::forget('protocoloEditar');
@@ -447,7 +466,6 @@ class PublicacoesController extends Controller
                         if(!isset($request->manterArquivo)){
                             DB::rollBack();
 
-                            $this->diretorio = $request->protocolo;
 
                             if(file_exists(storage_path("app/".$this->diretorio))){
                                 Storage::deleteDirectory($this->diretorio);
@@ -535,7 +553,10 @@ class PublicacoesController extends Controller
                 $contador++;
             }
 
-            $this->diretorio =  $protocolo.date('Y').'PUB';
+            // @mudar
+            $this->diretorio = date('Y')."/".$protocolo.date('Y').'PUB';
+
+            // $this->diretorio =  $protocolo.date('Y').'PUB';
             File::makeDirectory(storage_path("app/".$this->diretorio));
 
             $contador = 0;
@@ -543,6 +564,7 @@ class PublicacoesController extends Controller
                 $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$this->diretorio."/".$protocolo.date('Y').'PUB'.'-'.$contador.'.'.pathinfo($request[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
                 $contador++;
             }
+
 
             DB::commit();
         }
@@ -858,12 +880,24 @@ class PublicacoesController extends Controller
 
         $arquivoExtensao = explode('.', $publicacao->arquivo);
 
-        if(file_exists(storage_path("app/".$protocolo))){
+        // if(file_exists(storage_path("app/".$protocolo))){
 
-            $files = glob(storage_path("app/".$protocolo."/*"));
-            Zipper::make(storage_path("app/".$protocolo."/").$protocolo.'.zip')->add($files)->close();
+        //     $files = glob(storage_path("app/".$protocolo."/*"));
+        //     Zipper::make(storage_path("app/".$protocolo."/").$protocolo.'.zip')->add($files)->close();
 
-            return response()->download(storage_path("app/".$protocolo."/".$protocolo.'.zip'))->deleteFileAfterSend(true);
+        //     return response()->download(storage_path("app/".$protocolo."/".$protocolo.'.zip'))->deleteFileAfterSend(true);
+
+        // }else{
+        //     return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
+        // }
+
+        // @mudar
+        if(file_exists(storage_path("app/".$publicacao->protocoloAno."/".$protocolo))){
+
+            $files = glob(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/*"));
+            Zipper::make(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/").$protocolo.'.zip')->add($files)->close();
+
+            return response()->download(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/".$protocolo.'.zip'))->deleteFileAfterSend(true);
 
         }else{
             return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
@@ -899,6 +933,8 @@ class PublicacoesController extends Controller
     public function apagar(Request $request){
 
         $protocolo = $request->protocolo;
+
+        $publicacaoApagar  = Publicacao::orderBy('dataEnvio')->where('protocoloCompleto', '=', $protocolo)->first();
         $publicacao = Publicacao::orderBy('protocoloAno', 'desc');
 
         if($protocolo != null){
@@ -913,9 +949,15 @@ class PublicacoesController extends Controller
 
         // verifica se existe o arquivo e o deleta;
 
-        if(file_exists(storage_path("app/".$request->protocolo))){
-            Storage::deleteDirectory($request->protocolo);
+        //@mudar
+
+        if(file_exists(storage_path("app/".$publicacaoApagar->protocoloAno."/".$request->protocolo))){
+            Storage::deleteDirectory($publicacaoApagar->protocoloAno."/".$request->protocolo);
         }
+
+        // if(file_exists(storage_path("app/".$request->protocolo))){
+        //     Storage::deleteDirectory($request->protocolo);
+        // }
         DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
         $publicacao->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id, 'dataApagada' => date('Y-m-d H:i:s')]);
 

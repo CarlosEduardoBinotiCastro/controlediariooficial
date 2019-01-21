@@ -58,7 +58,7 @@
                                     <label><strong>Nome ou Documento</strong></label>
                             </div>
                             <div style="float: left;" class="col-md-5">
-                                <input class="form-control" type="text" name="nomeDoc">
+                                <input class="form-control" type="text" name="nomeDoc" placeholder="Apenas letras ou números">
                             </div>
                             <div style="float: left;" class="col-md-3">
                                 <input class="btn btn-primary" type="submit" value="Pesquisar" name="enviar">
