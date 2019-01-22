@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 22-Jan-2019 às 14:03
+-- Generation Time: 22-Jan-2019 às 14:06
 -- Versão do servidor: 10.1.36-MariaDB
 -- versão do PHP: 7.2.10
 
@@ -402,13 +402,6 @@ CREATE TABLE `log` (
   `usuarioID` int(11) NOT NULL,
   `logData` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Extraindo dados da tabela `log`
---
-
-INSERT INTO `log` (`logID`, `logDescricao`, `usuarioID`, `logData`) VALUES
-(43, 'Usuario: Carlos Eduardo Castro(id:1)  Deletou o caderno de id7', 1, '2019-01-22 11:03:28');
 
 -- --------------------------------------------------------
 

@@ -195,7 +195,7 @@ class CadernoController extends Controller
 
                     $cadernoTipoDocumento = CadernoTipoDocumento::orderBy('cadernoID');
                     $cadernoTipoDocumento->where('cadernoID', '=', $id)->delete();
-                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou o caderno de id'.$id]);
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou o caderno de id '.$id]);
                     return redirect('/caderno/listar')->with("sucesso", "Caderno Deletado");
 
                 }
