@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 22-Jan-2019 às 14:06
+-- Generation Time: 22-Jan-2019 às 14:42
 -- Versão do servidor: 10.1.36-MariaDB
 -- versão do PHP: 7.2.10
 
@@ -661,7 +661,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `cpf`, `telefoneSetor`, `telefoneCelular`, `password`, `remember_token`, `created_at`, `updated_at`, `grupoID`, `orgaoID`, `statusID`, `horaEnvio`, `login`, `primeiroLogin`) VALUES
 (1, 'Carlos Eduardo Castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', 'wsrrW0ABpTrksLfOUeTgVMKFnBtNjs2jUbQIMhzkBcKbFMrTX2e7nL0tqjp2', NULL, '2018-11-13 17:36:26', 1, 4, 1, '17:00:00', 'dedu', 0),
 (8, 'Maurício P. Lima', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'ibARP8dIPGnFyEEheJ938K1b5ROicbt6tdYdksBBVCPv1P4avk020f6MDmKG', NULL, '2018-12-05 12:12:59', 3, 6, 1, '17:00:00', 'mauricio', 0),
-(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'LwrEH5VvhpQxQNU8ueKyzztRrGFaQm7Y8aDpYLdMUKUwXeLpyeuYJAYuhu8f', NULL, '2019-01-02 19:14:46', 1, 6, 1, '17:00:00', 'informatica', 0),
+(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'X7eMranHJgvRW4uWiA5jQVMMbXNHlc24EDT9RVLeuDCY3KtJ9wTov4XPIS0X', NULL, '2019-01-02 19:14:46', 1, 6, 1, '17:00:00', 'informatica', 0),
 (15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$TXfsbYl4Dj3To.KaoSxCrOZMD/WjH3mYgvwJmwhjok18MYFRxiLpS', 'gPo3Hz7iAVD4YclmDVLCyymfgHVewN7fqCzc9z3vX8ahuElEKoWWuxJIB7vV', NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
 (17, 'Talia Ferreira Guerra', 'taliafguerra@gmail.com', '96201894772', '2835224708', '28999250709', '$2y$10$U5dVmQrcI4ls8b/hROFm6eWM2ZNVaXEUc7g02PMMLRcHfE2OqaVAy', 'eJa4j9RFKom2qZGwnwrUpq5xc3Fwp2KBu2TUs1wCbdmQWGsLROUhN2Qycq1r', NULL, '2019-01-10 11:42:11', 1, 8, 1, '17:00:00', 'talia', 0),
 (18, 'Teste Usuários', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', 'ADV1CcRNHmSiUTZppqOzibWdK5x8pKkyJcYUbzSEILQGazDqS5U2wV4JKLLH', NULL, '2019-01-10 18:23:58', 3, 4, 1, '17:00:00', 'dedubr', 0),
@@ -859,7 +859,7 @@ ALTER TABLE `usuariocaderno`
 -- AUTO_INCREMENT for table `caderno`
 --
 ALTER TABLE `caderno`
-  MODIFY `cadernoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `cadernoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `comunicado`
@@ -895,7 +895,7 @@ ALTER TABLE `grupousuario`
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `log`
-  MODIFY `logID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `logID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -944,6 +944,14 @@ ALTER TABLE `tipodocumento`
 --
 ALTER TABLE `users`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+DELIMITER $$
+--
+-- Eventos
+--
+CREATE DEFINER=`root`@`localhost` EVENT `DeletarLogsAntigos` ON SCHEDULE EVERY 1 DAY STARTS '2019-01-25 09:00:00' ON COMPLETION NOT PRESERVE ENABLE DO DELETE from log WHERE logData < DATE_SUB(NOW(), INTERVAL 15 DAY)$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

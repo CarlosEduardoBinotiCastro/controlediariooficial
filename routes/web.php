@@ -231,6 +231,6 @@ Route::group(['prefix' => 'comunicado'], function () {
 
 Route::group(['prefix' => 'log'], function () {
     Route::get('/listar', 'LogController@listar');
-    // Route::get('/listar/{filtro}', ['as' => 'listarComunicados', 'uses' => 'ComunicadoController@listar']);
-    // Route::post('/chamarListar', 'ComunicadoController@listarFiltro');
+    Route::get('/listar/{filtro}', ['as' => 'listarLogs', 'uses' => 'LogController@listar']);
+    Route::post('/chamarListar', 'LogController@listarFiltro');
 });
