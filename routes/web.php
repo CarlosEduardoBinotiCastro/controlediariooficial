@@ -228,3 +228,9 @@ Route::group(['prefix' => 'comunicado'], function () {
 
     Route::post('/visualizarComunicado', 'ComunicadoController@visualizarComunicado');
 });
+
+Route::group(['prefix' => 'log'], function () {
+    Route::get('/listar', 'LogController@listar');
+    // Route::get('/listar/{filtro}', ['as' => 'listarComunicados', 'uses' => 'ComunicadoController@listar']);
+    // Route::post('/chamarListar', 'ComunicadoController@listarFiltro');
+});

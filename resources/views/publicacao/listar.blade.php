@@ -223,7 +223,7 @@
 
             {{-- Verifica se pode apagar a publicacao --}}
 
-            @if ($publicacao->situacaoNome != "Apagada" && (($publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Aceita") || ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) )  ))
+            @if ($publicacao->situacaoNome != "Apagada" && (($publicacao->situacaoNome != "Publicada") && ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) )  ))
                 @php
                     $modalApagar = true;
                 @endphp

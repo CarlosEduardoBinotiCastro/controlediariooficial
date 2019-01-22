@@ -455,6 +455,8 @@ class PublicacoesController extends Controller
                             DB::beginTransaction();
                             DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4]);
                         }
+                        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou uma Publicação de protocolo '.$protocoloCompleto]);
+
                         DB::commit();
 
                         Session::forget('protocoloEditar');
@@ -565,6 +567,7 @@ class PublicacoesController extends Controller
                 $contador++;
             }
 
+            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou uma Publicação de protocolo '.$protocolo.date('Y').'PUB']);
 
             DB::commit();
         }
@@ -923,6 +926,7 @@ class PublicacoesController extends Controller
         }else{
             return redirect()->back()->with(['erro' => 'Publicação não encontrada!']);
         }
+        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Aceitou uma Publicação de protocolo '.$protocolo]);
 
         $publicacao->update(['situacaoID' => 3]);
         return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Publicação Aceita!');
@@ -960,6 +964,7 @@ class PublicacoesController extends Controller
         // }
         DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
         $publicacao->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id, 'dataApagada' => date('Y-m-d H:i:s')]);
+        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Apagou uma Publicação de protocolo '.$protocolo]);
 
         return redirect()->back()->with('sucesso', 'Publicação Apagada!');
 
@@ -981,6 +986,8 @@ class PublicacoesController extends Controller
         }
 
         $publicacao->update(['situacaoID' => 1]);
+        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Publicou uma Publicação de protocolo '.$protocolo]);
+
         return redirect()->back()->with('sucesso', 'Publicação Publicada!');
     }
 
@@ -1006,6 +1013,8 @@ class PublicacoesController extends Controller
         }
 
         $publicacao->update(['situacaoID' => 5, 'rejeitadaDescricao' => $request->descricao]);
+        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Rejeitou uma Publicação de protocolo '.$protocolo]);
+
         return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Publicação Rejeitada!');
     }
 

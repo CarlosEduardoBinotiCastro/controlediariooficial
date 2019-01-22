@@ -168,7 +168,7 @@ class UserController extends Controller
                             foreach($cadernos as $caderno){
                                 DB::table('usuariocaderno')->insert(['cadernoID' => $caderno->cadernoID, 'usuarioID' => $request->usuarioID]);
                             }
-
+                            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou o usuário '.$request->name]);
                             DB::commit();
                             return redirect('/usuario/listar')->with("sucesso", "Usuario Editado");
                         }else{
@@ -178,6 +178,7 @@ class UserController extends Controller
                             }else{
                                 DB::table('users')->where('id', '=', Auth::user()->id)->update(['name' => $request->name, 'email' => $request->email, 'login' => $request->login, 'cpf' => $request->cpf, 'telefoneSetor' => $request->telefoneSetor, 'telefoneCelular' => $request->telefoneCelular]);
                             }
+                            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou o usuário '.$request->name]);
 
                             DB::commit();
                             return redirect('/home')->with("sucesso", "Usuario Editado");
@@ -200,6 +201,7 @@ class UserController extends Controller
                         foreach($cadernos as $caderno){
                             DB::table('usuariocaderno')->insert(['cadernoID' => $caderno->cadernoID, 'usuarioID' => $usuarioID]);
                         }
+                        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou o usuário '.$request->name]);
 
                         DB::commit();
                         return redirect('/usuario/listar')->with("sucesso", "Usuario Cadastrado");
@@ -355,6 +357,8 @@ class UserController extends Controller
                 break;
 
                 default:
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Desativou o usuário de id '.$id]);
+
                     DB::table('users')->where('id', '=', $id)->update(['statusID' => 2]);
                     return redirect()->back()->with('sucesso', "Usuário desativado!");
                 break;

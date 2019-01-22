@@ -7,6 +7,7 @@ use App\DiasNaoUteis;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 
 class DiasNaoUteisController extends Controller
@@ -22,7 +23,7 @@ class DiasNaoUteisController extends Controller
 
     public function listar(){
         if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
-            $diasNaoUteis = DiasNaoUteis::orderBy('diaID');
+            $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData');
             $diasNaoUteis = $diasNaoUteis->paginate($this->paginacao);
             return view('diasnaouteis.listar', ['diasNaoUteis' => $diasNaoUteis]);
         }else{
@@ -54,8 +55,10 @@ class DiasNaoUteisController extends Controller
 
                 if(isset($request->diaID)){
                     $diasNaoUteis->where('diaID', '=', $request->diaID)->update(['diaNaoUtilData' => $request->diaNaoUtilData, 'diaDescricao' => $request->diaDescricao]);
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou o Feriado/Facultativo '.$request->diaNaoUtilData]);
                     return redirect('/diasnaouteis/listar')->with("sucesso", "Dia Não Útil Editado");
                 }else{
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou o Feriado/Facultativo '.$request->diaNaoUtilData]);
                     $diasNaoUteis->insert(['diaNaoUtilData' => $request->diaNaoUtilData, 'diaDescricao' => $request->diaDescricao]);
                     return redirect('/diasnaouteis/listar')->with("sucesso", "Dia Não Útil Cadastrado");
                 }
@@ -96,6 +99,7 @@ class DiasNaoUteisController extends Controller
             $diasNaoUteis = DiasNaoUteis::orderBy('diaID');
             $diasNaoUteis->select('*')->where('diaID', '=', $id);
             $diasNaoUteis->delete();
+            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou o Feriado/Facultativo de id '.$id]);
 
             return redirect()->back()->with("sucesso", "Dia Não Útil Deletado");
 

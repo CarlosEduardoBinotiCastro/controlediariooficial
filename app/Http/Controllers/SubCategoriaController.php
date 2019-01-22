@@ -67,10 +67,14 @@ class SubCategoriaController extends Controller
             if(isset($request->subcategoriaID)){
                 $subcategoria = SubCategoria::orderBy('subcategoriaNome');
                 $subcategoria->where('subcategoriaID', '=', $request->subcategoriaID)->update(['subcategoriaNome' => $request->subcategoriaNome, 'tipoID' => $request->tipoID]);
+                DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou a subcategoria '.$request->subcategoriaNome]);
+
                 return redirect('/subcategoria/listar')->with('sucesso', 'Subcategoria Editada');
             }else{
                 $subcategoria = SubCategoria::orderBy('subcategoriaNome');
                 $subcategoria->insert(['subcategoriaNome' => $request->subcategoriaNome, 'tipoID' => $request->tipoID]);
+                DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou a subcategoria '.$request->subcategoriaNome]);
+
                 return redirect('/subcategoria/listar')->with('sucesso', 'Subcategoria Cadastrada');
             }
 
@@ -132,6 +136,8 @@ class SubCategoriaController extends Controller
 
             if(sizeof($faturas) == 0){
                 $subcategoria->where('subcategoriaID', '=', $subcategoriaID)->delete();
+                DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou a subcategoria de id '.$subcategoriaID]);
+
                 return redirect('/subcategoria/listar')->with('sucesso', 'Subcategoria Deletada');
             }else{
                 return back()->with(['erro' => 'Impossível deletar, pois existem faturas vinculadas com essa subcategoria!', 'faturas' => $faturas]);

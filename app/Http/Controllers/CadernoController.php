@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Publicacao;
 use App\User;
 use App\CadernoTipoDocumento;
+use App\Log;
 
 class CadernoController extends Controller
 {
@@ -23,6 +24,7 @@ class CadernoController extends Controller
     }
 
     public function listar(){
+
         if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
             $cadernos = Caderno::orderBy('cadernoNome');
@@ -77,8 +79,9 @@ class CadernoController extends Controller
                     foreach($tipoDocumentos as $documento){
                         DB::table('cadernotipodocumento')->insert(['tipoID' => $documento->tipoID, 'cadernoID' => $request->cadernoID]);
                     }
-
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou o caderno '.$request->cadernoNome]);
                     DB::commit();
+
                     return redirect('/caderno/listar')->with("sucesso", "Caderno Editado");
                 } catch (\Exception $e) {
                     DB::rollBack();
@@ -94,8 +97,9 @@ class CadernoController extends Controller
                     foreach($tipoDocumentos as $documento){
                         DB::table('cadernotipodocumento')->insert(['tipoID' => $documento->tipoID, 'cadernoID' => $cadernoID]);
                     }
-
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou o caderno '.$request->cadernoNome]);
                     DB::commit();
+
                     return redirect('/caderno/listar')->with("sucesso", "Caderno Cadastrado");
                 } catch (\Exception $e) {
                     DB::rollBack();
@@ -191,7 +195,7 @@ class CadernoController extends Controller
 
                     $cadernoTipoDocumento = CadernoTipoDocumento::orderBy('cadernoID');
                     $cadernoTipoDocumento->where('cadernoID', '=', $id)->delete();
-
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou o caderno de id'.$id]);
                     return redirect('/caderno/listar')->with("sucesso", "Caderno Deletado");
 
                 }

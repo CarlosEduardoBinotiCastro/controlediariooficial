@@ -7,6 +7,7 @@ use App\OrgaoRequisitante;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use Illuminate\Support\Facades\DB;
 
 class OrgaoRequisitanteController extends Controller
 {
@@ -55,8 +56,10 @@ class OrgaoRequisitanteController extends Controller
 
                 if(isset($request->orgaoID)){
                     $orgaoRequisitante->where('orgaoID', '=', $request->orgaoID)->update(['orgaoNome' => $request->orgaoNome]);
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou o Órgão Requisitante '.$request->orgaoNome]);
                     return redirect('/orgaorequisitante/listar')->with("sucesso", "Órgão Requisitante Editado");
                 }else{
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou o Órgão Requisitante '.$request->orgaoNome]);
                     $orgaoRequisitante->insert(['orgaoNome' => $request->orgaoNome]);
                     return redirect('/orgaorequisitante/listar')->with("sucesso", "Órgão Requisitante Cadastrado");
                 }
@@ -127,6 +130,7 @@ class OrgaoRequisitanteController extends Controller
 
             if(sizeof($users) == 0){
                 $orgaoRequisitante->where('orgaoID', '=', $id)->delete();
+                DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou o Órgão Requisitante de id '.$id]);
                 return redirect('/orgaorequisitante/listar')->with("sucesso", "Órgão Requisitante Deletado");
 
             }else{

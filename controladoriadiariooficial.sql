@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 17-Jan-2019 às 19:51
+-- Generation Time: 22-Jan-2019 às 14:03
 -- Versão do servidor: 10.1.36-MariaDB
 -- versão do PHP: 7.2.10
 
@@ -39,7 +39,6 @@ CREATE TABLE `caderno` (
 
 INSERT INTO `caderno` (`cadernoID`, `cadernoNome`) VALUES
 (1, 'Poder Executivo'),
-(3, 'Teste'),
 (4, 'Poder Legislativo'),
 (5, 'Diversos'),
 (6, 'Licitação');
@@ -98,7 +97,6 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (21, 1),
 (21, 5),
 (22, 1),
-(22, 3),
 (22, 5),
 (23, 1),
 (23, 5),
@@ -124,7 +122,6 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (33, 5),
 (34, 5),
 (34, 6),
-(35, 3),
 (35, 5),
 (35, 6),
 (36, 5),
@@ -133,10 +130,8 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (37, 6),
 (38, 5),
 (38, 6),
-(39, 3),
 (39, 5),
 (39, 6),
-(40, 3),
 (40, 5),
 (40, 6),
 (41, 5),
@@ -154,7 +149,6 @@ INSERT INTO `cadernotipodocumento` (`tipoID`, `cadernoID`) VALUES
 (48, 5),
 (49, 5),
 (50, 5),
-(51, 3),
 (51, 5),
 (53, 5);
 
@@ -367,7 +361,13 @@ INSERT INTO `fatura` (`protocolo`, `protocoloAno`, `protocoloCompleto`, `dataEnv
 (13, 2019, '132019FAT', '2019-01-17 09:44:38', 53, 13, 20, NULL, NULL, 9.2, 5.27, 18.85, 99.34, NULL, NULL, '12929417792', 'FÊNIX MOTO CENTER EIRELI', 'Gleisson Gomes Fonseca', '12929417792-2019-01-17-09-44-34.docx', '12929417792-2019-01-17-09-44-34_format.docx', '12929417792-2019-01-17-09-44-34_visualizacao.pdf', 'DAM-132019FAT.pdf', NULL, 4, NULL, 'fenixconsultoriambiental@gmail.com', '(28)3521-0957', '(28)99945-1466'),
 (14, 2019, '142019FAT', '2019-01-17 09:59:07', 53, 14, 20, NULL, NULL, 9.2, 3.25, 18.85, 61.26, NULL, NULL, '11948765799', 'U. DE S. SILVA SERVICOS', 'Lorranny Felipe Santos', '11948765799-2019-01-17-09-58-54.docx', '11948765799-2019-01-17-09-58-54_format.docx', '11948765799-2019-01-17-09-58-55_visualizacao.pdf', 'DAM-142019FAT.pdf', NULL, 4, NULL, 'mineracao@genesisconsult.com.br', '(28)3511-7282', NULL),
 (15, 2019, '152019FAT', '2019-01-17 10:07:00', 53, 10, 20, NULL, NULL, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '09797371760', 'GRAMAZINI GRANITOS E MARMORES THOMAZINI LTDA', 'Giovani Américo Tomé', '09797371760-2019-01-17-10-06-52.docx', '09797371760-2019-01-17-10-06-52_format.docx', '09797371760-2019-01-17-10-06-52_visualizacao.pdf', 'DAM-152019FAT.pdf', NULL, 4, NULL, 'eng.minas.giovani@gmail.com', NULL, '(28)99958-9242'),
-(16, 2019, '162019FAT', '2019-01-17 10:14:48', 53, 11, 20, NULL, NULL, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '28263183704', 'JANETE MESQUITA (282.531.837-04)', 'Janete Mesquita', '28263183704-2019-01-17-10-14-04.docx', '28263183704-2019-01-17-10-14-04_format.docx', '28263183704-2019-01-17-10-14-04_visualizacao.pdf', 'DAM-162019FAT.pdf', NULL, 4, NULL, 'kfengenharia@outlook.com', '(28)3036-1878', '(28)99222-3791');
+(16, 2019, '162019FAT', '2019-01-17 10:14:48', 53, 11, 20, NULL, NULL, 9.2, 4.06, 18.85, 76.53, NULL, NULL, '28263183704', 'JANETE MESQUITA (282.531.837-04)', 'Janete Mesquita', '28263183704-2019-01-17-10-14-04.docx', '28263183704-2019-01-17-10-14-04_format.docx', '28263183704-2019-01-17-10-14-04_visualizacao.pdf', 'DAM-162019FAT.pdf', NULL, 4, NULL, 'kfengenharia@outlook.com', '(28)3036-1878', '(28)99222-3791'),
+(17, 2019, '172019FAT', '2019-01-18 17:05:16', 53, 13, 20, NULL, NULL, 9.2, 4.46, 18.85, 84.07, NULL, NULL, '12711279707', 'AMADEU BRUN FELETTI 09075681739', 'Aline Oliveira Freitas', '12711279707-2019-01-18-17-04-49.docx', '12711279707-2019-01-18-17-04-49_format.docx', '12711279707-2019-01-18-17-04-50_visualizacao.pdf', 'DAM-172019FAT.pdf', NULL, 4, NULL, 'alibeolifreitas@gmail.com', NULL, '(28)99982-4487'),
+(18, 2019, '182019FAT', '2019-01-21 09:41:12', 53, 10, 23, NULL, NULL, 9.2, 4.46, 18.85, 84.07, NULL, NULL, '00982344635', 'J. MESQUITA EIRELI EPP', 'Karla Patrícia Andrade Pinheiro Boldotto', '00982344635-2019-01-21-09-40-37.docx', '00982344635-2019-01-21-09-40-37_format.docx', '00982344635-2019-01-21-09-40-38_visualizacao.pdf', 'DAM-182019FAT.pdf', NULL, 4, NULL, 'kfengenharia@outlook.com', '(28)3036-1878', '(28)99222-3791'),
+(19, 2019, '192019FAT', '2019-01-21 09:46:28', 53, 10, 23, NULL, NULL, 9.2, 3.65, 18.85, 68.8, NULL, NULL, '00982344635', 'PEDRAS DECORATIVAS ITALIA EIRELI', 'Karla Patrícia Andrade Pinheiro Boldotto', '00982344635-2019-01-21-09-46-16.docx', '00982344635-2019-01-21-09-46-16_format.docx', '00982344635-2019-01-21-09-46-16_visualizacao.pdf', 'DAM-192019FAT.pdf', NULL, 4, NULL, 'kfengenharia@outlook.com', '(28)3036-1878', '(28)99222-3791'),
+(20, 2019, '202019FAT', '2019-01-21 09:54:35', 53, 12, 23, NULL, NULL, 9.2, 5.27, 18.85, 99.34, NULL, NULL, '12873994797', 'ALINE CRISTINE NEVES VENANCIO GEAQUINTO 11346259798', 'Pedro dos Santos Baptista Filho', '12873994797-2019-01-21-09-54-24.docx', '12873994797-2019-01-21-09-54-24_format.docx', '12873994797-2019-01-21-09-54-24_visualizacao.pdf', 'DAM-202019FAT.pdf', NULL, 4, NULL, 'pedrobaptistafilho@hotmail.com', NULL, '(28)99883-1841'),
+(21, 2019, '212019FAT', '2019-01-21 10:05:37', 53, 13, 23, NULL, NULL, 9.2, 3.65, 18.85, 68.8, NULL, NULL, '39349287000103', 'BEIRAL SERRARIA E MARMORARIA LTDA', 'Beiral Serraria e Marmoraria LTDA', '39349287000103-2019-01-21-10-05-21.docx', '39349287000103-2019-01-21-10-05-21_format.docx', '39349287000103-2019-01-21-10-05-21_visualizacao.pdf', 'DAM-212019FAT.pdf', NULL, 4, NULL, NULL, NULL, NULL),
+(22, 2019, '222019FAT', '2019-01-21 10:12:24', 53, 9, 23, NULL, NULL, 9.2, 5.68, 18.85, 107.07, NULL, NULL, '11458094723', 'DUDU COMERCIO DE PEDRAS E TRANSPORTES EIRELI', 'Pollyana Pontes', '11458094723-2019-01-21-10-12-11.docx', '11458094723-2019-01-21-10-12-11_format.docx', '11458094723-2019-01-21-10-12-11_visualizacao.pdf', 'DAM-222019FAT.pdf', NULL, 4, NULL, 'cunha.ambiental@gmail.com', NULL, '(28)99222-8152');
 
 -- --------------------------------------------------------
 
@@ -389,6 +389,26 @@ INSERT INTO `grupousuario` (`grupoID`, `grupoDescricao`) VALUES
 (2, 'Usuário'),
 (3, 'Fatura'),
 (4, 'Publicador');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `log`
+--
+
+CREATE TABLE `log` (
+  `logID` bigint(20) NOT NULL,
+  `logDescricao` varchar(400) NOT NULL,
+  `usuarioID` int(11) NOT NULL,
+  `logData` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `log`
+--
+
+INSERT INTO `log` (`logID`, `logDescricao`, `usuarioID`, `logData`) VALUES
+(43, 'Usuario: Carlos Eduardo Castro(id:1)  Deletou o caderno de id7', 1, '2019-01-22 11:03:28');
 
 -- --------------------------------------------------------
 
@@ -646,12 +666,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `cpf`, `telefoneSetor`, `telefoneCelular`, `password`, `remember_token`, `created_at`, `updated_at`, `grupoID`, `orgaoID`, `statusID`, `horaEnvio`, `login`, `primeiroLogin`) VALUES
-(1, 'carlos eduardo castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', 'DFzr2WEDJaU3JNQZ4MucaBdSSowUVVXyie0whvu7HKbDHioxhXG2bLb3seGn', NULL, '2018-11-13 17:36:26', 1, 1, 1, '17:00:00', 'dedu', 0),
-(8, 'Maurício P. Lima', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'nkwk5xVlBCqjSktyBNqbfqU7LgX5FMNjUXKjYr9nTPX6PRfgO9s0eeYlATL5', NULL, '2018-12-05 12:12:59', 3, 6, 1, '17:00:00', 'mauricio', 0),
-(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'VVHnum0x48fifrZMTa8n7rWyOOdmApbdPYn6SjUIs2olQq5JFTKWW56KYN37', NULL, '2019-01-02 19:14:46', 1, 6, 1, '17:00:00', 'informatica', 0),
+(1, 'Carlos Eduardo Castro', 'eduardbinoti@gmail.com', '56310841041', '2835224896', '28999654178', '$2y$10$1Q02pW1d0l9MjjvCo8UJeOdyFinyS0ixN8eEPyjaH./ll5EpZbMfi', 'wsrrW0ABpTrksLfOUeTgVMKFnBtNjs2jUbQIMhzkBcKbFMrTX2e7nL0tqjp2', NULL, '2018-11-13 17:36:26', 1, 4, 1, '17:00:00', 'dedu', 0),
+(8, 'Maurício P. Lima', 'mauriciopicoli@hotmail.com', '08094627700', '2835112713', '99999999999', '$2y$10$fo3r21dtnAXqLSYRXE2ly.jfn.nv70zigr4C5p1FT.83rKhQ75v5O', 'ibARP8dIPGnFyEEheJ938K1b5ROicbt6tdYdksBBVCPv1P4avk020f6MDmKG', NULL, '2018-12-05 12:12:59', 3, 6, 1, '17:00:00', 'mauricio', 0),
+(13, 'Informatica', 'semad.informatica@cachoeiro.es.gov.br', '02781851779', '2835112713', '28992532511', '$2y$10$c82jLr9IeLaZJ/qnxxfAK.bCgvIfHePNB.JIvmI56jAItpN4Oa9Rm', 'LwrEH5VvhpQxQNU8ueKyzztRrGFaQm7Y8aDpYLdMUKUwXeLpyeuYJAYuhu8f', NULL, '2019-01-02 19:14:46', 1, 6, 1, '17:00:00', 'informatica', 0),
 (15, 'Santa Gama de Freitas', 'pmci.diario.oficial@gmail.com', '93023057753', '2835224708', '99999999999', '$2y$10$TXfsbYl4Dj3To.KaoSxCrOZMD/WjH3mYgvwJmwhjok18MYFRxiLpS', 'gPo3Hz7iAVD4YclmDVLCyymfgHVewN7fqCzc9z3vX8ahuElEKoWWuxJIB7vV', NULL, '2019-01-04 17:29:41', 1, 8, 1, '17:00:00', 'santa', 0),
 (17, 'Talia Ferreira Guerra', 'taliafguerra@gmail.com', '96201894772', '2835224708', '28999250709', '$2y$10$U5dVmQrcI4ls8b/hROFm6eWM2ZNVaXEUc7g02PMMLRcHfE2OqaVAy', 'eJa4j9RFKom2qZGwnwrUpq5xc3Fwp2KBu2TUs1wCbdmQWGsLROUhN2Qycq1r', NULL, '2019-01-10 11:42:11', 1, 8, 1, '17:00:00', 'talia', 0),
-(18, 'Teste Usuário', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', '3qjPAoFOIJva6KHurv2yKoFz7J2intBpxj4iRrjz7guf2wjiseYqpaSwVjzb', NULL, '2019-01-10 18:23:58', 3, 4, 1, '17:00:00', 'dedubr', 0),
+(18, 'Teste Usuários', 'teste@gmail.com', '27838386055', '1231231231', '12312312312', '$2y$10$ZCfMko8b2RapYYaqFFxgTOjXDpAUiwimKhUyfCjU0MwRICg.7kKym', 'ADV1CcRNHmSiUTZppqOzibWdK5x8pKkyJcYUbzSEILQGazDqS5U2wV4JKLLH', NULL, '2019-01-10 18:23:58', 3, 4, 1, '17:00:00', 'dedubr', 0),
 (20, 'Valéria Araujo Fraga', 'semma.vafraga@cachoeiro.es.gov.br', '76178838700', '2831555326', '99999999999', '$2y$10$OzNkKcxljVt8IrpBER2Rs.t99un6LunFZ6YXiMEnCITKn/9JKLcVu', '6qcFaLNDzdab7JIw2PzKIgzXy8MIEaccpgtZFVQugkdkaYWfIsptM9bKm3K6', NULL, '2019-01-15 13:05:08', 3, 9, 1, '19:00:00', 'vafraga', 0),
 (21, 'Elisandra Baiense', 'semma.elisandra@cachoeiro.es.gov.br', '03463169797', '2831555311', '28999182220', '$2y$10$24z4z51PqRZ8raHoplwTHOHCBtGf0EYqA6G9PINQ9s9xC9MCPmzcC', NULL, NULL, NULL, 3, 9, 1, '19:00:00', 'elisandra', 1),
 (22, 'José Roberto Pereira Cardoso', 'betaocardoso38@gmail.com', '95203958734', '2831555326', '28988031118', '$2y$10$TD1PYhq4TWNq6ZZwRy1P5OfebQXXVcfZWMKoHo0KB5IcE4c68MZ5a', NULL, NULL, NULL, 3, 9, 1, '19:58:00', 'jrpereira', 1),
@@ -677,10 +697,8 @@ INSERT INTO `usuariocaderno` (`usuarioID`, `cadernoID`) VALUES
 (1, 5),
 (1, 6),
 (2, 1),
-(3, 3),
 (5, 1),
 (5, 5),
-(6, 3),
 (7, 1),
 (8, 5),
 (9, 1),
@@ -772,6 +790,12 @@ ALTER TABLE `grupousuario`
   ADD PRIMARY KEY (`grupoID`);
 
 --
+-- Indexes for table `log`
+--
+ALTER TABLE `log`
+  ADD PRIMARY KEY (`logID`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -842,13 +866,13 @@ ALTER TABLE `usuariocaderno`
 -- AUTO_INCREMENT for table `caderno`
 --
 ALTER TABLE `caderno`
-  MODIFY `cadernoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `cadernoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `comunicado`
 --
 ALTER TABLE `comunicado`
-  MODIFY `comunicadoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `comunicadoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `configuracaofatura`
@@ -860,19 +884,25 @@ ALTER TABLE `configuracaofatura`
 -- AUTO_INCREMENT for table `diariodata`
 --
 ALTER TABLE `diariodata`
-  MODIFY `diarioDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `diarioDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `diasnaouteis`
 --
 ALTER TABLE `diasnaouteis`
-  MODIFY `diaID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `diaID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `grupousuario`
 --
 ALTER TABLE `grupousuario`
   MODIFY `grupoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `log`
+--
+ALTER TABLE `log`
+  MODIFY `logID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -884,13 +914,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `orgaorequisitante`
 --
 ALTER TABLE `orgaorequisitante`
-  MODIFY `orgaoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `orgaoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `publicacaoarquivo`
 --
 ALTER TABLE `publicacaoarquivo`
-  MODIFY `arquivoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `arquivoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `situacao`
@@ -908,19 +938,19 @@ ALTER TABLE `status`
 -- AUTO_INCREMENT for table `subcategoria`
 --
 ALTER TABLE `subcategoria`
-  MODIFY `subcategoriaID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `subcategoriaID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `tipodocumento`
 --
 ALTER TABLE `tipodocumento`
-  MODIFY `tipoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `tipoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

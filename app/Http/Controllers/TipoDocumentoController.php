@@ -55,10 +55,12 @@ class TipoDocumentoController extends Controller
             default:
 
                 if(isset($request->tipoID)){
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou a Matéria '.$request->tipoDocumento]);
 
                     $tipoDocumento->where('tipoID', '=', $request->tipoID)->update(['tipoDocumento' => $request->tipoDocumento]);
                     return redirect('/tipodocumento/listar')->with("sucesso", "Matéria Editada");
                 }else{
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou a Matéria '.$request->tipoDocumento]);
                     $tipoDocumento->insert(['tipoDocumento' => $request->tipoDocumento]);
                     return redirect('/tipodocumento/listar')->with("sucesso", "Matéria Cadastrada");
                 }
@@ -140,7 +142,7 @@ class TipoDocumentoController extends Controller
             if(sizeof($publicacoes) == 0){
 
                 if(sizeof($faturas) == 0){
-
+                DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou a Matéria de id '.$id]);
                 $cadernoTipoDocumento->where('tipoID', '=', $id)->delete();
                 $tipoDocumento->where('tipoID', '=', $id)->delete();
                 return redirect('/tipodocumento/listar')->with("sucesso", "Matéria Deletada");

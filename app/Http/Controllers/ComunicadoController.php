@@ -110,6 +110,7 @@ class ComunicadoController extends Controller
                         foreach ($users as $user) {
                             DB::table('comunicadousuario')->insert(['usuarioID' => $user->id,'comunicadoID' => $request->comunicadoID]);
                         }
+                        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou o comunicado '.$request->tituloMensagem]);
 
                         DB::commit();
                         return redirect('/comunicado/listar')->with('sucesso', 'Comunicado Editado!');
@@ -144,6 +145,8 @@ class ComunicadoController extends Controller
                         foreach ($users as $user) {
                             DB::table('comunicadousuario')->insert(['usuarioID' => $user->id,'comunicadoID' => $comunicadoID]);
                         }
+
+                        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou o comunicado '.$request->tituloMensagem]);
 
                         DB::commit();
                         return redirect('/comunicado/listar')->with('sucesso', 'Comunicado Enviado!');
@@ -223,6 +226,7 @@ class ComunicadoController extends Controller
                 DB::table('comunicado')->where('comunicadoID', '=', $id)->delete();
                 DB::table('comunicadousuario')->where('comunicadoID', '=', $id)->delete();
                 DB::table('comunicadogrupousuario')->where('comunicadoID', '=', $id)->delete();
+                DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  deletou o comunicado de id '.$id]);
                 DB::commit();
 
                 return redirect('/comunicado/listar')->with('sucesso', 'Comunicado Deletado!');

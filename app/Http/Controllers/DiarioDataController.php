@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Publicacao;
 use App\Fatura;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -54,8 +55,12 @@ class DiarioDataController extends Controller
 
                 if(isset($request->diarioDataID)){
                     $diarioData->where('diarioDataID', '=', $request->diarioDataID)->update(['diarioData' => $request->diarioData, 'numeroDiario' => $request->numeroDiario]);
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou o diário '.$request->numeroDiario]);
+
                     return redirect('/diariodata/listar')->with("sucesso", "Diario Oficial Editado");
                 }else{
+                    DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou o diário '.$request->numeroDiario]);
+
                     $diarioData->insert(['diarioData' => $request->diarioData, 'numeroDiario' => $request->numeroDiario]);
                     return redirect('/diariodata/listar')->with("sucesso", "Diario Oficial Cadastrado");
                 }
@@ -122,6 +127,7 @@ class DiarioDataController extends Controller
                     if($data < date('d/m/Y')){
                         return redirect()->back()->with(["erro" => "Impossível deletar datas passadas !"]);
                     }else{
+                        DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou o diário '.$dataDiario->numeroDiario]);
                         $diarioData->where('diarioDataID', '=', $id)->delete();
                         return redirect('/diariodata/listar')->with("sucesso", "Diario Oficial Deletado");
                     }

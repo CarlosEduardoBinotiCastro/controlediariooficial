@@ -203,6 +203,9 @@
                               <a class="dropdown-item" href="/subcategoria/listar">Subcategorias</a>
                               <a class="dropdown-item" href="/diariodata/listar">Datas Diários Oficiais</a>
                               <a class="dropdown-item" href="/diasnaouteis/listar">Feriados/Pontos Facultativos</a>
+                              @if (Gate::allows('administrador', Auth::user()))
+                                <a class="dropdown-item" href="{{url("/log/listar")}}">LOGS</a>
+                             @endif
                             </div>
                         </div>
 

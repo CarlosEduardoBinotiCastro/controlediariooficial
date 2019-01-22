@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Session;
 use DateTime;
 use App\DiasNaoUteis;
+use Illuminate\Support\Facades\Gate;
 
 
 class HomeController extends Controller
@@ -18,10 +19,7 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+
 
     /**
      * Show the application dashboard.
@@ -31,9 +29,15 @@ class HomeController extends Controller
 
     public function carregarHome(){
 
-        $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData')->whereBetween('diaNaoUtilData',  [date('Y')."-01-01", date('Y')."-12-31"]);
-        $diasNaoUteis = $diasNaoUteis->get();
-        return view('home', ['diasNaoUteis' => $diasNaoUteis]);
+        if(Auth::user() != null){
+
+            $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData')->whereBetween('diaNaoUtilData',  [date('Y')."-01-01", date('Y')."-12-31"]);
+            $diasNaoUteis = $diasNaoUteis->get();
+            return view('home', ['diasNaoUteis' => $diasNaoUteis]);
+
+        }else{
+            return redirect('/login');
+        }
 
     }
 
