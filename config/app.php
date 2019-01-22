@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Diario Oficial Cachoeiro'),
+    'name' => env('APP_NAME', 'SISPUDIO'),
 
     /*
     |--------------------------------------------------------------------------
