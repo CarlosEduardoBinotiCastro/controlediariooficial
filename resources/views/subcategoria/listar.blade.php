@@ -48,7 +48,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de SubCategorias </strong> </h4>  <a style="margin-left:auto" href='/subcategoria/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de SubCategorias </strong> </h4>  <a style="margin-left:auto" href='{{ url("/subcategoria/cadastrar") }}' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
                   <table id="mytable" class="table table-bordred table-striped">
@@ -70,8 +70,8 @@
 
             <td>{{$subcategoria->subcategoriaNome}}</td>
             <td>{{$subcategoria->tipoDocumento}}</td>
-            <td> <a href='/subcategoria/editar/{{$subcategoria->subcategoriaID}}' class="btn btn-primary">Editar</a> </td>
-            <td> <a href='/subcategoria/deletar/{{$subcategoria->subcategoriaID}}' class="btn btn-danger">Deletar</a> </td>
+            <td> <a href='{{ url("/subcategoria/editar") }}/{{$subcategoria->subcategoriaID}}' class="btn btn-primary">Editar</a> </td>
+            <td> <a href='{{ url("/subcategoria/deletar") }}/{{$subcategoria->subcategoriaID}}' class="btn btn-danger">Deletar</a> </td>
         </tr>
 
          @endforeach

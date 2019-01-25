@@ -23,7 +23,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header"> <strong> {{ __('EDITAR Publicação') }} </strong> </div>
-                    <form id="form" action="/publicacao/salvar" method="POST" enctype="multipart/form-data">
+                    <form id="form" action="{{ url("/publicacao/salvar") }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
                     <div class="card-body">
@@ -140,7 +140,7 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
+                                        <a href="{{ url("/publicacao/download") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
                                     </div>
                             </div>
 

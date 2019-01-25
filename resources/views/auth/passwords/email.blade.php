@@ -38,7 +38,7 @@
                                     </button>
                                 </div>
                                 <div style="float: left; margin-left:2%;">
-                                    <a style="color: white;" class="btn btn-primary" id="btnVoltar" href="/home">
+                                    <a style="color: white;" class="btn btn-primary" id="btnVoltar" href="{{route('home')}}">
                                         Home
                                     </a>
                                 </div>

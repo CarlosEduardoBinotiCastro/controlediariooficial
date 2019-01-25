@@ -39,7 +39,7 @@
                 <br>
                 <div class="form-group mb-0 alert alert-success" style="font-size:20px">
                     Existem Faturas esperando para serem aceitas!
-                    <a href="/fatura/irParaCadastradas" class="btn btn-success" style="margin-left:2%; float:right;">Ver Faturas</a>
+                    <a href="{{ url("/fatura/irParaCadastradas") }}" class="btn btn-success" style="margin-left:2%; float:right;">Ver Faturas</a>
                 </div>
 
             @endif
@@ -205,19 +205,19 @@
                                 @endif
 
             <td style="white-space:nowrap; width:10%; ">
-                <a href='/publicacao/ver/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:65px; font-size:12px">Ver</a>
+                <a href='{{ url("/publicacao/ver") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:65px; font-size:12px">Ver</a>
 
             {{-- Verifica se o usuario é administrador e se não for, verifica se a situação permita ele editar --}}
 
             @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
                 @if ($publicacao->situacaoNome == "Apagada" || date('Y-m-d') >= $publicacao->diarioData)
                 @else
-                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
+                     <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
             @else
                 @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" ||  date('Y-m-d') >= $publicacao->diarioData)
                 @else
-                     <a href='/publicacao/editar/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
+                     <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
             @endif
 
@@ -245,7 +245,7 @@
 
 
         @if ($modalApagar)
-        <form action="/publicacao/apagar" method="POST">
+        <form action="{{ url("/publicacao/apagar") }}" method="POST">
             @csrf
             <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao Apagada --}}
@@ -284,7 +284,7 @@
         @endif
 
         @if ($modalPublicar)
-        <form action="/publicacao/publicar" method="POST">
+        <form action="{{ url("/publicacao/publicar") }}" method="POST">
             @csrf
             <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao publicada --}}

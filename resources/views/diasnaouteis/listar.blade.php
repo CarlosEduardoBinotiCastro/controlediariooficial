@@ -41,7 +41,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Feriados / Pontos Facultativos </strong> </h4>  <a style="margin-left:auto" href='/diasnaouteis/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Feriados / Pontos Facultativos </strong> </h4>  <a style="margin-left:auto" href='{{ url("/diasnaouteis/cadastrar") }}' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 
@@ -74,8 +74,8 @@
 
             <td>{{$data}}</td>
             <td>{{$dia->diaDescricao}}</td>
-            <td> @if(!$dataPassada) <a href='/diasnaouteis/editar/{{$dia->diaID}}' class="btn btn-primary">Editar</a> @endif</td>
-            <td> @if(!$dataPassada) <a href='/diasnaouteis/deletar/{{$dia->diaID}}' class="btn btn-danger">Deletar</a> @endif</td>
+            <td> @if(!$dataPassada) <a href='{{ url("/diasnaouteis/editar") }}/{{$dia->diaID}}' class="btn btn-primary">Editar</a> @endif</td>
+            <td> @if(!$dataPassada) <a href='{{ url("/diasnaouteis/deletar") }}/{{$dia->diaID}}' class="btn btn-danger">Deletar</a> @endif</td>
         </tr>
 
          @endforeach

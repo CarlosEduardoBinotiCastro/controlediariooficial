@@ -45,7 +45,7 @@
                             <label for="empresa" class="col-md-4 col-form-label text-md-right">{{ __('Empresa') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
-                                <input  id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }}" name="empresa" value="{{ old('empresa') }}" placeholder="Nome da empresa" required autofocus>
+                                <input  id="empresa" type="text" class="form-control{{ $errors->has('empresa') ? ' is-invalid' : '' }} autocomplete_txt" data-type="empresa" name="empresa" value="{{ old('empresa') }}" placeholder="Nome da empresa" required autofocus>
                             </div>
                         </div>
 
@@ -82,7 +82,7 @@
                             <div class="col-md-2">
                                 <select  class="custom-select mr-sm-2" name="tipoDoc" id="tipoDoc">
                                 <option slected value="CPF">CPF</option>
-                                <option value="RG">CNPJ</option>
+                                <option value="CNPJ">CNPJ</option>
                                 </select>
                             </div>
 
@@ -120,8 +120,8 @@
                             <label for="tipoID" class="col-md-4 col-form-label text-md-right">{{ __('Matéria') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
-                                <select  class="custom-select mr-sm-2" name="tipoID" id="tipoID" onchange="carregarSubcategorias()">
-                                <option slected value="">Selecione a Matéria</option>
+                                <select required class="custom-select mr-sm-2" name="tipoID" id="tipoID" onchange="carregarSubcategorias()">
+                                <option slected  value="">Selecione a Matéria</option>
                                     @foreach ($documentos as $item)
                                         <option value="{{$item->tipoID}}"> {{$item->tipoDocumento}} </option>
                                     @endforeach
@@ -135,7 +135,7 @@
                             <label for="subcategoriaID" class="col-md-4 col-form-label text-md-right">{{ __('Subcategoria') }} <span style="color:red;">*</span></label>
 
                             <div class="col-md-6">
-                                <select  class="custom-select mr-sm-2" name="subcategoriaID" id="subcategoriaID">
+                                <select required  class="custom-select mr-sm-2" name="subcategoriaID" id="subcategoriaID">
                                     <option slected value="">Selecione a Subcategoria</option>
                                     <option  value="NaoPossui">Não Possui</option>
                                 </select>
@@ -157,7 +157,7 @@
 
                             <br>
                                 <div class="form-group row offset-md-6">
-                                    <a href="/fatura/gerarTemplate" class="btn btn-primary">Template</a><a style="color:red; margin-left:2%" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle fa-2x"></i></a>
+                                    <a href="{{ url("/fatura/gerarTemplate") }}" class="btn btn-primary">Template</a><a style="color:red; margin-left:2%" href="" data-toggle="modal" data-target="#modalLegenda" ><i class="fas fa-question-circle fa-2x"></i></a>
                                 </div>
                                 <div class="form-group row offset-md-3">
                                     <p><strong style="color:red; font-size:20px;">Lembre que você deve usar o template citado acima!!</strong> </p>
@@ -221,7 +221,8 @@
 
 
 @endauth
-
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
 
@@ -325,6 +326,70 @@
                 $("#btnEnviar").attr('disabled', true);
             }
         });
+
+        //autocomplete script
+    $(document).on('focus','.autocomplete_txt',function(){
+      type = $(this).data('type');
+
+      if(type =='empresa' )autoType='empresa';
+
+       $(this).autocomplete({
+           minLength: 4,
+           source: function( request, response ) {
+                $.ajax({
+                    url: "{{ route('searchajaxEmpresa') }}",
+                    dataType: "json",
+                    data: {
+                        term : request.term,
+                        type : type,
+                    },
+                    success: function(data) {
+                        var array = $.map(data, function (item) {
+                           return {
+                               label: item[autoType],
+                               value: item[autoType],
+                               data : item
+                           }
+                       });
+                        response(array)
+                    }
+                });
+           },
+           select: function( event, ui ) {
+               var data = ui.item.data;
+
+                // Verifica se é cpf ou cnpj
+
+                if(data.cpfCnpj.length > 11 ){
+
+                    // por algum motivo é necessario alterar a mascara antes de atribuir a mascara certa (erro na repetição)
+                    $("#numeroDoc").attr('maxlength',11);
+                    $("#numeroDoc").mask('000.000.000-00', {reverse: true});
+
+                    // setando o valor real
+                    $('#tipoDoc').val('CNPJ');
+                    $('#numeroDoc').val(data.cpfCnpj);
+                    $("#numeroDoc").attr('maxlength',14);
+                    $("#numeroDoc").mask('00.000.000/0000-00', {reverse: true});
+                }else{
+
+                    // por algum motivo é necessario alterar a mascara antes de atribuir a mascara certa (erro na repetição)
+                    $("#numeroDoc").attr('maxlength',14);
+                    $("#numeroDoc").mask('00.000.000/0000-00', {reverse: true});
+
+                    // setando valor real
+                    $('#tipoDoc').val('CPF');
+                    $('#numeroDoc').val(data.cpfCnpj);
+                    $("#numeroDoc").attr('maxlength',11);
+                    $("#numeroDoc").mask('000.000.000-00', {reverse: true});
+                }
+
+               $('#empresa').val(data.empresa);
+
+           }
+       });
+
+    });
 
     });
 </script>

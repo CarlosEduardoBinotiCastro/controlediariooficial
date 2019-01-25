@@ -52,7 +52,7 @@
                                     <td><input style="resize:none; width: 180px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
 
                                     <td>
-                                            <select style="resize:none; width: 180px;" class="custom-select" name="subcategoria" id="subcategoriaID" >
+                                            <select style="resize:none; width: 180px !important;" class="custom-select" name="subcategoria" id="subcategoriaID" >
                                                     <option slected value="tudo">Subcategoria</option>
                                                     <option  value="NaoPossui">Não Possui</option>
                                                 @foreach ($subcategorias as $subcategoria)
@@ -201,7 +201,7 @@
 
                                 <td style="white-space:nowrap;">
 
-                                    <a href='/fatura/ver/{{$fatura->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
+                                    <a href='{{ url("/fatura/ver") }}/{{$fatura->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
 
                                     @if ($fatura->diarioData <= date('Y-m-d') && $fatura->situacaoNome != "Publicada" && $fatura->situacaoNome != "Apagada" && $fatura->situacaoNome == "Aceita" && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ))
                                         @php
@@ -224,7 +224,7 @@
 
                             @if ($modalApagar)
 
-                                <form action="/fatura/apagar" method="POST">
+                                <form action="{{ url("/fatura/apagar") }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
                                     {{-- situacao Apagada --}}
@@ -266,7 +266,7 @@
                             @endif
 
                             @if ($modalPublicar)
-                                <form action="/fatura/publicar" method="POST">
+                                <form action="{{ url("/fatura/publicar") }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
                                     <input type="hidden" name="voltar" value="sim">

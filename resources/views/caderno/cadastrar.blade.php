@@ -67,9 +67,7 @@
 <div class="container">
     <div class="row">
 
-        @php
-            $cadernos = [];
-        @endphp
+
 
         <div class="col-md-12">
 
@@ -94,18 +92,7 @@
                    </thead>
     <tbody>
 
-     @foreach ($cadernos as $caderno)
 
-
-     <tr>
-
-        <td>{{$caderno->cadernoNome}}</td>
-        <td> <a href='/caderno/editar/{{$caderno->cadernoID}}' class="btn btn-danger">Remover</a></td>
-    </tr>
-
-
-
-     @endforeach
 
 
     </tbody>

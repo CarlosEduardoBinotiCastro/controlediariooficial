@@ -161,7 +161,7 @@
             <td style="text-transform:capitalize;"> {{$publicacao->nomeUsuarioCriou}} em {{$dataEnviado}} </td>
             <td style="text-transform:capitalize;"> {{$publicacao->nomeUsuarioApagou}} em {{$dataApagado}} </td>
             <td>N° {{$publicacao->numeroDiario}} <br> {{$dataDiario}}</td>
-            <td>  <a href='/publicacao/ver/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a></td>
+            <td>  <a href='{{ url("/publicacao/ver") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a></td>
         </tr>
 
 

@@ -114,14 +114,14 @@
                             @if ($publicacao->usuarioIDApagou == null)
                             <br>
                                 <div class="col-md-12">
-                                <a href="/publicacao/download/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
+                                <a href="{{ url("/publicacao/download") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
                                 </div>
                             @endif
 
 
                             <br>
                             <div class="col-md-12">
-                                    <a href="/publicacao/gerarComprovante/{{$publicacao->protocoloCompleto}}" target="_blank" class="btn btn-success">Comprovante</a>
+                                    <a href="{{ url("/publicacao/gerarComprovante") }}/{{$publicacao->protocoloCompleto}}" target="_blank" class="btn btn-success">Comprovante</a>
                             </div>
 
                             <br><br>
@@ -164,7 +164,7 @@
 {{-- verifica se possui modal aceitar --}}
 
 @if ($modalAceitar)
-        <form id="formAceitar" action="/publicacao/aceitar" method="POST">
+        <form id="formAceitar" action="{{ url("/publicacao/aceitar") }}" method="POST">
             @csrf
             <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao Aceita --}}
@@ -205,7 +205,7 @@
 {{-- verifica se possui modal Rejeitar --}}
 
 @if ($modalRejeitar)
-        <form id="formRejeitar" action="/publicacao/rejeitar" method="POST">
+        <form id="formRejeitar" action="{{ url("/publicacao/rejeitar") }}" method="POST">
             @csrf
             <input type="hidden" name="protocolo" value="{{$publicacao->protocoloCompleto}}">
             {{-- situacao Aceita --}}

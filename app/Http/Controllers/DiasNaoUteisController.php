@@ -23,7 +23,7 @@ class DiasNaoUteisController extends Controller
 
     public function listar(){
         if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
-            $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData');
+            $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData', 'desc');
             $diasNaoUteis = $diasNaoUteis->paginate($this->paginacao);
             return view('diasnaouteis.listar', ['diasNaoUteis' => $diasNaoUteis]);
         }else{

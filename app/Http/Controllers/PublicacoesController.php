@@ -309,6 +309,7 @@ class PublicacoesController extends Controller
             }while($verificaDiaUtil == false);
 
         }
+
         // fim dos limites para os diarios
         return view('publicacao.cadastrar', ['usuarioCaderno' => $usuarioCaderno, 'documentos' => $documentos, 'diarioDatas' => json_encode($diariosDatasLimites), 'horaEnvio' => $horaEnvio]);
 

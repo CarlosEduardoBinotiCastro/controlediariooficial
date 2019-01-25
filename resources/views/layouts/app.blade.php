@@ -10,7 +10,7 @@
     <title> Diário Oficial Cachoeiro de Itapemirim </title>
 
     <!-- Scripts -->
-    {{-- <link rel="icon" type="image/png" sizes="16x16" href="/logo"> --}}
+    <link rel="icon" type="image/png" sizes="16x16" href="{{url('/logoBrasao')}}">
     <script src="{{ asset('js/app.js') }}" ></script>
     <script type="text/javascript" src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/jquery.validate.min.js') }}"></script>
@@ -130,8 +130,8 @@
 
 
         <nav class="navbar navbar-expand-md navbar-light" style="background-color: #1872B3; padding:0;">
-                <a href="/home"><img src="/logo" alt="home" width="130" height="60"></a>
-                <a class="nav-link" href="/home" style="float:left; text-transform:uppercase;">Home<span class="sr-only">(current)</span></a>
+                <a href="{{url('/home')}}"><img src="{{url('/logo')}}" alt="home" width="130" height="60"></a>
+                <a class="nav-link" href="{{url('/home')}}" style="float:left; text-transform:uppercase;">Home<span class="sr-only">(current)</span></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -145,15 +145,15 @@
                         @if (!Gate::allows('faturas', Auth::user()))
 
                         <li class="nav-item active" style="text-transform:uppercase;">
-                                <a class="nav-link" style="color:white;" href="/publicacao/listar">Publicações<span class="sr-only">(current)</span></a>
+                                <a class="nav-link" style="color:white;" href="{{url('/publicacao/listar')}}">Publicações<span class="sr-only">(current)</span></a>
                               </li>
 
                               <li class="nav-item active" style="text-transform:uppercase;">
-                                  <a class="nav-link" style="color:white;" href="/publicacao/cadastrar">Enviar <span class="sr-only">(current)</span></a>
+                                  <a class="nav-link" style="color:white;" href="{{url('/publicacao/cadastrar')}}">Enviar <span class="sr-only">(current)</span></a>
                               </li>
 
                               <li class="nav-item active" style="text-transform:uppercase;">
-                                  <a class="nav-link" style="color:white;" href="/publicacao/apagadas">Apagadas <span class="sr-only">(current)</span></a>
+                                  <a class="nav-link" style="color:white;" href="{{url('/publicacao/apagadas')}}">Apagadas <span class="sr-only">(current)</span></a>
                               </li>
 
                         @endif
@@ -168,15 +168,15 @@
                                           Faturas
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                          <a class="dropdown-item" href="/fatura/listar">Listar</a>
-                                          <a class="dropdown-item" href="/fatura/cadastrar">Cadastrar</a>
+                                          <a class="dropdown-item" href="{{url('/fatura/listar')}}">Listar</a>
+                                          <a class="dropdown-item" href="{{url('/fatura/cadastrar')}}">Cadastrar</a>
                                             @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
-                                                <a class="dropdown-item" href="/fatura/configuracao">Configurações</a>
+                                                <a class="dropdown-item" href="{{url('/fatura/configuracao')}}">Configurações</a>
                                             @endif
 
                                         @if (Gate::allows('administrador', Auth::user()))
-                                          <a class="dropdown-item" href="/fatura/relatorio">Relatório Quantitativo Por Período</a>
-                                          <a class="dropdown-item" href="/fatura/relatorioDetalhado">Relatório Detalhado</a>
+                                          <a class="dropdown-item" href="{{url('/fatura/relatorio')}}">Relatório Quantitativo Por Período</a>
+                                          <a class="dropdown-item" href="{{url('/fatura/relatorioDetalhado')}}">Relatório Detalhado</a>
                                         @endif
                                         </div>
                                     </div>
@@ -197,12 +197,12 @@
                              @if (Gate::allows('administrador', Auth::user()))
                                 <a class="dropdown-item" href="{{url("/usuario/listar")}}">Usuários</a>
                              @endif
-                              <a class="dropdown-item" href="/orgaorequisitante/listar">Órgão Requisitante</a>
-                              <a class="dropdown-item" href="/caderno/listar">Caderno</a>
-                              <a class="dropdown-item" href="/tipodocumento/listar">Matéria</a>
-                              <a class="dropdown-item" href="/subcategoria/listar">Subcategorias</a>
-                              <a class="dropdown-item" href="/diariodata/listar">Datas Diários Oficiais</a>
-                              <a class="dropdown-item" href="/diasnaouteis/listar">Feriados/Pontos Facultativos</a>
+                              <a class="dropdown-item" href="{{url('/orgaorequisitante/listar')}}">Órgão Requisitante</a>
+                              <a class="dropdown-item" href="{{url('/caderno/listar')}}">Caderno</a>
+                              <a class="dropdown-item" href="{{url('/tipodocumento/listar')}}">Matéria</a>
+                              <a class="dropdown-item" href="{{url('/subcategoria/listar')}}">Subcategorias</a>
+                              <a class="dropdown-item" href="{{url('/diariodata/listar')}}">Datas Diários Oficiais</a>
+                              <a class="dropdown-item" href="{{url('/diasnaouteis/listar')}}">Feriados/Pontos Facultativos</a>
                               @if (Gate::allows('administrador', Auth::user()))
                                 <a class="dropdown-item" href="{{url("/log/listar")}}">LOGS</a>
                              @endif
@@ -210,13 +210,13 @@
                         </div>
 
                         <div class="nav-item" >
-                            <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="/comunicado/listar">Comunicados <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="{{url('/comunicado/listar')}}">Comunicados <span class="sr-only">(current)</span></a>
                         </div>
 
                     @endif
 
                     <div class="nav-item" >
-                        <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="/usuario/editar/{{Auth::user()->id}}">Meus Dados <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="{{url('/usuario/editar')}}/{{Auth::user()->id}}">Meus Dados <span class="sr-only">(current)</span></a>
                     </div>
 
 
@@ -230,7 +230,7 @@
 
                     <div class="container">
                         <div class="col-md-12 row" >
-                            <img src="/logo" alt="home" width="130" height="60">
+                            <img src="{{url('/logo')}}" alt="home" width="130" height="60">
                             <h4 style="text-align: center; color:white; margin-top:15px; margin-left: 1%;"><strong>SISPUDIO - Sistemas de Publicações do Diário Oficial de Cachoeiro de Itapemirim</strong></h4>
                         </div>
                     @endauth
@@ -252,7 +252,7 @@
                             @if(sizeof($comunicados))
                                 <br>
                                 @foreach ($comunicados as $comunicado)
-                                    <form action="/comunicado/visualizarComunicado"  method="POST">
+                                    <form action="{{url('/comunicado/visualizarComunicado')}}"  method="POST">
                                         @csrf
                                         <input type="hidden" name="comunicadoID" value=" {{$comunicado->comunicadoID}} ">
                                         <div class="form-group alert alert-primary" style="font-size:20px">
@@ -292,7 +292,7 @@
                         <p style=" font-size: 12px; margin-top:20px; text-align:left;"> <b> Publicações de matérias INTERNAS e EXTERNAS:</b>  SEMAD - DIÁRIO OFICIAL - (28) 3522 4708 <br> <b>Publicação de LICENÇAS AMBIENTAIS:</b> SEMMA - (28) 3155 5326</p>
                     </div>
                     <div class="col-md-2">
-                        <img style="margin-top:5px;" src="/logoSis" alt="home" height="60px">
+                        <img style="margin-top:5px;" src="{{url('/logoSis')}}" alt="home" height="60px">
                     </div>
             </div>
         </div>

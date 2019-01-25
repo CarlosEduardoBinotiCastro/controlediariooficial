@@ -58,7 +58,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Diários Oficiais </strong> </h4>  <a style="margin-left:auto" href='/diariodata/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Diários Oficiais </strong> </h4>  <a style="margin-left:auto" href='{{ url("/diariodata/cadastrar") }}' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 
@@ -91,8 +91,8 @@
 
             <td>{{$data}}</td>
             <td>{{$diario->numeroDiario}}</td>
-            <td> @if(!$dataPassada) <a href='/diariodata/editar/{{$diario->diarioDataID}}' class="btn btn-primary">Editar</a> @endif</td>
-            <td> @if(!$dataPassada) <a href='/diariodata/deletar/{{$diario->diarioDataID}}' class="btn btn-danger">Deletar</a> @endif</td>
+            <td> @if(!$dataPassada) <a href='{{ url("/diariodata/editar") }}/{{$diario->diarioDataID}}' class="btn btn-primary">Editar</a> @endif</td>
+            <td> @if(!$dataPassada) <a href='{{ url("/diariodata/deletar") }}/{{$diario->diarioDataID}}' class="btn btn-danger">Deletar</a> @endif</td>
         </tr>
 
          @endforeach

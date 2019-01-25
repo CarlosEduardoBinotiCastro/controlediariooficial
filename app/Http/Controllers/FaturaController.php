@@ -176,6 +176,10 @@ class FaturaController extends Controller
                 return redirect()->back()->with('erro', "Requisitante com tamanho excedido!")->withInput();
             break;
 
+            case 10:
+                return redirect('home')->with('erro', "Parece que algumas informações vieram desformatadas, verifique se o navegador esta com javascript funcionando (aperte f12), ou tente mudar de navegador!")->withInput();
+            break;
+
             default:
 
                 // carrega configurações da fatura
@@ -441,6 +445,10 @@ class FaturaController extends Controller
                 return redirect('home')->with('erro', "Requisitante com tamanho excedido!")->withInput();
             break;
 
+            case 10:
+                return redirect('home')->with('erro', "Parece que algumas informações vieram desformatadas, verifique se o navegador esta com javascript funcionando (aperte f12), ou tente mudar de navegador!")->withInput();
+            break;
+
 
             default:
 
@@ -525,16 +533,22 @@ class FaturaController extends Controller
 
     public function validar($request){
 
+        $doc = str_split($request->cpfCnpj);
+        $pattern = '.';
+        if(in_array($pattern, $doc)){
+            return 10;
+        }
+
         if(strlen($request->observacao) > 255){
             return 7;
         }
 
         if(strlen($request->empresa) > 200){
-            return 6;
+            return 8;
         }
 
         if(strlen($request->requisitante) > 200){
-            return 8;
+            return 9;
         }
 
         if(isset($request->arquivo)){
@@ -1845,6 +1859,27 @@ class FaturaController extends Controller
         }else{
             return redirect('home');
         }
+    }
+
+    public function searchResponseEmpresa(Request $request){
+        $query = $request->get('term','');
+        $empresas=\DB::table('fatura')->orderBy('empresa');
+        $empresas->select('empresa', 'cpfCnpj');
+        if($request->type=='empresa'){
+            $empresas->where('empresa','LIKE','%'.$query.'%');
+        }
+
+        $empresas->groupBy('empresa', 'cpfCnpj');
+
+        $empresas=$empresas->get();
+        $data=array();
+        foreach ($empresas as $empresa) {
+                $data[]=array('empresa'=>$empresa->empresa,'cpfCnpj'=>$empresa->cpfCnpj);
+        }
+        if(count($data))
+             return $data;
+        else
+            return ['cpf'=>'','cpfCnpj'=>''];
     }
 
 

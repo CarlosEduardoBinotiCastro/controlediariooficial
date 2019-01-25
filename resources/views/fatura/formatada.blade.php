@@ -23,7 +23,7 @@
 
                 <div class="card-body">
 
-                    <form id="form" action="/fatura/salvar" method="POST" enctype="multipart/form-data">
+                    <form id="form" action="{{ url('/fatura/salvar') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="arquivoOriginal" value=" {{$fatura['arquivoOriginal']}} ">
                         <input type="hidden" name="arquivoFormatado" value=" {{$fatura['arquivoFormatado']}} ">
@@ -146,7 +146,7 @@
 
                                 <div class="form-group row">
                                         <div class="col-md-6 offset-md-4">
-                                            <a href="/fatura/downloadTemp/{{$fatura['arquivoFormatado']}}" class="btn btn-primary">Download Arquivo Formatado</a>
+                                            <a href="{{ url("/fatura/downloadTemp") }}/{{$fatura['arquivoFormatado']}}" class="btn btn-primary">Download Arquivo Formatado</a>
                                         </div>
                                     </div>
 
@@ -282,7 +282,7 @@
                     {{-- FIM DA VISUALIZAÇÃO DO ARQUIVO FORMATADO --}}
 
                     <div>
-                        <a href="/fatura/visualizacaoTemp/{{$arquivoVisualizacao}}" type="button" class="btn btn-primary col-md-12" data-dismiss="modal">
+                        <a href="{{ url("/fatura/visualizacaoTemp") }}/{{$arquivoVisualizacao}}" type="button" class="btn btn-primary col-md-12" data-dismiss="modal">
                             Arquivo Base Centimetragem
                         </a>
                     </div>

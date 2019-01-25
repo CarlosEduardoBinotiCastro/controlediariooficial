@@ -52,7 +52,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Órgãos Requisitantes </strong> </h4>  <a style="margin-left:auto" href='/orgaorequisitante/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Órgãos Requisitantes </strong> </h4>  <a style="margin-left:auto" href='{{ url("/orgaorequisitante/cadastrar") }}' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 
@@ -71,8 +71,8 @@
          <tr>
 
             <td>{{$orgaoRequisitante->orgaoNome}}</td>
-            <td> <a href='/orgaorequisitante/editar/{{$orgaoRequisitante->orgaoID}}' class="btn btn-primary">Editar</a></td>
-            <td> <a href='/orgaorequisitante/deletar/{{$orgaoRequisitante->orgaoID}}' class="btn btn-danger">Deletar</a> </td>
+            <td> <a href='{{ url("/orgaorequisitante/editar") }}/{{$orgaoRequisitante->orgaoID}}' class="btn btn-primary">Editar</a></td>
+            <td> <a href='{{ url("/orgaorequisitante/deletar") }}/{{$orgaoRequisitante->orgaoID}}' class="btn btn-danger">Deletar</a> </td>
         </tr>
 
          @endforeach

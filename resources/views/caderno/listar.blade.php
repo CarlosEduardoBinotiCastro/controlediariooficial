@@ -70,7 +70,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Cadernos </strong> </h4>  <a style="margin-left:auto" href='/caderno/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Cadernos </strong> </h4>  <a style="margin-left:auto" href='{{ url("/caderno/cadastrar") }}' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 
@@ -87,9 +87,8 @@
 
 
          <tr>
-
             <td>{{$caderno->cadernoNome}}</td>
-            <td> <a href='/caderno/editar/{{$caderno->cadernoID}}' class="btn btn-primary">Editar</a></td>
+            <td> <a href='{{ url("/caderno/editar") }}/{{$caderno->cadernoID}}' class="btn btn-primary">Editar</a></td>
             <td>  <button class="btn btn-danger" data-toggle="modal" data-target="#myModal{{$caderno->cadernoID}}">Deletar</button> </td>
         </tr>
 
@@ -111,7 +110,7 @@
                             <div>
                                     <div style="float: left;" class="offset-md-3">
                                         <div>
-                                            <a  style="color:white;" class="btn btn-danger"  href='/caderno/deletar/{{$caderno->cadernoID}}'>
+                                            <a  style="color:white;" class="btn btn-danger"  href='{{ url("/caderno/deletar") }}/{{$caderno->cadernoID}}'>
                                                     {{ __('Confirmar Deletar') }}
                                             </a>
                                         </div>

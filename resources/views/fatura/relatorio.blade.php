@@ -16,7 +16,7 @@
                     @endif
 
                     <div>
-                        <form action="/fatura/relatorioFiltro" method="POST">
+                        <form action="{{ url("/fatura/relatorioFiltro") }}" method="POST">
                             @csrf
                             <div class="form-group row offset-md-2">
                                 <label class="col-md-3 text-md-right">Data Inicial</label>

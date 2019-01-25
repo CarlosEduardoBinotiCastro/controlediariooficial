@@ -150,7 +150,7 @@
                                     </div>
                                     @if (Gate::allows('administrador', Auth::user()) && $fatura->situacaoID == 4)
 
-                                        <form action="/fatura/editarAnotacao" method="POST">
+                                        <form action="{{ url("/fatura/editarAnotacao") }}" method="POST">
                                             @csrf
                                             <div class="col-md-10">
                                                 <textarea cols="60" rows="4" class="form-control" name="observacao"> {{$fatura->observacao}} </textarea>
@@ -288,7 +288,7 @@
 
                             @if ($fatura->dam == null && Gate::allows('faturas', Auth::user()) && $fatura->situacaoID == 4)
 
-                                <form action="/fatura/anexarDam" method="POST" enctype="multipart/form-data">
+                                <form action="{{ url("/fatura/anexarDam") }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group row">
                                         <div class="col-md-10">
@@ -353,13 +353,13 @@
 
                                     <div class="form-group row">
                                             <div class="col-md-6 offset-md-4">
-                                                <a href="/fatura/downloadFormatado/{{$fatura->protocoloCompleto}}" class="btn btn-primary" style="width:150px; float:right;">Arquivo Formatado</a>
+                                                <a href="{{ url("/fatura/downloadFormatado") }}/{{$fatura->protocoloCompleto}}" class="btn btn-primary" style="width:150px; float:right;">Arquivo Formatado</a>
                                             </div>
                                     </div>
 
                                     <div class="form-group row">
                                             <div class="col-md-6 offset-md-4">
-                                                <a href="/fatura/downloadOriginal/{{$fatura->protocoloCompleto}}" class="btn btn-primary" style="width:150px; float:right;">Arquivo Original</a>
+                                                <a href="{{ url("/fatura/downloadOriginal") }}/{{$fatura->protocoloCompleto}}" class="btn btn-primary" style="width:150px; float:right;">Arquivo Original</a>
                                             </div>
                                     </div>
 
@@ -367,7 +367,7 @@
                                     @if ($fatura->situacaoNome == "Aceita" || $fatura->situacaoNome == "Publicada" )
                                         <div class="form-group row">
                                                 <div class="col-md-6 offset-md-4">
-                                                    <a href="/fatura/downloadComprovantePago/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Comprovante Pago</a>
+                                                    <a href="{{ url("/fatura/downloadComprovantePago") }}/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Comprovante Pago</a>
                                                 </div>
                                         </div>
                                     @endif
@@ -375,7 +375,7 @@
                                     @if ($fatura->dam != null)
                                         <div class="form-group row">
                                                 <div class="col-md-6 offset-md-4">
-                                                    <a href="/fatura/downloadDAM/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Download DAM</a>
+                                                    <a href="{{ url("/fatura/downloadDAM") }}/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Download DAM</a>
                                                 </div>
                                         </div>
                                     @endif
@@ -384,7 +384,7 @@
 
                                 <div class="form-group row">
                                         <div class="col-md-6 offset-md-4">
-                                            <a href="/fatura/gerarComprovante/{{$fatura->protocoloCompleto}}"  target="_blank" class="btn btn-primary" style="width:150px; float:right;">Comprovante Envio</a>
+                                            <a href="{{ url("/fatura/gerarComprovante") }}/{{$fatura->protocoloCompleto}}"  target="_blank" class="btn btn-primary" style="width:150px; float:right;">Comprovante Envio</a>
                                         </div>
                                 </div>
 
@@ -519,7 +519,7 @@
                     <br>
 
                     <div>
-                    <a href="/fatura/visualizacao/{{$fatura->arquivoVisualizacao}}/{{$fatura->protocoloCompleto}}" type="button" class="btn btn-primary col-md-12" data-dismiss="modal">
+                    <a href="{{ url("/fatura/visualizacao") }}/{{$fatura->arquivoVisualizacao}}/{{$fatura->protocoloCompleto}}" type="button" class="btn btn-primary col-md-12" data-dismiss="modal">
                             Arquivo Base Centimetragem
                         </a>
                     </div>
@@ -534,7 +534,7 @@
 {{-- verifica se possui modal aceitar --}}
 
 @if ($modalAceitar)
-        <form id="formAceitar" action="/fatura/aceitar" method="POST" enctype="multipart/form-data">
+        <form id="formAceitar" action="{{ url("/fatura/aceitar") }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
             {{-- situacao Aceita --}}
@@ -584,7 +584,7 @@
 {{-- verifica se possui modal Rejeitar --}}
 
 @if ($modalRejeitar)
-        <form id="formRejeitar" action="/fatura/rejeitar" method="POST" >
+        <form id="formRejeitar" action="{{ url("/fatura/rejeitar") }}" method="POST" >
             @csrf
             <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
             {{-- situacao Aceita --}}
@@ -626,7 +626,7 @@
 @endif
 
 @if ($modalPublicar)
-    <form action="/fatura/publicar" method="POST">
+    <form action="{{ url("/fatura/publicar") }}" method="POST">
         @csrf
         <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
         {{-- situacao publicada --}}

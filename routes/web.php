@@ -13,13 +13,6 @@
 */
 
 
-// rotas misc
-
-Route::get('/carregando', function(){
-    return view('carregar');
-});
-
-
 // Rotas de Login
 
 Auth::routes();
@@ -33,17 +26,12 @@ Route::get('/register', function(){
 Route::get('/home', 'HomeController@carregarHome')->name('home');
 Route::get('/logo', 'HomeController@pegarLogo');
 Route::get('/logoSis', 'HomeController@pegarLogoSis');
+Route::get('/logoBrasao', 'HomeController@pegarBrasao');
 
 Route::get('/', function () {
     return redirect()->route('home');
 });
 
-
-// Rotas relacionadas com as Publicações
-
-Route::group(['prefix' => 'publicacoes'], function () {
-    Route::get('/listar', 'PublicacoesController@listar');
-});
 
 
 // Rotas relacionadas com os Dias não Úteis
@@ -234,3 +222,7 @@ Route::group(['prefix' => 'log'], function () {
     Route::get('/listar/{filtro}', ['as' => 'listarLogs', 'uses' => 'LogController@listar']);
     Route::post('/chamarListar', 'LogController@listarFiltro');
 });
+
+
+// rotas ajax
+Route::get('searchajaxEmpresa', ['as'=>'searchajaxEmpresa','uses'=>'FaturaController@searchResponseEmpresa']);

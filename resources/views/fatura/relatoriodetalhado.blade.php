@@ -227,7 +227,7 @@
 
                                 <td style="white-space:nowrap;">
 
-                                    <a href='/fatura/ver/{{$fatura->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
+                                    <a href='{{ url("/fatura/ver") }}/{{$fatura->protocoloCompleto}}' class="btn btn-dark" style="width:75px">Ver</a>
 
                                     {{-- @if ($fatura->situacaoNome == "Apagada" || date('Y-m-d') >= $fatura->diarioData)
                                     @else
@@ -255,7 +255,7 @@
 
                             @if ($modalApagar)
 
-                                <form action="/fatura/apagar" method="POST">
+                                <form action="{{ url("/fatura/apagar") }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
                                     {{-- situacao Apagada --}}
@@ -297,7 +297,7 @@
                             @endif
 
                             @if ($modalPublicar)
-                                <form action="/fatura/publicar" method="POST">
+                                <form action="{{ url("/fatura/publicar") }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
                                     <input type="hidden" name="voltar" value="sim">

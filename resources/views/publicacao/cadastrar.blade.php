@@ -22,7 +22,7 @@
             <div class="card">
                 <div class="card-header"> {{ __('Enviar Publicação') }}</div>
 
-                <form id="form" action="/publicacao/salvar" method="POST" enctype="multipart/form-data">
+                <form id="form" action="{{ url("/publicacao/salvar") }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                         <div id="divLimite" style="display:none;">

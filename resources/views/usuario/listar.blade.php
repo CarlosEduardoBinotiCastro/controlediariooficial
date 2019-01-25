@@ -79,7 +79,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Usuários</strong> </h4>  <a style="margin-left:auto" href='/usuario/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Usuários</strong> </h4>  <a style="margin-left:auto" href='{{ url("/usuario/cadastrar") }}' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 
@@ -114,7 +114,7 @@
             <td>{{$usuario->email}}</td>
             <td>{{$usuario->cpf}}</td>
             <td>{{$usuario->descricao}}</td>
-            <td> <a href='/usuario/editar/{{$usuario->id}}' class="btn btn-primary">Editar</a></td>
+            <td> <a href='{{ url("/usuario/editar") }}/{{$usuario->id}}' class="btn btn-primary">Editar</a></td>
             <td>  <button class="btn btn-danger" data-toggle="modal" data-target="#myModal{{$usuario->id}}">Desativar</button> </td>
         </tr>
 
@@ -140,7 +140,7 @@
                             <div>
                                     <div style="float: left;" class="offset-md-3">
                                         <div>
-                                            <a  style="color:white;" class="btn btn-danger"  href='/usuario/desativar/{{$usuario->id}}'>
+                                            <a  style="color:white;" class="btn btn-danger"  href='{{ url("/usuario/desativar") }}/{{$usuario->id}}'>
                                                     {{ __('Confirmar Desativar') }}
                                             </a>
                                         </div>

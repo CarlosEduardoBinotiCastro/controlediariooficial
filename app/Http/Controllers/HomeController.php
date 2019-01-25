@@ -51,4 +51,9 @@ class HomeController extends Controller
         return response()->file($file_path);
     }
 
+    public function pegarBrasao(){
+        $file_path = storage_path("app/"."Brasao.png");
+        return response()->file($file_path);
+    }
+
 }

@@ -89,7 +89,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Comunicados </strong> </h4>  <a style="margin-left:auto" href='/comunicado/cadastrar' class="btn btn-success">Enviar Comunicado</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Comunicados </strong> </h4>  <a style="margin-left:auto" href='{{ url("/comunicado/cadastrar") }}' class="btn btn-success">Enviar Comunicado</a> </div> <br>
             <div class="table-responsive">
 
                   <table id="mytable" class="table table-bordred table-striped">
@@ -115,8 +115,8 @@
                 $data = $data->format('d/m/Y H:i:s');
             @endphp
             <td> {{$data}} </td>
-            <td> <a href='/comunicado/editar/{{$comunicado->comunicadoID}}' class="btn btn-primary">Editar</a></td>
-            <td> <a href='/comunicado/deletar/{{$comunicado->comunicadoID}}' class="btn btn-danger">Deletar</a> </td>
+            <td> <a href='{{ url("/comunicado/editar") }}/{{$comunicado->comunicadoID}}' class="btn btn-primary">Editar</a></td>
+            <td> <a href='{{ url("/comunicado/deletar") }}/{{$comunicado->comunicadoID}}' class="btn btn-danger">Deletar</a> </td>
         </tr>
 
          @endforeach

@@ -66,7 +66,7 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Matérias </strong> </h4>  <a style="margin-left:auto" href='/tipodocumento/cadastrar' class="btn btn-success">Cadastrar</a> </div> <br>
+            <div class="row"> <h4> <strong> Lista de Matérias </strong> </h4>  <a style="margin-left:auto" href='{{ url("/tipodocumento/cadastrar") }}' class="btn btn-success">Cadastrar</a> </div> <br>
             <div class="table-responsive">
 
 
@@ -85,7 +85,7 @@
          <tr>
 
             <td>{{$documento->tipoDocumento}}</td>
-            <td> <a href='/tipodocumento/editar/{{$documento->tipoID}}' class="btn btn-primary">Editar</a></td>
+            <td> <a href='{{ url("/tipodocumento/editar") }}/{{$documento->tipoID}}' class="btn btn-primary">Editar</a></td>
             <td>  <button class="btn btn-danger" data-toggle="modal" data-target="#myModal{{$documento->tipoID}}">Deletar</button> </td>
         </tr>
 
@@ -111,7 +111,7 @@
                             <div>
                                     <div style="float: left;" class="offset-md-3">
                                         <div>
-                                            <a  style="color:white;" class="btn btn-danger"  href='/tipodocumento/deletar/{{$documento->tipoID}}'>
+                                            <a  style="color:white;" class="btn btn-danger"  href='{{ url("/tipodocumento/deletar") }}/{{$documento->tipoID}}'>
                                                     {{ __('Confirmar Deletar') }}
                                             </a>
                                         </div>
