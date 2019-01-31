@@ -197,10 +197,10 @@
                      <td class="infoRows" style="width: 70% !important; margin-top:1% !important;"> {{$maskared}} </td></tr>
 
 
-                         @if ($fatura->usuarioNomePublicador != null)
+                         @if ($fatura->usuarioNomePublicou != null)
                             <tr>
                                 <td class="infoRows" style="width: 30% !important; margin-top:1% !important;">Publicador</td>
-                                <td class="infoRows" style="width: 70% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->usuarioNomePublicador}} </td></tr>
+                                <td class="infoRows" style="width: 70% !important; margin-top:1% !important; text-transform:capitalize !important;"> {{$fatura->usuarioNomePublicou}} </td></tr>
                         @endif
 
                     @php

@@ -278,6 +278,16 @@
             @endauth
 
 
+            <div id="Erro" class="container">
+                <div class="col-md-12 offset-md-0">
+                    <div class="form-group alert alert-primary" style="font-size:20px">
+                        <div style=" background-color:red; text-align:center; border-radius:10px; "> <h2 style="font-weight:bold;">Comunicado</h2></div>
+
+                        <p> NÃO USAR ESSE SISTEMA POR AQUI, ACESSE O SERVIDOR 10.1.19.220/sispudio . ESSA AREA AGORA É SOMENTE DE TESTES!</p>
+
+                    </div>
+                    </div>
+            </div>
 
 
             @yield('content')

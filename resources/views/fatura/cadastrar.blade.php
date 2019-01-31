@@ -383,7 +383,9 @@
                     $("#numeroDoc").attr('maxlength',11);
                     $("#numeroDoc").mask('000.000.000-00', {reverse: true});
                 }
-
+                $('#telefoneFixo').val(data.telefoneFixo);
+                $('#telefoneCelular').val(data.telefoneCelular);
+                $('#email').val(data.email);
                $('#empresa').val(data.empresa);
 
            }

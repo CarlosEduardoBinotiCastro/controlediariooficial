@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use App\Caderno;
 use App\TipoDocumento;
 use App\SubCategoria;
+use App\OrgaoRequisitante;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
@@ -953,11 +954,12 @@ class FaturaController extends Controller
             $fatura->leftJoin('users as usuariopub', 'usuariopub.id', 'fatura.usuarioIDPublicou');
             $fatura->leftJoin('users as usuariodel', 'usuariodel.id', 'fatura.usuarioIDApagou');
             $fatura->join('users as usuario', 'usuario.id', 'fatura.usuarioID');
+            $fatura->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'usuario.orgaoID');
             $fatura->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $fatura->join('tipodocumento', 'tipodocumento.tipoID', 'fatura.tipoID');
             $fatura->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
             $fatura->where('protocoloCompleto', '=', $protocolo);
-            $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome', 'usuariopub.name as usuarioNomePublicou', 'usuariodel.name as usuarioNomeApagou');
+            $fatura->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome', 'tipodocumento.tipoDocumento', 'usuario.name as usuarioNome', 'usuariopub.name as usuarioNomePublicou', 'usuariodel.name as usuarioNomeApagou', 'usuario.email as emailUsuarioEmitiu', 'usuario.telefoneSetor as telefoneSetorUsuarioEmitiu', 'usuario.telefoneCelular as telefoneCelularUsuarioEmitiu', 'orgaorequisitante.orgaoNome as orgaoUsuarioEmitiu');
             $fatura = $fatura->first();
 
             // pega a url voltar e salva
@@ -973,6 +975,9 @@ class FaturaController extends Controller
                         return redirect('home')->with('erro', 'Fatura Apagada!');
                     }
                 }
+
+                // $orgaoUsuarioEmitiu = OrgaoRequisitante::orderBy('orgaoNome')->select('orgaoNome')->where('orgaoID', '=', $fatura->orgaoUsuarioEmitiu)->first();
+
             }
 
             $faturaConfig = DB::table('configuracaofatura')->get();
@@ -1128,7 +1133,8 @@ class FaturaController extends Controller
             // verifica se veio da pagina de listar ou ver
 
             if(isset($request->voltar)){
-                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID]);
+                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID, 'usuarioIDPublicou' => Auth::user()->id]);
+                DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Publicou uma Fatura de protocolo '.$protocolo]);
                 return redirect()->back()->with('sucesso', 'Fatura Publicada!');
             }else{
                 $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID, 'usuarioIDPublicou' => Auth::user()->id]);
@@ -1863,23 +1869,25 @@ class FaturaController extends Controller
 
     public function searchResponseEmpresa(Request $request){
         $query = $request->get('term','');
+
         $empresas=\DB::table('fatura')->orderBy('empresa');
-        $empresas->select('empresa', 'cpfCnpj');
+        $empresas->select('empresa', 'cpfCnpj', 'telefoneCelular', 'email', 'telefoneFixo');
         if($request->type=='empresa'){
             $empresas->where('empresa','LIKE','%'.$query.'%');
         }
 
-        $empresas->groupBy('empresa', 'cpfCnpj');
+        $empresas->groupBy('empresa');
 
         $empresas=$empresas->get();
+
         $data=array();
         foreach ($empresas as $empresa) {
-                $data[]=array('empresa'=>$empresa->empresa,'cpfCnpj'=>$empresa->cpfCnpj);
+                $data[]=array('empresa'=>$empresa->empresa,'cpfCnpj'=>$empresa->cpfCnpj,'telefoneCelular'=>$empresa->telefoneCelular, 'telefoneFixo' => $empresa->telefoneFixo, 'email'=>$empresa->email);
         }
         if(count($data))
              return $data;
         else
-            return ['cpf'=>'','cpfCnpj'=>''];
+            return ['empresa'=>'','cpfCnpj'=>'', 'telefoneCelular'=>'', 'email'=>'', 'telefoneFixo'=>''];
     }
 
 

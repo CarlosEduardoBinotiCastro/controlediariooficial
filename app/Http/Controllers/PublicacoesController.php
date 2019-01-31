@@ -817,9 +817,9 @@ class PublicacoesController extends Controller
             $publicacao->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'criado.orgaoID');
             $publicacao->where('protocoloCompleto', '=', $protocoloCompleto);
             if($usuarioIDApagou->usuarioIDApagou != null){
-                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'apagado.name as nomeUsuarioApagado', 'orgaorequisitante.orgaoNome');
+                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'apagado.name as nomeUsuarioApagado', 'orgaorequisitante.orgaoNome', 'criado.email as emailUsuarioEmitiu', 'criado.telefoneSetor as telefoneSetorUsuarioEmitiu', 'criado.telefoneCelular as telefoneCelularUsuarioEmitiu');
             }else{
-                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'orgaorequisitante.orgaoNome');
+                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'orgaorequisitante.orgaoNome', 'criado.email as emailUsuarioEmitiu', 'criado.telefoneSetor as telefoneSetorUsuarioEmitiu', 'criado.telefoneCelular as telefoneCelularUsuarioEmitiu');
             }
             $publicacao = $publicacao->first();
 

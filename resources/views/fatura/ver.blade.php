@@ -129,9 +129,11 @@
                             </div>
 
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Usuário Que Emitiu: <strong style="text-transform:capitalize;">{{$fatura->usuarioNome}}</strong> </p>
+                                    <div class="col-md-12">
+                                        <p style="float:left !important;">Usuário Que Emitiu: <strong style="text-transform:capitalize;">{{$fatura->usuarioNome}}</strong> </p>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalContatos" style="margin-left:2%;">Contato</button>
                                     </div>
+
                             </div>
 
 
@@ -255,7 +257,7 @@
 
                                 <div class="form-group row">
                                         <div class="col-md-10">
-                                                <p>Apagada por: <strong>{{$fatura->usuarioIDApagou}}</strong> </p>
+                                                <p>Apagada por: <strong>{{$fatura->usuarioNomeApagou}}</strong> </p>
                                         </div>
                                 </div>
 
@@ -265,7 +267,7 @@
 
                             <div class="form-group row">
                                     <div class="col-md-10">
-                                            <p>Publicada por: <strong>{{$fatura->usuarioIDPublicou}}</strong> </p>
+                                            <p>Publicada por: <strong>{{$fatura->usuarioNomePublicou}}</strong> </p>
                                     </div>
                             </div>
 
@@ -694,6 +696,54 @@
     </form>
 @endif
 
+
+
+{{-- Modal Contato --}}
+    <div class='modal fade' id="modalContatos" role='dialog'>
+            <div class='modal-dialog row justify-content-center'>
+                <div class="modal-content">
+                        <div class="modal-header">
+                            <Strong class=" offset-md-5" > Contatos </Strong>
+                        </div>
+                        <div class="modal-body">
+
+                            <span>  Nome: </span>
+                            <span> <b> {{$fatura->usuarioNome}} </b> </span>
+
+                            <br><br>
+
+                            <span style="float:left;">  Tefelone Celular: </span>
+                            <input id="celular" type="text" readonly value="{{$fatura->telefoneCelularUsuarioEmitiu}}" style="background-color:transparent; border-color:transparent; margin-left:1%; font-weight:bold;">
+
+                            <br><br>
+
+                            <span>  Email: </span>
+                            <span> <b> {{$fatura->emailUsuarioEmitiu}} </b> </span>
+
+                            <br><br>
+
+                            <span> Orgão Requisitante:</span>
+                            <span> <b> {{$fatura->orgaoUsuarioEmitiu}} </b> </span>
+
+                            <br><br>
+
+                            <span>  Tefelone Setor: </span>
+                            </b><input id="fixo" type="text" readonly value="{{$fatura->telefoneSetorUsuarioEmitiu}}" style="background-color:transparent; border-color:transparent; margin-left:1%; font-weight:bold;">
+
+                            <br><br>
+
+                            <div>
+                                    <div style="float: left; margin-left:2%;">
+                                        <button  type="button" class="btn btn-secondary" data-dismiss="modal">
+                                            Voltar
+                                        </button>
+                                    </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
 <div class="container" id="carregando" style="display:none;">
     <br><br>
     <h2 class="offset-md-4"> Carregando Solicitação </h2>
@@ -702,7 +752,7 @@
 </div>
 
 
-
+<script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
 <script>
 
     $(document).ready(function (){
@@ -714,6 +764,9 @@
         $('#formAceitar').validate({
             errorClass: "my-error-class"
         });
+
+        $("#fixo").mask('(99)9999-9999');
+        $("#celular").mask('(99)9999-99999');
 
         $('#file').val("");
         var canUpload = false;

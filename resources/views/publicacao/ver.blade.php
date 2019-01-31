@@ -76,10 +76,11 @@
                                             $dataEnvio = new DateTime($publicacao->dataEnvio);
                                             $dataEnvio = $dataEnvio->format('d/m/Y à\s\ H:i');
                                         @endphp
-                                    <p>Emitido por: <strong style="text-transform:capitalize;">{{$publicacao->nomeUsuarioCriado}}</strong> em <strong>{{$dataEnvio}}</strong></p>
+                                    <p style="float:left;">Emitido por: <strong style="text-transform:capitalize;">{{$publicacao->nomeUsuarioCriado}}</strong> em <strong>{{$dataEnvio}}</strong></p>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#modalContatos" style="margin-left:2%;">Contato</button>
                                 </div>
                             </div>
-
+                            <br>
                             <div class="col-md-12">
                                     <p>Órgão Requisitante: <strong style="text-transform:capitalize;">{{$publicacao->orgaoNome}}</strong></p>
                             </div>
@@ -247,19 +248,67 @@
 @endif
 
 
+{{-- Modal Contato --}}
+<div class='modal fade' id="modalContatos" role='dialog'>
+    <div class='modal-dialog row justify-content-center'>
+        <div class="modal-content">
+                <div class="modal-header">
+                    <Strong class=" offset-md-5" > Contatos </Strong>
+                </div>
+                <div class="modal-body">
 
+                    <span>  Nome: </span>
+                    <span> <b> {{$publicacao->nomeUsuarioCriado}} </b> </span>
+
+                    <br><br>
+
+                    <span style="float:left;">  Tefelone Celular: </span>
+                    <input id="celular" type="text" readonly value="{{$publicacao->telefoneCelularUsuarioEmitiu}}" style="background-color:transparent; border-color:transparent; margin-left:1%; font-weight:bold;">
+
+                    <br><br>
+
+                    <span>  Email: </span>
+                    <span> <b> {{$publicacao->emailUsuarioEmitiu}} </b> </span>
+
+                    <br><br>
+
+                    <span> Orgão Requisitante:</span>
+                    <span> <b> {{$publicacao->orgaoNome}} </b> </span>
+
+                    <br><br>
+
+                    <span>  Tefelone Setor: </span>
+                    </b><input id="fixo" type="text" readonly value="{{$publicacao->telefoneSetorUsuarioEmitiu}}" style="background-color:transparent; border-color:transparent; margin-left:1%; font-weight:bold;">
+
+                    <br><br>
+
+                    <div>
+                            <div style="float: left; margin-left:2%;">
+                                <button  type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    Voltar
+                                </button>
+                            </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
 
 
 
 
 {{-- fim do layout do ver publicação --}}
 
-
+    <script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
     <script type="text/javascript">
 
         $(document).ready(function($) {
 
+
             var url = "<?php  echo Session::get('urlVoltar');  ?>";
+
+            $("#fixo").mask('(99)9999-9999');
+            $("#celular").mask('(99)9999-99999');
 
             $('#formRejeitar').validate({
                 errorClass: "my-error-class"
