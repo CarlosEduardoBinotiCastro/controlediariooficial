@@ -281,7 +281,7 @@ class PublicacoesController extends Controller
         $documentos->select('cadernotipodocumento.cadernoID', 'tipodocumento.tipoID', 'tipodocumento.tipoDocumento');
         $documentos = $documentos->get();
 
-        $diariosDatas = DiarioData::orderBy('diarioData', 'desc')->where('diarioData', '>', date('Y-m-d'))->get();
+        $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
 
 
         // vericar datas limites para os diários

@@ -9,8 +9,9 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Session;
 use DateTime;
 use App\DiasNaoUteis;
+use App\DiarioData;
 use Illuminate\Support\Facades\Gate;
-
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -33,7 +34,34 @@ class HomeController extends Controller
 
             $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData')->whereBetween('diaNaoUtilData',  [date('Y')."-01-01", date('Y')."-12-31"]);
             $diasNaoUteis = $diasNaoUteis->get();
-            return view('home', ['diasNaoUteis' => $diasNaoUteis]);
+
+            if(Gate::allows('faturas', Auth::user())){
+                $diariosData = null;
+                $diaLimite = null;
+            }else{
+                $diariosData = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->first();
+
+                $diaDiarioDate = new DateTime($diariosData->diarioData);
+                $verificaDiaUtil = false;
+                $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
+
+                do{
+                    $finalDeSemana = date('N', strtotime($diaUtil));
+                    if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                        if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                            $verificaDiaUtil = true;
+                            $diaLimite = $diaUtil;
+                        }else{
+
+                        }
+                    }
+
+                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                }while($verificaDiaUtil == false);
+
+            }
+
+            return view('home', ['diasNaoUteis' => $diasNaoUteis, 'diarioData' => $diariosData, 'diaLimite' => $diaLimite]);
 
         }else{
             return redirect('/login');

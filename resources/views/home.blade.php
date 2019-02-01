@@ -62,6 +62,25 @@
 
                 </div>
             </div>
+            @if ($diarioData != null)
+                <br>
+                <div class="card" style="color:red; border-color:red;">
+                    <div class="card-header" style="text-align:center; border-color:red;">ATENÇÃO PARA O HORÁRIO</div>
+
+                    <div class="card-body">
+
+                    @php
+                        $dataDiario = new DateTime($diarioData->diarioData);
+                        $dataDiario = $dataDiario->format('d/m/Y');
+
+                        $dataLimite = new DateTime($diaLimite);
+                        $dataLimite = $dataLimite->format('d/m/Y');
+                    @endphp
+                    <p> PARA O DIÁRIO <b style="text-transform:uppercase;">{{$diarioData->numeroDiario}} - {{$dataDiario}}</b> SOMENTE É POSSÍVEL ENVIAR PUBLICAÇÕES ATÉ AS <b>{{Auth::user()->horaEnvio}}</b> HORAS DO DIA <b>{{$dataLimite}}</b></p>
+
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div class="col-md-4">
