@@ -393,4 +393,10 @@ class UserController extends Controller
             return false;
         }
     }
+
+    public function orgaoNome(){
+        $orgao = DB::table('orgaorequisitante')->select('orgaoNome')->where('orgaoID', '=', Auth::user()->orgaoID)->first();
+        return $orgao->orgaoNome;
+
+    }
 }

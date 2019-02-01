@@ -17,6 +17,11 @@ class ComunicadoController extends Controller
 
     private $paginacao = 10;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function listarFiltro(Request $request){
 
         $filtro = str_replace('/', '¨', $request->tituloMensagem);
@@ -25,12 +30,16 @@ class ComunicadoController extends Controller
 
     public function listar($filtro = null){
 
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
-
         $comunicados = Comunicado::orderBy('dataComunicado', 'desc');
         $comunicados->join('users', 'users.id', 'comunicado.usuarioID');
-        $comunicados->select('comunicado.*', 'users.name as nomeUsuario');
 
+
+
+        if(!Gate::allows('administrador', Auth::user())){
+            $comunicados->join('comunicadousuario', 'comunicadousuario.comunicadoID', 'comunicado.comunicadoID');
+            $comunicados->where('comunicadousuario.usuarioID', '=', Auth::user()->id);
+        }
+        $comunicados->select('comunicado.*', 'users.name as nomeUsuario');
 
         if($filtro != null){
             $filtro = str_replace('¨', '/', $filtro);
@@ -44,14 +53,12 @@ class ComunicadoController extends Controller
 
         return view('comunicado.listar', ['comunicados' => $comunicados]);
 
-        }else{
-            return redirect('home')->with('erro', 'Você não tem permissão para isso!');
-        }
+
     }
 
 
     public function cadastrar(){
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user()) ){
             $grupos = DB::table('grupousuario')->orderBy('grupoDescricao')->get();
             return view('comunicado.cadastrar', ['grupos' => $grupos]);
         }else{
@@ -184,7 +191,7 @@ class ComunicadoController extends Controller
 
     public function editar($id){
 
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())){
 
             $comunicado = Comunicado::orderBy('dataComunicado')->where('comunicadoID', '=', $id)->first();
 
@@ -218,7 +225,7 @@ class ComunicadoController extends Controller
 
     public function deletar($id){
 
-        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
+        if(Gate::allows('administrador', Auth::user())){
 
             try {
 
@@ -270,6 +277,20 @@ class ComunicadoController extends Controller
 
             DB::rollBack();
             return redirect()->back()->with('erro', 'Ocorreu um erro durante aceitar o comunicado! erro: '.$e->getMessage());
+        }
+
+    }
+
+
+    public function ver($id){
+
+        $comunicado = Comunicado::orderBy('dataComunicado')->where('comunicadoID', '=', $id);
+        $comunicado->join('users', 'users.id', 'comunicado.usuarioID');
+        $comunicado = $comunicado->first();
+        if($comunicado != null){
+            return view('comunicado.ver', ['comunicado' => $comunicado]);
+        }else{
+            return redirect('home')->with('erro', 'Comunicado não encontrado!');
         }
 
     }

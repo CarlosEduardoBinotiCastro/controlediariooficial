@@ -212,6 +212,8 @@ Route::group(['prefix' => 'comunicado'], function () {
     Route::get('/cadastrar', 'ComunicadoController@cadastrar');
     Route::get('/deletar/{comunicadoID}', 'ComunicadoController@deletar');
     Route::get('/editar/{comunicadoID}', 'ComunicadoController@editar');
+    Route::get('/ver/{comunicadoID}', 'ComunicadoController@ver');
+
     Route::post('/salvar', 'ComunicadoController@salvar');
 
     Route::post('/visualizarComunicado', 'ComunicadoController@visualizarComunicado');

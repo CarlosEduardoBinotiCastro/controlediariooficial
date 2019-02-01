@@ -89,7 +89,12 @@
 
 
             <div class="col-md-12">
-            <div class="row"> <h4> <strong> Lista de Comunicados </strong> </h4>  <a style="margin-left:auto" href='{{ url("/comunicado/cadastrar") }}' class="btn btn-success">Enviar Comunicado</a> </div> <br>
+                    @if (Gate::allows('administrador', Auth::user()))
+                        <div class="row"> <h4> <strong> Lista de Comunicados </strong> </h4>  <a style="margin-left:auto" href='{{ url("/comunicado/cadastrar") }}' class="btn btn-success">Enviar Comunicado</a> </div> <br>
+                    @else
+                        <div class="row"> <h4> <strong> Meus Comunicados </strong> </h4>
+                        <br><br>
+                    @endif
             <div class="table-responsive">
 
                   <table id="mytable" class="table table-bordred table-striped">
@@ -98,8 +103,14 @@
                        <th>Título</th>
                        <th>Enviado Por</th>
                        <th>Data de Envio</th>
-                       <th>Editar</th>
-                       <th>Apagar</th>
+
+                        @if (Gate::allows('administrador', Auth::user()))
+                            <th>Editar</th>
+                            <th>Apagar</th>
+                        @else
+                            <th>Ver</th>
+                        @endif
+
                        </thead>
         <tbody>
 
@@ -115,8 +126,14 @@
                 $data = $data->format('d/m/Y H:i:s');
             @endphp
             <td> {{$data}} </td>
-            <td> <a href='{{ url("/comunicado/editar") }}/{{$comunicado->comunicadoID}}' class="btn btn-primary">Editar</a></td>
-            <td> <a href='{{ url("/comunicado/deletar") }}/{{$comunicado->comunicadoID}}' class="btn btn-danger">Deletar</a> </td>
+
+            @if (Gate::allows('administrador', Auth::user()))
+                <td> <a href='{{ url("/comunicado/editar") }}/{{$comunicado->comunicadoID}}' class="btn btn-primary">Editar</a></td>
+                <td> <a href='{{ url("/comunicado/deletar") }}/{{$comunicado->comunicadoID}}' class="btn btn-danger">Deletar</a> </td>
+            @else
+                <td> <a href='{{ url("/comunicado/ver") }}/{{$comunicado->comunicadoID}}' class="btn btn-dark">Ver</a> </td>
+            @endif
+
         </tr>
 
          @endforeach

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Http\Controllers\UserController;
 use App\Notifications\ResetPassword;
+use App\Http\Controllers\OrgaoRequisitanteController;
 
 class User extends Authenticatable
 {
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'grupoID', 'statusID', 'login', 'horaEnvio', 'primeiroLogin'
+        'name', 'email', 'password', 'grupoID', 'statusID', 'login', 'horaEnvio', 'primeiroLogin', 'orgaoID'
     ];
 
     /**
@@ -37,6 +38,12 @@ class User extends Authenticatable
     public function getCaderno(){
         $userController = new UserController();
         return $userController->cadernoFatura();
+    }
+
+
+    public function getOrgao(){
+        $userController = new UserController();
+        return $userController->orgaoNome();
     }
 
     public function sendPasswordResetNotification($token)

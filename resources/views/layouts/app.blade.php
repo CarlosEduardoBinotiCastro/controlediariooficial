@@ -115,10 +115,9 @@
             </div>
 
             <div class="col-md-7">
-
                 <form id="logout-form" action="{{ route('logout') }}" method="POST"  style="float:right;">
                         @csrf
-                        <span  style="white-space: nowrap; color:#1872B3;"> <b>Usuário Logado: </b> <span style="text-transform:capitalize; color:#1872B3;"> {{Auth::user()->name}} </span> </span>
+                        <span  style="white-space: nowrap; color:#1872B3;"> <b>Usuário Logado: </b> <span style="text-transform:capitalize; color:#1872B3; margin-right:5px;"> {{Auth::user()->name}}</span> - <span style="text-transform:capitalize; color:#1872B3; margin-left:5px; margin-right:5px;"> {{Auth::user()->getOrgao()}} </span> </span>
                         <input class="btn" id="inputLogout" style="background-color: #1872B3; border-color: transparent; color:white;  !important; margin: 3px;" type="submit" name="logout" value="Desconectar">
                 </form>
 
@@ -209,11 +208,11 @@
                             </div>
                         </div>
 
-                        <div class="nav-item" >
-                            <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="{{url('/comunicado/listar')}}">Comunicados <span class="sr-only">(current)</span></a>
-                        </div>
-
                     @endif
+
+                    <div class="nav-item" >
+                        <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="{{url('/comunicado/listar')}}">Comunicados <span class="sr-only">(current)</span></a>
+                    </div>
 
                     <div class="nav-item" >
                         <a class="nav-link" style="float:right; color:white; text-transform:uppercase;" href="{{url('/usuario/editar')}}/{{Auth::user()->id}}">Meus Dados <span class="sr-only">(current)</span></a>
@@ -278,7 +277,7 @@
             @endauth
 
 
-            <div id="Erro" class="container">
+            {{-- <div id="Erro" class="container">
                 <div class="col-md-12 offset-md-0">
                     <div class="form-group alert alert-primary" style="font-size:20px">
                         <div style=" background-color:red; text-align:center; border-radius:10px; "> <h2 style="font-weight:bold;">Comunicado</h2></div>
@@ -287,7 +286,7 @@
 
                     </div>
                     </div>
-            </div>
+            </div> --}}
 
 
             @yield('content')
