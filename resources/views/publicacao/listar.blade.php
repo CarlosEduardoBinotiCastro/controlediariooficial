@@ -35,7 +35,7 @@
 
 <div id="Erro" class="container">
         <div class="col-md-8 offset-md-2">
-            @if(sizeof($faturas) > 0 && Gate::allows('cadernoFatura', Auth::user()))
+            @if(sizeof($faturas) > 0 && Gate::allows('cadernoFatura', Auth::user()) && (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())))
                 <br>
                 <div class="form-group mb-0 alert alert-success" style="font-size:20px">
                     Existem Faturas esperando para serem aceitas!

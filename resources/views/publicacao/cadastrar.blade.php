@@ -293,7 +293,7 @@
          $("#btnArquivo").click(function (){
              numeroArquivos++;
             var div = $("#divArquivo");
-            div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;" required>');
+            div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;">');
          });
 
     });

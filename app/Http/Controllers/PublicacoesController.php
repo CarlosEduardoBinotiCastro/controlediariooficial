@@ -338,6 +338,7 @@ class PublicacoesController extends Controller
                 }
                 $contador += 1;
             }
+
             // o index do array de arquivo sempre será 0
             array_push($post, $files);
 
@@ -462,7 +463,7 @@ class PublicacoesController extends Controller
 
                         Session::forget('protocoloEditar');
 
-                        return redirect('/home')->with('sucesso', 'Publicação Editada com Sucesso');
+                        return redirect('/publicacao/listar')->with('sucesso', 'Publicação Editada com Sucesso');
 
                     } catch (\Exception $e) {
 
@@ -515,7 +516,7 @@ class PublicacoesController extends Controller
                         DB::beginTransaction();
                         $this->verificaProtocolo($protocolo, $post);
 
-                        return redirect('/home')->with('sucesso', 'Publicação Enviada com Sucesso');
+                        return redirect('/publicacao/listar')->with('sucesso', 'Publicação Enviada com Sucesso');
 
                     } catch (\Exception $e) {
 
