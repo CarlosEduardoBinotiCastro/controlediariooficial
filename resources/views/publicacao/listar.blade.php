@@ -210,12 +210,12 @@
             {{-- Verifica se o usuario é administrador e se não for, verifica se a situação permita ele editar --}}
 
             @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
-                @if ($publicacao->situacaoNome == "Apagada" || date('Y-m-d') >= $publicacao->diarioData)
+                @if ($publicacao->situacaoNome == "Apagada" || $publicacao->situacaoNome == "Publicada")
                 @else
                      <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
             @else
-                @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" ||  date('Y-m-d') >= $publicacao->diarioData)
+                @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" || (date('Y-m-d') >= $publicacao->diarioData && $publicacao->situacaoNome == "Enviada") )
                 @else
                      <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif

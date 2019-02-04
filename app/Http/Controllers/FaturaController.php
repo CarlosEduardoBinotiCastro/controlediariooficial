@@ -1100,12 +1100,17 @@ class FaturaController extends Controller
 
         try {
             //@mudar
+            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Aceitou uma Fatura de protocolo '.$protocolo]);
+
             $request->arquivo->storeAs($faturaAceitar->protocoloAno."/".$protocolo."/",$protocolo."_comprovantePago.pdf");
             $fatura->update(['situacaoID' => 3, 'comprovantePago' => $request->protocolo."_comprovantePago.pdf"]);
-            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Aceitou uma Fatura de protocolo '.$protocolo]);
             return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Fatura Aceita!');
 
         } catch (\Exception $e) {
+
+            if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$request->protocolo."/").$protocolo."_comprovantePago.pdf")){
+                File::delete(storage_path("app/".$fatura->protocoloAno."/".$request->protocolo."/").$protocolo."_comprovantePago.pdf");
+            }
 
             return redirect()->back()->with(['erro' => 'Ocorreu um erro! erro: '.$e->getMessage()]);
 
@@ -1133,12 +1138,14 @@ class FaturaController extends Controller
             // verifica se veio da pagina de listar ou ver
 
             if(isset($request->voltar)){
-                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID, 'usuarioIDPublicou' => Auth::user()->id]);
                 DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Publicou uma Fatura de protocolo '.$protocolo]);
+
+                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID, 'usuarioIDPublicou' => Auth::user()->id]);
                 return redirect()->back()->with('sucesso', 'Fatura Publicada!');
             }else{
-                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID, 'usuarioIDPublicou' => Auth::user()->id]);
                 DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Publicou uma Fatura de protocolo '.$protocolo]);
+
+                $fatura->update(['situacaoID' => 1, 'diarioDataID' => $request->diarioDataID, 'usuarioIDPublicou' => Auth::user()->id]);
                 return redirect()->to(Session::get('urlVoltar'))->with('sucesso', 'Fatura Publicada!');
             }
 
@@ -1328,6 +1335,8 @@ class FaturaController extends Controller
 
         try {
             //@mudar
+            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Apagou uma Fatura de protocolo '.$protocolo]);
+
             if(file_exists(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal))){
                 Storage::delete([storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/".$fatura->arquivoOriginal)]);
             }
@@ -1350,7 +1359,6 @@ class FaturaController extends Controller
             //     Storage::delete([storage_path("app/".$fatura->protocoloCompleto."/".$fatura->comprovantePago)]);
             // }
             // File::deleteDirectory(storage_path("app/".$fatura->protocoloCompleto));
-            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Apagou uma Fatura de protocolo '.$protocolo]);
             $faturaApagar->update(['situacaoID' => 2, 'usuarioIDApagou' => Auth::user()->id]);
             return redirect()->back()->with('sucesso', 'Fatura Apagada!');
 
@@ -1820,6 +1828,8 @@ class FaturaController extends Controller
         }
 
         try {
+            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Anexou o DAM da Fatura de protocolo '.$request->protocolo]);
+
             $fileName = "DAM-".$request->protocolo.'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
             //@mudar
             $request->arquivo->storeAs($fatura->protocoloAno."/".$request->protocolo."/", $fileName);
@@ -1828,7 +1838,6 @@ class FaturaController extends Controller
 
             $faturaEdit = Fatura::orderBy('dataEnvioFatura')->where('protocoloCompleto', '=', $request->protocolo)->update(['dam' => $fileName]);
 
-            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Anexou o DAM da Fatura de protocolo '.$request->protocolo]);
 
             return redirect()->back()->with('DAM', 'Dam Anexado!');
 

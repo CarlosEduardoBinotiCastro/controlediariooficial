@@ -46,7 +46,14 @@
                                             @endphp
                                         <p>Emitido por: <strong style="text-transform:capitalize;">{{$publicacao->nomeUsuarioCriado}}</strong> em <strong>{{$dataEnvio}}</strong></p>
                                     </div>
+
+                                    @if ($publicacao->rejeitadaDescricao != null)
+                                        <div>
+                                            <p style="text-align:justify;">  Descrição da Rejeição:  <strong> {{$publicacao->rejeitadaDescricao}}</strong></p>
+                                        </div>
+                                    @endif
                                 </div>
+
                             </div>
 
                         <br>
@@ -100,7 +107,6 @@
                                         </div>
                                         @if ($publicacao->diarioData <= date('Y-m-d'))
                                             <div class="col-md-12"><span style="color:red; white-space:nowrap;"><Strong>Esta publicação é de um diário antigo!</Strong></span></div>
-                                            <div class="col-md-12"><span style="color:red; white-space:nowrap;"><Strong>(Será mantido o diário antigo se nenhuma alteração for feita)</Strong></span></div>
                                         @endif
                                 </div>
 
@@ -125,7 +131,7 @@
                             <div class="col-md-6 offset-md-2">
 
                                     <div class="col-md-12" style="text-align:justify;">
-                                            <input id="termo" type="checkbox" name="termos" value="concordo" > <strong> Aceito e me responsabilizo pelos termos contidos na <a href="http://ioes.dio.es.gov.br/js/tinymce/plugins/responsivefilemanager/source/Instru%C3%A7%C3%A3o%20Normativa%20001-2016.pdf" style="color:blue;">Instrução Normativa DIO/ES nº 001/2016</a> , publicada no D.O. do dia 02 de Maio de 2016. </strong>
+                                            <input id="termo" type="checkbox" name="termos" value="concordo" > <strong> Aceito e me responsabilizo pelos termos contidos na <a href="http://ioes.dio.es.gov.br/js/tinymce/plugins/responsivefilemanager/source/Instru%C3%A7%C3%A3o%20Normativa%20001-2016.pdf" style="color:blue;">Instrução Normativa DIO/ES nº 001/2019</a> </strong>
                                         </div>
 
                             </div>
@@ -457,7 +463,7 @@
             $("#btnArquivo").click(function (){
                  numeroArquivos++;
                 var div = $("#arquivosUpload");
-                div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;" required>');
+                div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;">');
             });
 
         });

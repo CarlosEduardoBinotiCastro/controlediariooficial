@@ -53,7 +53,7 @@
                                         <p>Situação: <strong>{{$publicacao->situacaoNome}}</strong></p>
                                 </div>
 
-                                @if ($publicacao->situacaoNome == "Rejeitada")
+                                @if ($publicacao->rejeitadaDescricao != null)
                                     <div>
                                         <p style="text-align:justify;">  Descrição da Rejeição:  <strong> {{$publicacao->rejeitadaDescricao}} </strong></p>
                                     </div>
