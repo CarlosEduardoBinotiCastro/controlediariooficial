@@ -702,10 +702,10 @@ class PublicacoesController extends Controller
         if($usuarioIDApagou->usuarioIDApagou != null){
             $podeEditar = false;
         }else{
-            if(  ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && date('Y-m-d') && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Apagada"){
+            if(  ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Apagada"){
                 $podeEditar = true;
             }else{
-                if ($publicacao->situacaoNome == "Apagada" || $publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || (date('Y-m-d') >= $publicacao->diarioData && $publicacao->situacaoNome != "Rejeitada")){
+                if ($publicacao->situacaoNome == "Apagada" || $publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" ){
                     $podeEditar = false;
                 }else{
                     $podeEditar = true;

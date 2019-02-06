@@ -32,6 +32,8 @@ class HomeController extends Controller
 
         if(Auth::user() != null){
 
+
+
             $diasNaoUteis = DiasNaoUteis::orderBy('diaNaoUtilData')->whereBetween('diaNaoUtilData',  [date('Y')."-01-01", date('Y')."-12-31"]);
             $diasNaoUteis = $diasNaoUteis->get();
 

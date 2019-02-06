@@ -215,7 +215,7 @@
                      <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
             @else
-                @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" || (date('Y-m-d') >= $publicacao->diarioData && $publicacao->situacaoNome == "Enviada") )
+                @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" )
                 @else
                      <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
@@ -223,13 +223,27 @@
 
             {{-- Verifica se pode apagar a publicacao --}}
 
-            @if ($publicacao->situacaoNome != "Apagada" && (($publicacao->situacaoNome != "Publicada") && ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) )  ))
-                @php
-                    $modalApagar = true;
-                @endphp
-                <button class="btn btn-danger" data-toggle="modal" data-target="#modalApagar{{$publicacao->protocoloCompleto}}" style="width:65px; font-size:12px; text-align:center;">Apagar</button>
-            @endif
+            @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) )
 
+                @if ($publicacao->situacaoNome != "Apagada" && $publicacao->situacaoNome != "Publicada" )
+                    @php
+                        $modalApagar = true;
+                    @endphp
+
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#modalApagar{{$publicacao->protocoloCompleto}}" style="width:65px; font-size:12px; text-align:center;">Apagar</button>
+                @endif
+
+            @else
+
+                @if ($publicacao->situacaoNome == "Enviada" || $publicacao->situacaoNome == "Rejeitada" )
+                    @php
+                        $modalApagar = true;
+                    @endphp
+
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#modalApagar{{$publicacao->protocoloCompleto}}" style="width:65px; font-size:12px; text-align:center;">Apagar</button>
+                @endif
+
+            @endif
             {{-- Verifica se é administrador e se pode publicar o arquivo --}}
 
             @if ($publicacao->diarioData <= date('Y-m-d') && (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Apagada" && $publicacao->situacaoNome == "Aceita")

@@ -106,7 +106,7 @@
                                             </select>
                                         </div>
                                         @if ($publicacao->diarioData <= date('Y-m-d'))
-                                            <div class="col-md-12"><span style="color:red; white-space:nowrap;"><Strong>Esta publicação é de um diário antigo!</Strong></span></div>
+                                            <div class="col-md-12"><span style="color:red; white-space:nowrap;"><Strong>Esta publicação é de um diário passado, escolha outro!</Strong></span></div>
                                         @endif
                                 </div>
 

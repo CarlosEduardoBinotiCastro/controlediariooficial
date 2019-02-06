@@ -159,7 +159,7 @@
                                 <label for="horaEnvio" class="col-md-4 col-form-label text-md-right">{{ __('Horário de Envio') }} <span style="color:red;">*</span></label>
 
                                 <div class="col-md-6">
-                                <input id="horaEnvio" type="time" class="form-control{{ $errors->has('horaEnvio') ? ' is-invalid' : '' }}" value="{{ date('17:00') }}" @if (Gate::allows('administrador', Auth::user())) name="horaEnvio"  @else disabled @endif required autofocus>
+                                <input id="horaEnvio" type="time" class="form-control{{ $errors->has('horaEnvio') ? ' is-invalid' : '' }}" value="{{ $usuario->horaEnvio }}" @if (Gate::allows('administrador', Auth::user())) name="horaEnvio"  @else disabled @endif required autofocus>
                                 </div>
                         </div>
 
