@@ -282,7 +282,7 @@
                     <br><br>
 
                     <span> Orgão Requisitante:</span>
-                    <span> <b> {{$publicacao->orgaoNome}} </b> </span>
+                    <span> <b> {{$publicacao->orgaoNomeUsuario}} </b> </span>
 
                     <br><br>
 

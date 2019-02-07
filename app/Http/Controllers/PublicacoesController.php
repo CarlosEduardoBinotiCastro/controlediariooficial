@@ -85,7 +85,7 @@ class PublicacoesController extends Controller
         $publicacoes->join('users as apagado', 'apagado.id', 'publicacao.usuarioIDApagou');
         $publicacoes->join('diariodata', 'diariodata.diarioDataID', 'publicacao.diarioDataID');
         $publicacoes->join('situacao', 'situacao.situacaoID', 'publicacao.situacaoID');
-        $publicacoes->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'criado.orgaoID');
+        $publicacoes->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'publicacao.orgaoID');
 
         if($nome != null && $nome != "tudo"){
             $arrayPalavras = explode(' ', $nome);
@@ -116,13 +116,13 @@ class PublicacoesController extends Controller
         }
 
         if($orgao != null && $orgao != "tudo"){
-            $publicacoes->where('orgaorequisitante.orgaoID', '=', $orgao);
+            $publicacoes->where('publicacao.orgaoID', '=', $orgao);
         }
 
         $publicacoes->where('situacao.situacaoNome', '=', "Apagada");
 
         if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) ){
-            $publicacoes->where('usuarioID', '=', Auth::user()->id);
+            $publicacoes->where('publicacao.orgaoID', '=', Auth::user()->orgaoID);
 
         }
 
@@ -149,7 +149,7 @@ class PublicacoesController extends Controller
         $publicacoes->join('users', 'users.id', 'publicacao.usuarioID');
         $publicacoes->join('diariodata', 'diariodata.diarioDataID', 'publicacao.diarioDataID');
         $publicacoes->join('situacao', 'situacao.situacaoID', 'publicacao.situacaoID');
-        $publicacoes->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'users.orgaoID');
+        $publicacoes->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'publicacao.orgaoID');
 
         if($nome != null && $nome != "tudo"){
             $arrayPalavras = explode(' ', $nome);
@@ -184,13 +184,12 @@ class PublicacoesController extends Controller
         }
 
         if($orgao != null && $orgao != "tudo"){
-                $publicacoes->where('orgaorequisitante.orgaoID', '=', $orgao);
+                $publicacoes->where('publicacao.orgaoID', '=', $orgao);
         }
 
 
-
         if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) ){
-            $publicacoes->where('usuarioID', '=', Auth::user()->id);
+            $publicacoes->where('publicacao.orgaoID', '=', Auth::user()->orgaoID);
         }
 
         $publicacoes->select('publicacao.*', 'situacao.situacaoNome', 'diariodata.diarioData', 'diariodata.numeroDiario', 'diariodata.diarioPublicado', 'users.name as nomeUsuario', 'orgaorequisitante.orgaoNome');
@@ -549,7 +548,7 @@ class PublicacoesController extends Controller
             $protocolo++;
             $this->verificaProtocolo($protocolo, $request);
         }else {
-            DB::table('publicacao')->insert(['situacaoID' => 4, 'cadernoID' => $request['cadernoID'], 'tipoID' => $request['tipoID'], 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request['diarioDataID'], 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request['titulo'], 'descricao' => $request['descricao'], 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'PUB']);
+            DB::table('publicacao')->insert(['situacaoID' => 4, 'cadernoID' => $request['cadernoID'], 'tipoID' => $request['tipoID'], 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request['diarioDataID'], 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request['titulo'], 'descricao' => $request['descricao'], 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'PUB', 'orgaoID' => Auth::user()->orgaoID]);
 
             $contador = 0;
             foreach ($this->arquivos as $arquivo) {
@@ -668,7 +667,7 @@ class PublicacoesController extends Controller
         //se não, verifica se o usuario é comum e esta tentando entrar com protocolo de uma publicação que não é dele
 
         if($usuarioIDApagou != null){
-            if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $usuarioIDApagou->usuarioID){
+            if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->orgaoID != $usuarioIDApagou->orgaoID){
                 return redirect('/home')->with('erro', 'Você não tem permissão!');
               }
             // Busca todos os dados da visualização
@@ -799,7 +798,7 @@ class PublicacoesController extends Controller
         //se não, verifica se o usuario é comum e esta tentando entrar com protocolo de uma publicação que não é dele
 
         if($usuarioIDApagou != null){
-            if(!(  Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $usuarioIDApagou->usuarioID){
+            if(!(  Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->orgaoID != $usuarioIDApagou->orgaoID){
                 return redirect('/home')->with('erro', 'Você não tem permissão!');
               }
             // Busca todos os dados da visualização
@@ -815,12 +814,13 @@ class PublicacoesController extends Controller
             $publicacao->join('situacao', 'situacao.situacaoID', 'publicacao.situacaoID');
             $publicacao->join('caderno', 'caderno.cadernoID', 'publicacao.cadernoID');
             $publicacao->join('tipodocumento', 'tipodocumento.tipoID', 'publicacao.tipoID');
-            $publicacao->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'criado.orgaoID');
+            $publicacao->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'publicacao.orgaoID');
+            $publicacao->join('orgaorequisitante as orgaousuario', 'orgaousuario.orgaoID', 'criado.orgaoID');
             $publicacao->where('protocoloCompleto', '=', $protocoloCompleto);
             if($usuarioIDApagou->usuarioIDApagou != null){
-                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'apagado.name as nomeUsuarioApagado', 'orgaorequisitante.orgaoNome', 'criado.email as emailUsuarioEmitiu', 'criado.telefoneSetor as telefoneSetorUsuarioEmitiu', 'criado.telefoneCelular as telefoneCelularUsuarioEmitiu');
+                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'apagado.name as nomeUsuarioApagado', 'orgaorequisitante.orgaoNome', 'criado.email as emailUsuarioEmitiu', 'criado.telefoneSetor as telefoneSetorUsuarioEmitiu', 'criado.telefoneCelular as telefoneCelularUsuarioEmitiu', 'orgaousuario.orgaoNome as orgaoNomeUsuario');
             }else{
-                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'orgaorequisitante.orgaoNome', 'criado.email as emailUsuarioEmitiu', 'criado.telefoneSetor as telefoneSetorUsuarioEmitiu', 'criado.telefoneCelular as telefoneCelularUsuarioEmitiu');
+                $publicacao->select('publicacao.*', 'caderno.cadernoNome', 'tipodocumento.tipoDocumento', 'diariodata.*', 'situacao.*', 'criado.name as nomeUsuarioCriado', 'orgaorequisitante.orgaoNome', 'criado.email as emailUsuarioEmitiu', 'criado.telefoneSetor as telefoneSetorUsuarioEmitiu', 'criado.telefoneCelular as telefoneCelularUsuarioEmitiu', 'orgaousuario.orgaoNome as orgaoNomeUsuario');
             }
             $publicacao = $publicacao->first();
 
