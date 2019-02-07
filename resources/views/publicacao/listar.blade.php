@@ -179,7 +179,15 @@
 
             <td style="width:10%;">{{$publicacao->protocoloCompleto}}</td>
             <td style="width:20%;"> {{$publicacao->titulo}} </td>
-            <td style="width:10%;">N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</td>
+
+            @if ($publicacao->diarioPublicado != null && $publicacao->situacaoID == 1)
+                <td style="width:10%;"> <a style="color:blue;" href='{{ url("/diariodata/download") }}/{{$publicacao->diarioDataID}}' >N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</a></td>
+            @else
+                    <td style="width:10%;"> N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</td>
+            @endif
+
+
+
             <td style="width:15%;"> {{$publicacao->orgaoNome}}</td>
             <td style="width:10%;"> {{$dataEnviado}} </td>
             <td style="text-transform:capitalize; width:15%;"> {{$publicacao->nomeUsuario}} </td>

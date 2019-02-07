@@ -43,23 +43,29 @@ class HomeController extends Controller
             }else{
                 $diariosData = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->first();
 
-                $diaDiarioDate = new DateTime($diariosData->diarioData);
-                $verificaDiaUtil = false;
-                $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
+                if($diariosData != null){
 
-                do{
-                    $finalDeSemana = date('N', strtotime($diaUtil));
-                    if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
-                        if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
-                            $verificaDiaUtil = true;
-                            $diaLimite = $diaUtil;
-                        }else{
+                    $diaDiarioDate = new DateTime($diariosData->diarioData);
+                    $verificaDiaUtil = false;
+                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaDiarioDate->format('Y-m-d'))));
 
+                    do{
+                        $finalDeSemana = date('N', strtotime($diaUtil));
+                        if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                            if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                                $verificaDiaUtil = true;
+                                $diaLimite = $diaUtil;
+                            }else{
+
+                            }
                         }
-                    }
 
-                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
-                }while($verificaDiaUtil == false);
+                        $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                    }while($verificaDiaUtil == false);
+
+                }else{
+                    $diaLimite = null;
+                }
 
             }
 

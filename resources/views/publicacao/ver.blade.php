@@ -115,15 +115,24 @@
                             @if ($publicacao->usuarioIDApagou == null)
                             <br>
                                 <div class="col-md-12">
-                                <a href="{{ url("/publicacao/download") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
+                                <a style="width:160px;" href="{{ url("/publicacao/download") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
                                 </div>
                             @endif
 
 
                             <br>
                             <div class="col-md-12">
-                                    <a href="{{ url("/publicacao/gerarComprovante") }}/{{$publicacao->protocoloCompleto}}" target="_blank" class="btn btn-success">Comprovante</a>
+                                    <a style="width:160px;" href="{{ url("/publicacao/gerarComprovante") }}/{{$publicacao->protocoloCompleto}}" target="_blank" class="btn btn-success">Comprovante</a>
                             </div>
+
+                            @if ($publicacao->situacaoID == 1 && $publicacao->diarioPublicado != null)
+                                <br>
+                                <div class="col-md-12">
+                                    <a style="width:160px;" href='{{ url("/diariodata/download") }}/{{$publicacao->diarioDataID}}' class="btn btn-success">Diáro Publicado</a>
+                                </div>
+                            @endif
+
+
 
                             <br><br>
 
@@ -308,7 +317,7 @@
             var url = "<?php  echo Session::get('urlVoltar');  ?>";
 
             $("#fixo").mask('(99)9999-9999');
-            $("#celular").mask('(99)9999-99999');
+            $("#celular").mask('(99)99999-9999');
 
             $('#formRejeitar').validate({
                 errorClass: "my-error-class"

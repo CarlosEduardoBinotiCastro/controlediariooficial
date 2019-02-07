@@ -193,7 +193,7 @@ class PublicacoesController extends Controller
             $publicacoes->where('usuarioID', '=', Auth::user()->id);
         }
 
-        $publicacoes->select('publicacao.*', 'situacao.situacaoNome', 'diariodata.diarioData', 'diariodata.numeroDiario', 'users.name as nomeUsuario', 'orgaorequisitante.orgaoNome');
+        $publicacoes->select('publicacao.*', 'situacao.situacaoNome', 'diariodata.diarioData', 'diariodata.numeroDiario', 'diariodata.diarioPublicado', 'users.name as nomeUsuario', 'orgaorequisitante.orgaoNome');
         $publicacoes = $publicacoes->paginate($this->paginacao);
 
         $faturas = Fatura::orderBy('protocoloCompleto');

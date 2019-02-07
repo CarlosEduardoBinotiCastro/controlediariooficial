@@ -53,6 +53,15 @@ Route::group(['prefix' => 'diariodata'], function () {
     Route::post('/salvar', 'DiarioDataController@salvar');
     Route::get('/editar/{id}', 'DiarioDataController@editar');
     Route::get('/deletar/{id}', 'DiarioDataController@deletar');
+
+
+    Route::get('/listar', 'DiarioDataController@listar');
+    Route::get('/listar/{filtro}', ['as' => 'listarDiarios', 'uses' => 'DiarioDataController@listar']);
+    Route::post('/chamarListar', 'DiarioDataController@listarFiltro');
+    Route::post('/anexar', 'DiarioDataController@anexarDiario');
+    Route::post('/remover', 'DiarioDataController@remover');
+    Route::get('/download/{id}', 'DiarioDataController@download');
+
 });
 
 // Rotas relacionadas com os Tipos Documentos
