@@ -62,6 +62,39 @@
             <form id="formFiltro" action="{{url("publicacao/chamarListar")}}" method="POST">
             @csrf
 
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card" style="background-color:#DEDDDD; border-radius: 20px;">
+                            <div class="card-header" style="text-align:center;"><strong>Período dos Envios</strong></div>
+
+                            <div class="card-body">
+                                <div>
+                                        <div class="form-group row offset-md-2">
+                                            <label class="col-md-3 text-md-right">Data Inicial</label>
+
+                                        {{-- Logica para pegar o primeiro dia do mês --}}
+                                        <input style="resize:none; width: 150px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarDataBegin()" onfocusout="checarDataBegin()" id="dateBegin">
+                                        <input type="hidden" name="dataInicial" value="tudo" id="dataInicial">
+
+                                        </div>
+
+                                        <div class="form-group row offset-md-2">
+                                                <label class="col-md-3 text-md-right">Data Final</label>
+                                                <input style="resize:none; width: 150px;" placeholder="Data Diário" class="form-control" type="text" onfocus="checarDataEnd()" onfocusout="checarDataEnd()" id="dateEnd">
+                                                <input type="hidden" name="dataFinal" value="tudo" id="dataFinal">
+                                        </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
             @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
 
             <div class="table-responsive">
@@ -401,6 +434,51 @@
 
         $(document).ready(function($) {
 
+
+
+            var dataBegin = "tudo";
+            var dataEnd = "tudo";
+
+            checarDataBegin = function(){
+                if($('#dateBegin').attr('type') == 'text'){
+                    $('#dateBegin').attr('type', 'date');
+                }else{
+                    dataBegin = $('#dateBegin').val();
+                    var datas =  $('#dateBegin').val().split('-');
+                    var datanormal = datas[2]+'/'+datas[1]+'/'+datas[0];
+                    $('#dateBegin').attr('type', 'text');
+                    if($('#dateBegin').val() != ""){
+                        $('#dateBegin').val(datanormal);
+                    }else{
+                        dataBegin = "tudo";
+                        $('#dateBegin').val("");
+                    }
+
+                }
+            }
+
+
+            checarDataEnd = function(){
+                if($('#dateEnd').attr('type') == 'text'){
+                    $('#dateEnd').attr('type', 'date');
+                }else{
+                    dataEnd = $('#dateEnd').val();
+                    var datas =  $('#dateEnd').val().split('-');
+                    var datanormal = datas[2]+'/'+datas[1]+'/'+datas[0];
+                    $('#dateEnd').attr('type', 'text');
+                    if($('#dateEnd').val() != ""){
+                        $('#dateEnd').val(datanormal);
+                    }else{
+                        dataEnd = "tudo";
+                        $('#dateEnd').val("");
+                    }
+
+                }
+            }
+
+
+
+
             var data = "tudo";
 
             checarData = function(){
@@ -423,6 +501,8 @@
 
 
             $('#filtrar').click(function(){
+                $('#dataInicial').val(dataBegin);
+                $('#dataFinal').val(dataEnd);
                 $('#diario').val(data);
                 $('#formFiltro').submit();
             });

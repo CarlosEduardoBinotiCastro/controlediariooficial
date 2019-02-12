@@ -136,7 +136,7 @@ class PublicacoesController extends Controller
     }
 
 
-    public function listar($nome = null, $protocolo = null, $diario = null, $situacao = null, $orgao = null, $titulo = null){
+    public function listar($nome = null, $protocolo = null, $diario = null, $situacao = null, $orgao = null, $titulo = null, $dataInicial = null, $dataFinal = null){
 
         if(!Gate::allows('faturas', Auth::user())){
 
@@ -187,6 +187,9 @@ class PublicacoesController extends Controller
                 $publicacoes->where('publicacao.orgaoID', '=', $orgao);
         }
 
+        if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
+            $publicacoes->whereBetween('publicacao.dataEnvio',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
+        }
 
         if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) ){
             $publicacoes->where('publicacao.orgaoID', '=', Auth::user()->orgaoID);
@@ -247,10 +250,30 @@ class PublicacoesController extends Controller
         }
 
 
-        if(($diario == "tudo") && ($nome == "tudo") && ($protocolo == "tudo") && ($situacao == "tudo") && ($orgao == "tudo") && ($titulo == "tudo")){
+        if(($request->dataFinal != null && $request->dataFinal != "tudo") && ($request->dataInicial!= null && $request->dataInicial != "tudo")){
+            if($request->dataInicial > $request->dataFinal){
+                return redirect()->back()->with('erro', 'Data inicial deve ser menor que data final!');
+            }else{
+                $dataInicial = $request->dataInicial;
+                $dataFinal = $request->dataFinal;
+            }
+        }else{
+
+            if(($request->dataInicial != null && $request->dataInicial != "tudo") && ($request->dataFinal == null || $request->dataFinal == "tudo")){
+                return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
+            }
+            if(($request->dataFinal != null && $request->dataFinal != "tudo") && ($request->dataInicial!= null || $request->dataInicial == "tudo")){
+                return redirect()->back()->with('erro', 'Ao filtrar por período, preencha as duas datas!');
+            }
+            $dataInicial = "tudo";
+            $dataFinal = "tudo";
+        }
+
+
+        if(($diario == "tudo") && ($nome == "tudo") && ($protocolo == "tudo") && ($situacao == "tudo") && ($orgao == "tudo") && ($titulo == "tudo") && ($dataInicial == "tudo") && ($dataFinal == "tudo")){
             return redirect('publicacao/listar');
         }else{
-            return redirect()->route('listarPublicacoes', ['nome' => $nome, 'protocolo' => $protocolo, 'diario' => $diario, 'situacao' => $situacao, 'orgao' => $orgao, 'titulo' => $titulo]);
+            return redirect()->route('listarPublicacoes', ['nome' => $nome, 'protocolo' => $protocolo, 'diario' => $diario, 'situacao' => $situacao, 'orgao' => $orgao, 'titulo' => $titulo, 'dataInicial' => $dataInicial, 'dataFinal' => $dataFinal]);
         }
 
     }

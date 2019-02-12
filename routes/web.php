@@ -117,7 +117,7 @@ Route::group(['prefix' => 'usuario'], function () {
 Route::group(['prefix' => 'publicacao'], function () {
 
     Route::get('/listar', 'PublicacoesController@listar');
-    Route::get('/listar/usuario/{nome}/protocolo/{protocolo}/diario/{diario}/situacao/{situacao}/orgao/{orgao}/titulo/{titulo}', ['as' => 'listarPublicacoes', 'uses' => 'PublicacoesController@listar']);
+    Route::get('/listar/usuario/{nome}/protocolo/{protocolo}/diario/{diario}/situacao/{situacao}/orgao/{orgao}/titulo/{titulo}/{dataInicial}/{dataFinal}', ['as' => 'listarPublicacoes', 'uses' => 'PublicacoesController@listar']);
     Route::post('/chamarListar', 'PublicacoesController@listarFiltro');
 
     Route::get('/apagadas', 'PublicacoesController@apagadas');
