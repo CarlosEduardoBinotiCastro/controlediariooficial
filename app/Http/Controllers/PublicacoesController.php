@@ -365,6 +365,10 @@ class PublicacoesController extends Controller
                 return redirect()->back()->with('erro', "Data de envio ultrapassada!")->withInput();
             break;
 
+            case 6:
+                return redirect()->back()->with('erro', "Arquivos com nomes iguais não podem existir!")->withInput();
+            break;
+
             default:
 
                 if(isset($request->protocolo)){
@@ -399,13 +403,6 @@ class PublicacoesController extends Controller
 
                             $arquivosAntigos =  DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->select('arquivo')->get();
 
-                            // deletando arquivos no servidor
-                            // foreach($arquivosAntigos as $arquivoAntigo){
-                            //     if(file_exists(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo))){
-                            //         File::delete(storage_path("app/".$request->protocolo."/".$arquivoAntigo->arquivo));
-                            //     }
-                            // }
-
 
                             foreach($arquivosAntigos as $arquivoAntigo){
                                 if(file_exists(storage_path("app/".$publicacao->protocoloAno."/".$request->protocolo."/".$arquivoAntigo->arquivo))){
@@ -414,40 +411,22 @@ class PublicacoesController extends Controller
                             }
 
 
-
-
                             // deletando os arquivos antigos no banco
                             DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
 
-                            // Mudança no estilo de upload de arquivos, agora pode salvar varios
-                            $contadorArquivo = 0;
+                            // salvando asrquivos
+
                             foreach ($post[0] as $arquivo) {
-                                $file = Auth::user()->id.date('Y-m-d-H-i-s').'-'.$contadorArquivo.".".pathinfo($arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
-                                array_push($this->arquivos,$file);
-                                $arquivo->storeAs("", $file);
-                                $contadorArquivo += 1;
+                                array_push($this->arquivos,$arquivo->getClientOriginalName());
+                                $arquivo->storeAs($this->diretorio."/", $arquivo->getClientOriginalName());
                             }
-                            // fim do metodo de salvar na pasta app
-
-                            // salvando os novos no banco
-                            $contador = 0;
-                            foreach ($this->arquivos as $arquivo) {
-                                DB::table('publicacaoarquivo')->insert(['protocoloCompleto' =>$request->protocolo, 'arquivo' =>$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)]);
-                                $contador++;
-                            }
-
-                            // salvando os novos no servidor
-                            // $contador = 0;
-                            // foreach ($this->arquivos as $arquivo) {
-                            //     $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$request->protocolo."/".$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
-                            //     $contador++;
-                            // }
 
                             $contador = 0;
                             foreach ($this->arquivos as $arquivo) {
-                                $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$publicacao->protocoloAno."/".$request->protocolo."/".$request->protocolo.'-'.$contador.'.'.pathinfo($post[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
+                                DB::table('publicacaoarquivo')->insert(['protocoloCompleto' => $request->protocolo, 'arquivo' =>$post[0][$contador]->getClientOriginalName()]);
                                 $contador++;
                             }
+
 
                             // alterando no banco
                             DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4, 'rejeitadaDescricao' => null]);
@@ -479,7 +458,6 @@ class PublicacoesController extends Controller
                                 DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->delete();
                             DB::commit();
 
-
                             return redirect('home')->with('erro', "Um erro crítico durante a operação ocorreu! Foi necessário a remoção da publicação no sistema. Por favor tente enviar novamente!".$e->getMessage());
                         }else{
                             DB::rollBack();
@@ -491,20 +469,6 @@ class PublicacoesController extends Controller
 
                 }else{
                     try {
-
-                        // Mudança no estilo de upload de arquivos, agora pode salvar varios
-
-                        $contadorArquivo = 0;
-                        foreach ($post[0] as $arquivo) {
-                            $file = Auth::user()->id.date('Y-m-d-H-i-s').'-'.$contadorArquivo.".".pathinfo($arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
-                            array_push($this->arquivos,$file);
-                            $arquivo->storeAs("", $file);
-                            $contadorArquivo += 1;
-                        }
-
-
-                        // fim do metodo de salvar na pasta app
-
 
                         if(DB::table('publicacao')->where('protocoloAno', '=', date('Y'))->count() ){
                             $protocolo = DB::table('publicacao')->where('protocoloAno', '=', date('Y'))->max('protocolo') + 1;
@@ -518,12 +482,6 @@ class PublicacoesController extends Controller
                         return redirect('/publicacao/listar')->with('sucesso', 'Publicação Enviada com Sucesso');
 
                     } catch (\Exception $e) {
-
-                        foreach ($this->arquivos as $arquivo) {
-                            if(file_exists(storage_path("app/".$arquivo))){
-                                Storage::delete([$arquivo]);
-                            }
-                        }
 
 
                         if(file_exists(storage_path("app/".$this->diretorio))){
@@ -550,11 +508,6 @@ class PublicacoesController extends Controller
         }else {
             DB::table('publicacao')->insert(['situacaoID' => 4, 'cadernoID' => $request['cadernoID'], 'tipoID' => $request['tipoID'], 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request['diarioDataID'], 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request['titulo'], 'descricao' => $request['descricao'], 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'PUB', 'orgaoID' => Auth::user()->orgaoID]);
 
-            $contador = 0;
-            foreach ($this->arquivos as $arquivo) {
-                DB::table('publicacaoarquivo')->insert(['protocoloCompleto' => $protocolo.date('Y').'PUB', 'arquivo' =>$protocolo.date('Y').'PUB'.'-'.$contador.'.'.pathinfo($request[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)]);
-                $contador++;
-            }
 
             // @mudar
             $this->diretorio = date('Y')."/".$protocolo.date('Y').'PUB';
@@ -562,9 +515,15 @@ class PublicacoesController extends Controller
             // $this->diretorio =  $protocolo.date('Y').'PUB';
             File::makeDirectory(storage_path("app/".$this->diretorio));
 
+
+            foreach ($request[0] as $arquivo) {
+                array_push($this->arquivos,$arquivo->getClientOriginalName());
+                $arquivo->storeAs($this->diretorio."/", $arquivo->getClientOriginalName());
+            }
+
             $contador = 0;
             foreach ($this->arquivos as $arquivo) {
-                $resultado = File::move(storage_path("app/".$arquivo),storage_path("app/".$this->diretorio."/".$protocolo.date('Y').'PUB'.'-'.$contador.'.'.pathinfo($request[0][$contador]->getClientOriginalName(), PATHINFO_EXTENSION)));
+                DB::table('publicacaoarquivo')->insert(['protocoloCompleto' => $protocolo.date('Y').'PUB', 'arquivo' =>$request[0][$contador]->getClientOriginalName()]);
                 $contador++;
             }
 
@@ -591,16 +550,27 @@ class PublicacoesController extends Controller
                     return 2;
                 }
 
+
                 $tamanhoArquivo += ((filesize($arquivo) / 1024)/1024);
             }
 
             if($tamanhoArquivo > 30){
                 return 1;
             }
-        }
 
-        if(strlen($request['descricao']) > 255){
-            return 3;
+            // verifica se existe arquivos com nomes iguais
+            foreach ($request[0] as $arquivo) {
+                $contador = 0;
+                foreach ($request[0] as $comparar) {
+                    if($arquivo->getClientOriginalName() == $comparar->getClientOriginalName()){
+                        $contador++;
+                    }
+                }
+                if($contador > 1){
+                    return 6;
+                }
+            }
+
         }
 
         if(strlen($request['titulo']) > 100){
@@ -876,14 +846,15 @@ class PublicacoesController extends Controller
         }
 
         if ($publicacao != null) {
-            if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $publicacao->usuarioID){
+            if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->orgaoID != $publicacao->orgaoID){
                 return redirect()->back()->with('erro', 'Você não tem permissão!');
             }
         }else{
             return redirect()->back()->with('erro', 'Arquivo não encontrado!');
         }
 
-        $arquivoExtensao = explode('.', $publicacao->arquivo);
+
+
 
         // if(file_exists(storage_path("app/".$protocolo))){
 
@@ -900,9 +871,15 @@ class PublicacoesController extends Controller
         if(file_exists(storage_path("app/".$publicacao->protocoloAno."/".$protocolo))){
 
             $files = glob(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/*"));
-            Zipper::make(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/").$protocolo.'.zip')->add($files)->close();
 
-            return response()->download(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/".$protocolo.'.zip'))->deleteFileAfterSend(true);
+            if(sizeof($files) > 1){
+                Zipper::make(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/").$protocolo.'.zip')->add($files)->close();
+                return response()->download(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/".$protocolo.'.zip'))->deleteFileAfterSend(true);
+            }else{
+                $arquivosPublicação = DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $publicacao->protocoloCompleto)->first();
+                return Response::download(storage_path("app/".$publicacao->protocoloAno."/".$protocolo."/".$arquivosPublicação->arquivo));
+            }
+
 
         }else{
             return redirect()->back()->with('erro', 'Arquivo não Encontrado!');
@@ -1048,7 +1025,7 @@ class PublicacoesController extends Controller
             //se não, verifica se o usuario é comum e esta tentando entrar com protocolo de uma publicação que não é dele
 
             if($usuarioIDApagou != null){
-                if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->id != $usuarioIDApagou->usuarioID){
+                if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && Auth::user()->orgaoID != $usuarioIDApagou->orgaoID){
                     return redirect('/home')->with('erro', 'Você não tem permissão!');
                   }
                 // Busca todos os dados da visualização
