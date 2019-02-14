@@ -793,24 +793,45 @@ class FaturaController extends Controller
             $faturas->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
+            // Para armazenar a query, para gerar relatorio
+
+            $query =  Array();
+            $params =  Array();
+
             // Filtros
 
                 if($empresa != null && $empresa != "tudo"){
                     $arrayPalavras = explode(' ', $empresa);
                     foreach ($arrayPalavras as $palavra) {
+
+                        array_push($query, 'empresa');
+                        array_push($params, $palavra);
+
                         $faturas->where('empresa', 'like', '%' . $palavra . '%');
                     }
                 }
 
                 if($protocolo != null && $protocolo != "tudo"){
+
+                    array_push($query, 'protocolo');
+                    array_push($params, $protocolo);
+
                     $faturas->where('protocoloCompleto', '=', $protocolo);
                 }
 
                 if($cpfCnpj != null && $cpfCnpj != "tudo"){
+
+                    array_push($query, 'cpfCnpj');
+                    array_push($params, $cpfCnpj);
+
                     $faturas->where('cpfCnpj', '=', $cpfCnpj);
                 }
 
                 if($diario != null && $diario != "tudo"){
+
+                    array_push($query, 'diarioData');
+                    array_push($params, $diario);
+
                     $faturas->where('diariodata.diarioData', '=', $diario);
                 }
 
@@ -821,17 +842,28 @@ class FaturaController extends Controller
 
                     if($situacao != null && $situacao != "tudo"){
                         if($situacao != "Apagada"){
+
+                            array_push($query, 'situacao');
+                            array_push($params, $situacao);
+
                             $faturas->where('situacao.situacaoNome', '=', $situacao);
                         }
                     }
 
                 }else{
                     if($situacao != null && $situacao != "tudo"){
+
+                        array_push($query, 'situacao');
+                        array_push($params, $situacao);
+
                         $faturas->where('situacao.situacaoNome', '=', $situacao);
                     }
                 }
 
                 if($subcategoria != null && $subcategoria != "tudo"){
+
+                    array_push($query, 'subcategoria');
+                    array_push($params, $subcategoria);
 
                     if($subcategoria == "NaoPossui"){
                         $faturas->where('fatura.subcategoriaID', '=', null);
@@ -840,6 +872,18 @@ class FaturaController extends Controller
                     }
 
                 }
+
+            // juntando o array de querys com o array de parametros
+
+            $queryCompleta = Array();
+
+            if(sizeof($query) > 0){
+                array_push($queryCompleta, $query);
+                array_push($queryCompleta, $params);
+            }
+
+            $queryCompleta = json_encode($queryCompleta, JSON_UNESCAPED_UNICODE);
+
 
             // Fim Filtros
 
@@ -877,12 +921,12 @@ class FaturaController extends Controller
                         $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
                     }while($verificaDiaUtil == false);
                 }
-                return view('fatura.listar', [ "diarioDatas" => json_encode($diariosDatasLimites), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+                return view('fatura.listar', [ "diarioDatas" => json_encode($diariosDatasLimites), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes, 'query' => $queryCompleta]);
             }
 
             // fim da verificação
 
-            return view('fatura.listar', ["diarioDatas" => json_encode("vazio"), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+            return view('fatura.listar', ["diarioDatas" => json_encode("vazio"), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes, 'query' => $queryCompleta]);
 
             }else{
                 return redirect('home');
@@ -1589,20 +1633,38 @@ class FaturaController extends Controller
             $faturas->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
             $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
+            // Para armazenar a query, para gerar relatorio
+
+            $query =  Array();
+            $params =  Array();
+
+
             // Filtros
 
                 if($empresa != null && $empresa != "tudo"){
                     $arrayPalavras = explode(' ', $empresa);
                     foreach ($arrayPalavras as $palavra) {
+
+                        array_push($query, 'empresa');
+                        array_push($params, $palavra);
+
                         $faturas->where('empresa', 'like', '%' . $palavra . '%');
                     }
                 }
 
                 if($protocolo != null && $protocolo != "tudo"){
+
+                    array_push($query, 'protocolo');
+                    array_push($params, $protocolo);
+
                     $faturas->where('protocoloCompleto', '=', $protocolo);
                 }
 
                 if($cpfCnpj != null && $cpfCnpj != "tudo"){
+
+                    array_push($query, 'cpfCnpj');
+                    array_push($params, $cpfCnpj);
+
                     $faturas->where('cpfCnpj', '=', $cpfCnpj);
                 }
 
@@ -1611,14 +1673,28 @@ class FaturaController extends Controller
                 // }
 
                 if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
+
+                    array_push($query, 'dataInicial');
+                    array_push($params, $dataInicial);
+                    array_push($query, 'dataFinal');
+                    array_push($params, $dataFinal);
+
                     $faturas->whereBetween('fatura.dataEnvioFatura',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
                 }
 
                 if($situacao != null && $situacao != "tudo"){
+
+                    array_push($query, 'situacao');
+                    array_push($params, $situacao);
+
                     $faturas->where('situacao.situacaoNome', '=', $situacao);
                 }
 
                 if($subcategoria != null && $subcategoria != "tudo"){
+
+                    array_push($query, 'subcategoria');
+                    array_push($params, $subcategoria);
+
                     if($subcategoria == "NaoPossui"){
                         $faturas->where('fatura.subcategoriaID', '=', null);
                     }else{
@@ -1626,8 +1702,18 @@ class FaturaController extends Controller
                     }
                 }
 
-            // Fim Filtros
+            // juntando o array de querys com o array de parametros
 
+            $queryCompleta = Array();
+
+            if(sizeof($query) > 0){
+                array_push($queryCompleta, $query);
+                array_push($queryCompleta, $params);
+            }
+
+            $queryCompleta = json_encode($queryCompleta, JSON_UNESCAPED_UNICODE);
+
+            // Fim Filtros
 
             $faturas->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome');
             $faturas = $faturas->paginate($this->paginacao);
@@ -1663,12 +1749,12 @@ class FaturaController extends Controller
                         $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
                     }while($verificaDiaUtil == false);
                 }
-                return view('fatura.relatoriodetalhado', [ "diarioDatas" => json_encode($diariosDatasLimites), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+                return view('fatura.relatoriodetalhado', [ "diarioDatas" => json_encode($diariosDatasLimites), 'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes, 'query' => $queryCompleta]);
             }
 
             // fim da verificação
 
-            return view('fatura.relatoriodetalhado', ["diarioDatas" => json_encode("vazio"),'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes]);
+            return view('fatura.relatoriodetalhado', ["diarioDatas" => json_encode("vazio"),'faturas' => $faturas, 'subcategorias' => $subcategorias, 'situacoes' => $situacoes, 'query' => $queryCompleta]);
 
             }else{
                 return redirect('home');
@@ -1902,75 +1988,93 @@ class FaturaController extends Controller
 
 
 
+    public function gerarPdf(Request $request){
 
-    // Teste Zone
+        $query = json_decode($request->sql);
 
-    private function read_doc($filePath) {
-        $fileHandle = fopen($filePath, "r");
-        $line = @fread($fileHandle, filesize($filePath));
-        $lines = explode(chr(0x0D),$line);
-        $outtext = "";
+        $faturas = Fatura::orderBy('dataEnvioFatura', 'desc');
+        $faturas->leftJoin('diariodata', 'diariodata.diariodataID', 'fatura.diariodataID');
+        $faturas->leftJoin('subcategoria', 'subcategoria.subcategoriaID', 'fatura.subcategoriaID');
+        $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
 
-        foreach($lines as $thisline)
-          {
+        $contador = 0;
+        if(sizeof($query) > 0){
 
-            $pos = strpos($thisline, chr(0x00));
+            foreach ($query[0] as $campo) {
 
-            if (($pos !== FALSE)||(strlen($thisline)==0))
-              {
+                switch ($campo){
 
-              } else {
+                    case "empresa":
+                        $faturas->where('empresa', 'like', '%' . $query[1][$contador] . '%');
+                    break;
 
-                $outtext .= $thisline." ";
-              }
+                    case "cpfCnpj":
+                        $faturas->where('cpfCnpj', '=', $query[1][$contador]);
+                    break;
 
-          }
+                    case "protocolo":
+                        $faturas->where('protocoloCompleto', '=', $query[1][$contador]);
+                    break;
 
-         $outtext = preg_replace("/[^a-zA-Z0-9\s\,\.\-\n\r\t@\/\_\(\)]/","",$outtext);
+                    case "diarioData":
+                        $faturas->where('diariodata.diarioData', '=', $query[1][$contador]);
+                    break;
 
-         return $outtext;
-    }
+                    case "situacao":
 
-    public function convertToText() {
+                        if(Gate::allows('faturas', Auth::user()) || Gate::allows('publicador', Auth::user())){
 
-        $filePath = "C:/xampp/htdocs/controlediariooficial/public/testedeimpressao.doc";
-        // $arquivo = \PhpOffice\PhpWord\IOFactory::load($filePath, 'Word2007');
+                            $faturas->where('situacao.situacaoNome', '!=', "Apagada");
 
-        // $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($arquivo, "Word2007");
-        // $objectWriter->save("C:/xampp/htdocs/controlediariooficial/public/teste.docx");
+                            if($query[1][$contador] != "Apagada"){
+                                $faturas->where('situacao.situacaoNome', '=', $query[1][$contador]);
+                            }
 
-        if(isset($filePath) && !file_exists($filePath)) {
-            return "File Not exists";
-        }
+                        }else{
 
-        $fileArray = pathinfo($filePath);
-        $file_ext  = $fileArray['extension'];
-        if($file_ext == "doc")
-        {
-            if($file_ext == "doc") {
-                return $this->read_doc($filePath);
+                            $faturas->where('situacao.situacaoNome', '=', $query[1][$contador]);
+
+                        }
+
+                    break;
+
+                    case "subcategoria":
+
+                        if($query[1][$contador] == "NaoPossui"){
+                            $faturas->where('fatura.subcategoriaID', '=', null);
+                        }else{
+                            $faturas->where('fatura.subcategoriaID', '=', $query[1][$contador]);
+                        }
+
+                    break;
+
+                    case "dataInicial":
+                        $dataFinal = $contador + 1;
+                        $faturas->whereBetween('fatura.dataEnvioFatura',  [$query[1][$contador] . ' 00:00:01', $query[1][($dataFinal)] . ' 23:59:59']);
+                    break;
+
+                    default:
+                    break;
+                }
+
+                $contador++;
             }
-        } else {
-            return "Invalid File Type";
+
         }
+
+        $faturas->select('fatura.*', 'diariodata.numeroDiario', 'diariodata.diarioData', 'situacao.situacaoNome', 'subcategoria.subcategoriaNome');
+        $faturas = $faturas->get();
+
+        // foto do cabeçalho do comprovante
+        $path = storage_path("app/"."top.jpg");
+
+        $pdf = BPDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+        $pdf->setPaper('a4', 'portrait')->loadView('fatura.relatorioPdf', ['faturas' => $faturas, 'path' => $path]);
+
+        return $pdf->stream('relatorio.pdf');
+
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

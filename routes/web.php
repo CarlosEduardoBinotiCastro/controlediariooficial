@@ -194,6 +194,7 @@ Route::group(['prefix' => 'fatura'], function () {
 
     Route::get('/cabecalho', 'FaturaController@cabecalho');
     Route::get('/gerarComprovante/{protocoloID}', 'FaturaController@gerarComprovante');
+    Route::post('/gerarPdf', 'FaturaController@gerarPdf');
 
 });
 

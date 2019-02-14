@@ -95,9 +95,13 @@
 
             </form>
 
+                <form target="_blank" action="{{url("fatura/gerarPdf")}}" method="POST" style="float:right;">
+                    @csrf
+                    <input type="hidden" value=" {{$query}} " name="sql">
+                    <button type="submit" class="btn btn-secundary" style="color:red;"><i class="far fa-file-pdf"> PDF</i></button>
+                </form>
+
                 <br><br>
-
-
 
                 <div class="table-responsive">
 
