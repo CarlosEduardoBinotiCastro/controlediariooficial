@@ -135,6 +135,7 @@ Route::group(['prefix' => 'publicacao'], function () {
     Route::post('/rejeitar', 'PublicacoesController@rejeitar');
 
     Route::get('/gerarComprovante/{protocolo}', 'PublicacoesController@gerarComprovante');
+    Route::post('/gerarPdf', 'PublicacoesController@gerarPdf');
 });
 
 

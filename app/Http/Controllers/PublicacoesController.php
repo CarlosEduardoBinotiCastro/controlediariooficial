@@ -143,6 +143,11 @@ class PublicacoesController extends Controller
         $situacoes = DB::table('situacao')->get();
         $orgaos = OrgaoRequisitante::orderBy('orgaoNome')->get();
 
+        // Para armazenar a query, para gerar relatorio
+
+        $query =  Array();
+        $params =  Array();
+
 
         $publicacoes = Publicacao::orderBy('protocoloAno', 'desc')->orderBy('protocolo', 'desc');
 
@@ -154,8 +159,14 @@ class PublicacoesController extends Controller
         if($nome != null && $nome != "tudo"){
             $arrayPalavras = explode(' ', $nome);
             foreach ($arrayPalavras as $palavra) {
+
+                array_push($query, 'usuario');
+                array_push($params, $palavra);
+
                 $publicacoes->where('users.name', 'like', '%' . $palavra . '%');
             }
+
+
         }
 
         if($titulo != null && $titulo != "tudo"){
@@ -163,46 +174,83 @@ class PublicacoesController extends Controller
 
             $arrayPalavras = explode(' ', $titulo);
             foreach ($arrayPalavras as $palavra) {
+
+                array_push($query, 'titulo');
+                array_push($params, $palavra);
+
                 $publicacoes->where('publicacao.titulo', 'like', '%' . $palavra . '%');
             }
         }
 
         if($protocolo != null && $protocolo != "tudo"){
-            if(strlen($protocolo) > 7){
+
+                array_push($query, 'protocolo');
+                array_push($params, $protocolo);
+
                 $publicacoes->where('protocoloCompleto', '=', $protocolo);
-            }else{
-                $publicacoes->where('protocolo', '=', null);
-            }
         }
 
         if($diario != null && $diario != "tudo"){
+
+            array_push($query, 'diarioData');
+            array_push($params, $diario);
+
             $publicacoes->where('diariodata.diarioData', '=', $diario);
         }
 
         if($situacao != null && $situacao != "tudo"){
+
+            array_push($query, 'situacao');
+            array_push($params, $situacao);
+
             $publicacoes->where('situacao.situacaoNome', '=', $situacao);
         }
 
         if($orgao != null && $orgao != "tudo"){
-                $publicacoes->where('publicacao.orgaoID', '=', $orgao);
+
+            array_push($query, 'orgao');
+            array_push($params, $orgao);
+
+            $publicacoes->where('publicacao.orgaoID', '=', $orgao);
         }
 
         if( ($dataInicial != null && $dataInicial != "tudo") && ($dataFinal != null && $dataFinal != "tudo") ){
+
+            array_push($query, 'dataInicial');
+            array_push($params, $dataInicial);
+
+            array_push($query, 'dataFinal');
+            array_push($params, $dataFinal);
+
             $publicacoes->whereBetween('publicacao.dataEnvio',  [$dataInicial . ' 00:00:01', $dataFinal . ' 23:59:59']);
         }
 
         if(!( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) ){
+
+            array_push($query, 'orgao');
+            array_push($params, Auth::user()->orgaoID);
+
             $publicacoes->where('publicacao.orgaoID', '=', Auth::user()->orgaoID);
         }
 
         $publicacoes->select('publicacao.*', 'situacao.situacaoNome', 'diariodata.diarioData', 'diariodata.numeroDiario', 'diariodata.diarioPublicado', 'users.name as nomeUsuario', 'orgaorequisitante.orgaoNome');
+
+        // juntando o array de querys com o array de parametros
+
+        $queryCompleta = Array();
+        if(sizeof($query) > 0){
+            array_push($queryCompleta, $query);
+            array_push($queryCompleta, $params);
+        }
+        $queryCompleta = json_encode($queryCompleta, JSON_UNESCAPED_UNICODE);
+
         $publicacoes = $publicacoes->paginate($this->paginacao);
 
         $faturas = Fatura::orderBy('protocoloCompleto');
         $faturas->join('situacao', 'situacao.situacaoID', 'fatura.situacaoID');
         $faturas->where('situacao.situacaoID', '=', 4);
         $faturas = $faturas->get();
-        return view('publicacao.listar', ['publicacoes' => $publicacoes, 'situacoes' => $situacoes, 'orgaos' => $orgaos, 'faturas' => $faturas]);
+        return view('publicacao.listar', ['publicacoes' => $publicacoes, 'situacoes' => $situacoes, 'orgaos' => $orgaos, 'faturas' => $faturas, 'query' => $queryCompleta]);
 
         }else{
             return redirect('home');
@@ -1089,6 +1137,77 @@ class PublicacoesController extends Controller
         }else{
             return redirect('/home')->with('erro', 'Você não tem permissão!');
         }
+    }
+
+
+    public function gerarPdf(Request $request){
+
+        $query = json_decode($request->sql);
+
+
+        $publicacoes = Publicacao::orderBy('protocoloAno', 'desc')->orderBy('protocolo', 'desc');
+
+        $publicacoes->join('users', 'users.id', 'publicacao.usuarioID');
+        $publicacoes->join('diariodata', 'diariodata.diarioDataID', 'publicacao.diarioDataID');
+        $publicacoes->join('situacao', 'situacao.situacaoID', 'publicacao.situacaoID');
+        $publicacoes->join('orgaorequisitante', 'orgaorequisitante.orgaoID', 'publicacao.orgaoID');
+
+        $contador = 0;
+        if(sizeof($query) > 0){
+
+            foreach ($query[0] as $campo) {
+
+                switch ($campo){
+
+                    case "usuario":
+                        $publicacoes->where('users.name', 'like', '%' . $query[1][$contador] . '%');
+                    break;
+
+                    case "titulo":
+                        $publicacoes->where('publicacao.titulo', 'like', '%' . $query[1][$contador] . '%');
+                    break;
+
+                    case "protocolo":
+                        $publicacoes->where('protocoloCompleto', '=',$query[1][$contador]);
+                    break;
+
+                    case "diarioData":
+                        $publicacoes->where('diarioData.diarioData', '=',$query[1][$contador]);
+                    break;
+
+                    case "situacao":
+                        $publicacoes->where('situacao.situacaoNome', '=',$query[1][$contador]);
+                    break;
+
+                    case "orgao":
+                        $publicacoes->where('publicacao.orgaoID', '=',$query[1][$contador]);
+                    break;
+
+                    case "dataInicial":
+                        $dataFinal = $contador + 1;
+                        $publicacoes->whereBetween('publicacao.dataEnvio',  [$query[1][$contador] . ' 00:00:01', $query[1][($dataFinal)] . ' 23:59:59']);
+                    break;
+
+                    default:
+                    break;
+                }
+
+                $contador++;
+            }
+
+        }
+        $publicacoes->select('publicacao.*', 'situacao.situacaoNome', 'diariodata.diarioData', 'diariodata.numeroDiario', 'diariodata.diarioPublicado', 'users.name as nomeUsuario', 'orgaorequisitante.orgaoNome');
+        $publicacoes = $publicacoes->get();
+
+        // foto do cabeçalho do comprovante
+        $path = storage_path("app/"."top.jpg");
+
+        $pdf = BPDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+        $pdf->setPaper('a4', 'portrait')->loadView('publicacao.relatorio', ['publicacoes' => $publicacoes, 'path' => $path]);
+
+        return $pdf->stream('relatorio.pdf');
+
     }
 
 }

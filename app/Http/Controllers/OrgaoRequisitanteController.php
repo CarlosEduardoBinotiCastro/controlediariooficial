@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use App\Publicacao;
 
 class OrgaoRequisitanteController extends Controller
 {
@@ -129,6 +130,13 @@ class OrgaoRequisitanteController extends Controller
             // validar deletar OBS**
 
             if(sizeof($users) == 0){
+                $publicacoes = Publicacao::orderBy('dataEnvio');
+
+                if($publicacoes->where('orgaoID', '=', $id)->count()){
+                    return redirect()->back()->with(["erro" => "Impossível deletar pois existem publicações vinculadas a este Órgão Requisitante!"]);
+                }
+
+
                 $orgaoRequisitante->where('orgaoID', '=', $id)->delete();
                 DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Deletou o Órgão Requisitante de id '.$id]);
                 return redirect('/orgaorequisitante/listar')->with("sucesso", "Órgão Requisitante Deletado");
