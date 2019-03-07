@@ -764,6 +764,7 @@ class PublicacoesController extends Controller
 
         // Verifica se essa publicação foi apagada
 
+        // Busca As informações da publicação e serve para verificar se a publicação foi apagada
         $usuarioIDApagou = Publicacao::orderBy('protocoloAno', 'desc');
         $usuarioIDApagou->where('protocoloCompleto', '=', $protocoloCompleto);
         $usuarioIDApagou = $usuarioIDApagou->first();
@@ -895,6 +896,7 @@ class PublicacoesController extends Controller
 
         // Verifica se essa publicação foi apagada
 
+        // Busca As informações da publicação e serve para verificar se a publicação foi apagada
         $usuarioIDApagou = Publicacao::orderBy('protocoloAno', 'desc');
         $usuarioIDApagou->where('protocoloCompleto', '=', $protocoloCompleto);
         $usuarioIDApagou = $usuarioIDApagou->first();
@@ -1153,6 +1155,7 @@ class PublicacoesController extends Controller
 
             // Verifica se essa publicação foi apagada
 
+            // Busca As informações da publicação e serve para verificar se a publicação foi apagada
             $usuarioIDApagou = Publicacao::orderBy('protocoloAno', 'desc');
             $usuarioIDApagou->where('protocoloCompleto', '=', $protocoloCompleto);
             $usuarioIDApagou = $usuarioIDApagou->first();
