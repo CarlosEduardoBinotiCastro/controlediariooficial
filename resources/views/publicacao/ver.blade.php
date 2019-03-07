@@ -115,7 +115,7 @@
                             @if ($publicacao->usuarioIDApagou == null)
                             <br>
                                 <div class="col-md-12">
-                                <a style="width:160px;" href="{{ url("/publicacao/download") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
+                                <a style="width:160px;" href="{{ url("/publicacao/downloadPublicacao") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
                                 </div>
                             @endif
 
@@ -128,7 +128,7 @@
                             @if ($publicacao->situacaoID == 1 && $publicacao->diarioPublicado != null)
                                 <br>
                                 <div class="col-md-12">
-                                    <a style="width:160px;" href='{{ url("/diariodata/download") }}/{{$publicacao->diarioDataID}}' class="btn btn-success">Diáro Publicado</a>
+                                    <a style="width:160px;" href='{{ url("/diariodata/downloadDiario") }}/{{$publicacao->diarioDataID}}' class="btn btn-success">Diáro Publicado</a>
                                 </div>
                             @endif
 

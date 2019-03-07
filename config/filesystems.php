@@ -67,10 +67,10 @@ return [
         'pastaBackupSftp' => [
             'driver' => 'sftp',
             'host' => '127.0.0.1',
-            // 'username' => env('USERNAME_FTP'),
-            // 'password' => env('PASSWORD_FTP'),
+            'username' => env('USERNAME_FTP'),
+            'password' => env('PASSWORD_FTP'),
             // 'root' => storage_path('/var/www/teste'),
-            'root' => '/var/www/teste',
+            'root' => '/var/backup',
         ],
 
 

@@ -55,11 +55,20 @@
                                 </div>
 
                             </div>
-
+                            <!-- Mudar -->
                         <br>
-                            <div class="col-md-8 offset-md-2">
-                                    <p style="color: red;"><strong>Ao editar, a data de envio será alterada para data de edição, o arquivo será substituído no servidor e o usuário que emitiu será alterado pelo usuário que editou! </strong></p>
-                            </div>
+
+                            @if($publicacao->situacaoID == 4)
+
+                                <div class="col-md-8 offset-md-2">
+                                        <p style="color: red;"><strong>Ao editar, o usuário que emitiu será alterado pelo usuário que editou! </strong></p>
+                                </div>
+
+                            @else
+                                <div class="col-md-8 offset-md-2">
+                                        <p style="color: red;"><strong>Ao editar, a data de envio será alterada para data de edição, o arquivo será substituído no servidor e o usuário que emitiu será alterado pelo usuário que editou! </strong></p>
+                                </div>
+                            @endif
 
                         <br>
                             <!-- Corpo da publicação -->
@@ -67,47 +76,100 @@
                             <div class="col-md-6">
                                     {{-- Escolher Caderno --}}
                                     <div class="col-md-12">
+
+                                        <!-- Mudar -->
+
                                         Caderno: <span style="color:red;">*</span>
-                                        <select class="custom-select" name="cadernoID" onchange="carregarDocumentos()" id="cadernoSelect" required>
-                                                <option value=""> Escolha o Caderno </option>
-                                                @foreach ($usuarioCaderno as $item)
-                                                    <option  @if($item->cadernoID == $publicacao->cadernoID) selected @endif  value=" {{$item->cadernoID}} "> {{$item->cadernoNome}} </option>
-                                                @endforeach
-                                        </select>
+
+                                        @if($publicacao->situacaoID == 4)
+
+                                            <select disabled class="custom-select" name="cadernoID" onchange="carregarDocumentos()" id="cadernoSelect" required>
+                                                    <option value=""> Escolha o Caderno </option>
+                                                    @foreach ($usuarioCaderno as $item)
+                                                        <option  @if($item->cadernoID == $publicacao->cadernoID) selected @endif  value=" {{$item->cadernoID}} "> {{$item->cadernoNome}} </option>
+                                                    @endforeach
+                                            </select>
+
+                                        @else
+
+                                            <select class="custom-select" name="cadernoID" onchange="carregarDocumentos()" id="cadernoSelect" required>
+                                                    <option value=""> Escolha o Caderno </option>
+                                                    @foreach ($usuarioCaderno as $item)
+                                                        <option  @if($item->cadernoID == $publicacao->cadernoID) selected @endif  value=" {{$item->cadernoID}} "> {{$item->cadernoNome}} </option>
+                                                    @endforeach
+                                            </select>
+
+                                        @endif
+
+
                                     </div>
 
                                     {{-- Escolher Documento --}}
                                     <div class="col-md-12">
+
+                                        <!-- Mudar -->
+
                                         Matéria: <span style="color:red;">*</span>
-                                        <select class="custom-select" name="tipoID" id="documentoSelect" required>
-                                                <option slected value=""> Escolha a Matéria </option>
-                                        </select>
+
+                                        @if($publicacao->situacaoID == 4)
+
+
+                                            <select disabled class="custom-select" name="tipoID" id="documentoSelect" required>
+                                                    <option slected value=""> Escolha a Matéria </option>
+                                            </select>
+
+                                        @else
+
+                                            <select class="custom-select" name="tipoID" id="documentoSelect" required>
+                                                    <option slected value=""> Escolha a Matéria </option>
+                                            </select>
+
+                                        @endif
                                     </div>
 
 
                                     {{-- Escolher o Diário --}}
 
 
+                                    <!-- Mudar -->
                                     <div class="col-md-12">
+
+                                        @if($publicacao->situacaoID == 4)
+
+                                            @php
+                                                $data = new DateTime($publicacao->diarioData);
+                                                $data = $data->format('d/m/Y');
+                                            @endphp
+
+                                            Diario: <span style="color:red;">*</span>
+                                            <input type="text" disabled class="form-control" value=" N°{{$publicacao->numeroDiario}} Data: {{$data}} " >
+
+                                        @else
+
                                             @php
                                                 $diariosDatas = json_decode($diarioDatas);
                                             @endphp
-                                            Diario: <span style="color:red;">*</span>
-                                            <select class="custom-select" name="diarioDataID" required id="diario" onchange="dataLimite()">
-                                                    <option value=""> Escolha o Diario </option>
-                                                    @foreach ($diariosDatas as $item)
-                                                        @php
-                                                            $data = new DateTime($item->diarioData);
-                                                            $data = $data->format('d/m/Y');
-                                                        @endphp
+                                             Diario: <span style="color:red;">*</span>
+                                             <select class="custom-select" name="diarioDataID" required id="diario" onchange="dataLimite()">
+                                                     <option value=""> Escolha o Diario </option>
+                                                     @foreach ($diariosDatas as $item)
+                                                         @php
+                                                             $data = new DateTime($item->diarioData);
+                                                             $data = $data->format('d/m/Y');
+                                                         @endphp
 
-                                                        <option @if($item->diarioDataID == $publicacao->diarioDataID) selected @endif  value=" {{$item->diarioDataID}} "> N°{{$item->numeroDiario}} Data: {{$data}} </option>
-                                                    @endforeach
-                                            </select>
-                                        </div>
-                                        @if ($publicacao->diarioData <= date('Y-m-d'))
-                                            <div class="col-md-12"><span style="color:red; white-space:nowrap;"><Strong>Esta publicação é de um diário passado, escolha outro!</Strong></span></div>
+                                                         <option @if($item->diarioDataID == $publicacao->diarioDataID) selected @endif  value=" {{$item->diarioDataID}} "> N°{{$item->numeroDiario}} Data: {{$data}} </option>
+                                                     @endforeach
+                                             </select>
+
+                                         @if ($publicacao->diarioData <= date('Y-m-d'))
+                                             <div class="col-md-12"><span style="color:red; white-space:nowrap;"><Strong>Esta publicação é de um diário passado, escolha outro!</Strong></span></div>
+                                         @endif
+
                                         @endif
+
+                                    </div>
+
                                 </div>
 
 
@@ -138,38 +200,53 @@
 
                             <br><br>
 
-                            <div class="form-group row">
-                                    <label class="col-md-4 col-form-label text-md-right"> <strong> {{ __('Manter Arquivos ?') }} </strong> </label>
 
-                                    <div class="col-md-1">
-                                        <input id="manterArquivo" type="checkbox" name="manterArquivo" value="sim"> <span>SIM</span>
-                                    </div>
+                            <!-- Mudar Arquivo -->
 
-                                    <div class="col-md-4">
-                                        <a href="{{ url("/publicacao/download") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
-                                    </div>
-                            </div>
+                            @if($publicacao->situacaoID == 4)
+
+                                <input id="manterArquivo" type="hidden" name="manterArquivo" value="sim">
+
+                            @else
+
+                             <div class="form-group row">
+                                     <label class="col-md-4 col-form-label text-md-right"> <strong> {{ __('Manter Arquivos ?') }} </strong> </label>
+
+                                     <div class="col-md-1">
+                                         <input id="manterArquivo" type="checkbox" name="manterArquivo" value="sim"> <span>SIM</span>
+                                     </div>
+
+                                     <div class="col-md-4">
+                                         <a href="{{ url("/publicacao/downloadPublicacao") }}/{{$publicacao->protocoloCompleto}}" class="btn btn-success" >Download Arquivos</a>
+                                     </div>
+                             </div>
 
 
 
-                            <div class="row col-md-6 offset-md-2"  id="divAlterarArquivo">
+                             <div class="row col-md-6 offset-md-2"  id="divAlterarArquivo">
 
-                                {{-- Relecionado com o lado do input --}}
+                                 {{-- Relecionado com o lado do input --}}
 
-                                    <div class="col-md-8" id="divInputArquivo" style="display:none;">
-                                        <a id="btnArquivo" class="btn btn-success" style="color: white;"> Adicionar Arquivo </a>
-                                        <br><br>
+                                     <div class="col-md-12" id="divInputArquivo" style="display:none;">
+                                         <a id="btnArquivo" class="btn btn-success" style="color: white;"> Adicionar Arquivo </a>
+                                         <br><br>
 
-                                        <div id="arquivosUpload">
-                                            <input  type="file" class="form-control-file" id="file0" name="arquivo0"  required>
-                                        </div>
+                                         <div id="arquivosUpload">
+                                             <div class="row">
+                                                 <input  type="file" class="form-control-file" id="file0" name="arquivo0"  required>
+                                             </div>
+                                         </div>
 
-                                        <strong><sub style="font-size:90%;">Somente arquivos nas extensões 'pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx' e 'xls'. <br>
-                                        Tamanho máximo dos arquivos somados: 30 MB</sub></strong>
+                                         <strong style="margin-top:2%;"><sub style="font-size:90%;">Somente arquivos nas extensões 'pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx' e 'xls'. <br>
+                                         Tamanho máximo dos arquivos somados: 30 MB</sub></strong>
 
-                                    </div>
+                                     </div>
 
-                                </div>
+                                 </div>
+
+                                <!-- Fim Mudar Arquivo -->
+
+                                @endif
 
                                 {{-- Relecionado com o lado do botão --}}
                                 <div class="form-group row mb-0 justify-content-center">
@@ -207,16 +284,32 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+
+    <!-- Mudar Script -->
+
+
+    <!-- Fim Mudar Script -->
+
+
     <script type="text/javascript">
 
         $(document).ready(function($) {
 
+
+
             var enviar = true;
             var diaLimite;
             var diariosDiasLimites = <?php  echo $diarioDatas; ?>;
+            var publicacao = <?php  echo $publicacao ?>;
             var numeroArquivos = 0;
 
-            $("#documentoSelect").select2();
+            if(publicacao.situacaoID == 4){
+
+            }else{
+                $("#documentoSelect").select2();
+            }
+
 
             $('#form').validate({
                 errorClass: "my-error-class"
@@ -315,8 +408,9 @@
                 }
             });
 
-            var publicacao = <?php  echo $publicacao ?>;
+
             var documentos = <?php  echo $documentos ?>;
+
 
 
             $("#documentoSelect").empty();
@@ -324,7 +418,9 @@
             documentos.forEach(element => {
                 if(element.cadernoID ==  $("#cadernoSelect").val()){
                     if(publicacao.tipoID == element.tipoID){
+
                         $("#documentoSelect").append('<option selected value="'+element.tipoID+'">'+element.tipoDocumento+'</option>');
+
                     }else{
                         $("#documentoSelect").append('<option  value="'+element.tipoID+'">'+element.tipoDocumento+'</option>');
                     }
@@ -349,6 +445,7 @@
                     $("#documentoSelect").append('<option selected value="">Escolha a Matéria</option>');
                 }
             }
+
 
             $("#termo").click(function () {
                 if($("#btnEnviar").is(":disabled")){
@@ -461,10 +558,14 @@
             }
 
             $("#btnArquivo").click(function (){
-                 numeroArquivos++;
+                numeroArquivos++;
                 var div = $("#arquivosUpload");
-                div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;">');
+                div.append(' <div id="div'+numeroArquivos+'" class = "row" style="margin-top: 2%;"> <div> <input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;" required> </div>  <div> <a style="margin-left: 10px; color:white;" class="btn btn-danger" onclick="deletarArquivo('+numeroArquivos+')">X</a> </div> </div>');
             });
+
+            deletarArquivo = function(id){
+               document.getElementById("div"+id).remove();
+            }
 
         });
 

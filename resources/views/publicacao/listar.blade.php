@@ -220,7 +220,7 @@
             <td style="width:20%;"> {{$publicacao->titulo}} </td>
 
             @if ($publicacao->diarioPublicado != null && $publicacao->situacaoID == 1)
-                <td style="width:10%;"> <a style="color:blue;" href='{{ url("/diariodata/download") }}/{{$publicacao->diarioDataID}}' >N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</a></td>
+                <td style="width:10%;"> <a style="color:blue;" href='{{ url("/diariodata/downloadDiario") }}/{{$publicacao->diarioDataID}}' >N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</a></td>
             @else
                     <td style="width:10%;"> N° {{$publicacao->numeroDiario}}<br>{{$dataDiario}}</td>
             @endif
@@ -256,17 +256,17 @@
 
             {{-- Verifica se o usuario é administrador e se não for, verifica se a situação permita ele editar --}}
 
-            @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
+            {{-- @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
                 @if ($publicacao->situacaoNome == "Apagada" || $publicacao->situacaoNome == "Publicada")
                 @else
                      <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
-            @else
+            @else --}}
                 @if ($publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" || $publicacao->situacaoNome == "Apagada" )
                 @else
                      <a href='{{ url("/publicacao/editar") }}/{{$publicacao->protocoloCompleto}}' class="btn btn-primary" style="width:65px; font-size:12px">Editar</a>
                 @endif
-            @endif
+            {{-- @endif --}}
 
             {{-- Verifica se pode apagar a publicacao --}}
 

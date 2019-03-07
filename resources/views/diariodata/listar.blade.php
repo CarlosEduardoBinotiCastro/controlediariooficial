@@ -147,7 +147,7 @@
 
             <td>
                 @if ($diario->diarioPublicado != null)
-                    <a href='{{ url("/diariodata/download") }}/{{$diario->diarioDataID}}' class="btn btn-success">Download</a>
+                    <a href='{{ url("/diariodata/downloadDiario") }}/{{$diario->diarioDataID}}' class="btn btn-success">Download</a>
 
                     @php
                         $modalDeletar = true;

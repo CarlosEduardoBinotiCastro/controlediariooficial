@@ -60,7 +60,7 @@ Route::group(['prefix' => 'diariodata'], function () {
     Route::post('/chamarListar', 'DiarioDataController@listarFiltro');
     Route::post('/anexar', 'DiarioDataController@anexarDiario');
     Route::post('/remover', 'DiarioDataController@remover');
-    Route::get('/download/{id}', 'DiarioDataController@download');
+    Route::get('/downloadDiario/{id}', 'DiarioDataController@download');
 
 });
 
@@ -128,7 +128,7 @@ Route::group(['prefix' => 'publicacao'], function () {
     Route::post('/salvar', 'PublicacoesController@salvar');
     Route::get('/editar/{protocolo}', 'PublicacoesController@editar');
     Route::get('/ver/{protocolo}', 'PublicacoesController@ver');
-    Route::get('/download/{arquivo}', 'PublicacoesController@download');
+
     Route::post('/publicar', 'PublicacoesController@publicar');
     Route::post('/aceitar', 'PublicacoesController@aceitar');
     Route::post('/apagar', 'PublicacoesController@apagar');
@@ -136,6 +136,8 @@ Route::group(['prefix' => 'publicacao'], function () {
 
     Route::get('/gerarComprovante/{protocolo}', 'PublicacoesController@gerarComprovante');
     Route::post('/gerarPdf', 'PublicacoesController@gerarPdf');
+
+    Route::get('/downloadPublicacao/{arquivo}', 'PublicacoesController@download');
 });
 
 

@@ -414,6 +414,8 @@ class PublicacoesController extends Controller
 
         }
 
+
+
         switch ($this->validar($post)){
 
             case 1:
@@ -475,6 +477,7 @@ class PublicacoesController extends Controller
                             $arquivosAntigos =  DB::table('publicacaoarquivo')->where('protocoloCompleto', '=', $request->protocolo)->select('arquivo')->get();
 
 
+
                             foreach($arquivosAntigos as $arquivoAntigo){
                                 if(file_exists(storage_path("app/".$publicacao->protocoloAno."/".$request->protocolo."/".$arquivoAntigo->arquivo))){
                                     File::delete(storage_path("app/".$publicacao->protocoloAno."/".$request->protocolo."/".$arquivoAntigo->arquivo));
@@ -504,11 +507,21 @@ class PublicacoesController extends Controller
                         }else{
 
                             DB::beginTransaction();
-                            DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4, 'rejeitadaDescricao' => null]);
+
+                            $publicacao = Publicacao::orderBy('dataEnvio')->where('protocoloCompleto', '=', $protocoloCompleto)->first();
+
+                            if($publicacao->situacaoID == 4){
+                                DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['usuarioID' => Auth::user()->id, 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4, 'rejeitadaDescricao' => null]);
+                            }else{
+                                DB::table('publicacao')->where('protocoloCompleto', '=', $protocoloCompleto)->update(['cadernoID' => $request->cadernoID, 'tipoID' => $request->tipoID, 'usuarioID' => Auth::user()->id, 'diarioDataID' => $request->diarioDataID, 'dataEnvio' => date('Y-m-d H:i:s'), 'titulo' => $request->titulo, 'descricao' => $request->descricao, 'situacaoID' => 4, 'rejeitadaDescricao' => null]);
+                            }
+
                         }
                         DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Editou uma Publicação de protocolo '.$protocoloCompleto]);
 
                         DB::commit();
+
+
 
                         Session::forget('protocoloEditar');
 
@@ -606,7 +619,90 @@ class PublicacoesController extends Controller
 
     public function validar($request){
 
-        $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request['diarioDataID'])->first();
+        // verifica se é uma edição
+        if(array_key_exists('protocolo', $request)){
+
+            $publicacao = Publicacao::orderBy('dataEnvio')->where('protocoloCompleto', '=', $request['protocolo'])->first();
+
+            // Verifica se a publicação é de situação cadastrada (enviada).
+
+            if($publicacao->situacaoID == 4){
+                // faz nada
+            }else{
+
+                // Verificação do lado do servidor sobre a data do envio par o diario !
+
+                $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request['diarioDataID'])->first();
+
+                $diaDiarioDate = new DateTime($diarioTemp['diarioData']);
+                $verificaDiaUtil = false;
+                $diaUtil = date('Y-m-d', strtotime($diaDiarioDate->format('Y-m-d')));
+
+                do{
+                    $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                    $finalDeSemana = date('N', strtotime($diaUtil));
+                    if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                        if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                            $verificaDiaUtil = true;
+                        }else{
+                        }
+                    }
+
+                }while($verificaDiaUtil == false);
+
+                if($diaUtil <= date('Y-m-d')){
+                    if($diaUtil == date('Y-m-d')){
+                        if(Auth::user()->horaEnvio >= date('H:i:s')){
+
+                        }else{
+                            return 5;
+                        }
+                    }else{
+                        return 5;
+                    }
+                }
+
+                // fim da verificação do lado do servidor
+
+            }
+
+        }else{
+
+             // Verificação do lado do servidor sobre a data do envio par o diario !
+
+             $diarioTemp = DiarioData::orderBy('diarioDataID')->where('diarioDataID', '=', $request['diarioDataID'])->first();
+
+             $diaDiarioDate = new DateTime($diarioTemp['diarioData']);
+             $verificaDiaUtil = false;
+             $diaUtil = date('Y-m-d', strtotime($diaDiarioDate->format('Y-m-d')));
+
+             do{
+                 $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
+                 $finalDeSemana = date('N', strtotime($diaUtil));
+                 if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
+                     if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
+                         $verificaDiaUtil = true;
+                     }else{
+                     }
+                 }
+
+             }while($verificaDiaUtil == false);
+
+             if($diaUtil <= date('Y-m-d')){
+                 if($diaUtil == date('Y-m-d')){
+                     if(Auth::user()->horaEnvio >= date('H:i:s')){
+
+                     }else{
+                         return 5;
+                     }
+                 }else{
+                     return 5;
+                 }
+             }
+
+             // fim da verificação do lado do servidor
+
+        }
 
         if(!isset($request['manterArquivo'])){
 
@@ -648,37 +744,6 @@ class PublicacoesController extends Controller
             return 4;
         }
 
-        // Verificação do lado do servidor sobre a data do envio par o diario !
-
-        $diaDiarioDate = new DateTime($diarioTemp['diarioData']);
-        $verificaDiaUtil = false;
-        $diaUtil = date('Y-m-d', strtotime($diaDiarioDate->format('Y-m-d')));
-
-        do{
-            $diaUtil = date('Y-m-d', strtotime("-1 days",strtotime($diaUtil)));
-            $finalDeSemana = date('N', strtotime($diaUtil));
-            if(!($finalDeSemana == '7' || $finalDeSemana == '6')){
-                if( !(DB::table('diasnaouteis')->where('diaNaoUtilData', '=', $diaUtil)->count()) ) {
-                    $verificaDiaUtil = true;
-                }else{
-                }
-            }
-
-        }while($verificaDiaUtil == false);
-
-        if($diaUtil <= date('Y-m-d')){
-            if($diaUtil == date('Y-m-d')){
-                if(Auth::user()->horaEnvio >= date('H:i:s')){
-
-                }else{
-                    return 5;
-                }
-            }else{
-                return 5;
-            }
-        }
-
-        // fim da verificação do lado do servidor
     }
 
 
@@ -742,7 +807,7 @@ class PublicacoesController extends Controller
         if($usuarioIDApagou->usuarioIDApagou != null){
             $podeEditar = false;
         }else{
-            if(  ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Apagada"){
+            if(  ( Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()) ) && $publicacao->situacaoNome != "Publicada" && $publicacao->situacaoNome != "Apagada" && $publicacao->situacaoNome != "Aceita"){
                 $podeEditar = true;
             }else{
                 if ($publicacao->situacaoNome == "Apagada" || $publicacao->situacaoNome == "Publicada" || $publicacao->situacaoNome == "Aceita" ){
@@ -886,6 +951,7 @@ class PublicacoesController extends Controller
 
     // Download de Publicações pelo protocolo
     public function download($protocolo){
+
 
         if(!Gate::allows('faturas', Auth::user())){
 

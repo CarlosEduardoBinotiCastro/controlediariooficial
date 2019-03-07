@@ -105,17 +105,19 @@
 
                             {{-- Relecionado com o lado do input --}}
 
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                 <br>
                                 <a id="btnArquivo" class="btn btn-success" style="color: white;"> Adicionar Arquivo </a>
 
                                 <br> <br>
 
                                 <div id="divArquivo">
-                                    <input type="file" class="form-control-file" name="arquivo0" id="file0" required>
+                                    <div class="row">
+                                        <input type="file" class="form-control-file" name="arquivo0" id="file0" required>
+                                    </div>
                                 </div>
 
-                                <strong><sub style="font-size:90%;">Somente arquivos nas extensões 'pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx' e 'xls'. <br>
+                                <strong style="margin-top: 2%;"><sub style="font-size:90%;">Somente arquivos nas extensões 'pdf', 'docx', 'odt', 'rtf', 'doc', 'xlsx' e 'xls'. <br>
                                 Tamanho máximo dos arquivos somados: 30 MB</sub></strong>
                             </div>
 
@@ -293,8 +295,13 @@
          $("#btnArquivo").click(function (){
              numeroArquivos++;
             var div = $("#divArquivo");
-            div.append('<input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;">');
+            div.append(' <div id="div'+numeroArquivos+'" class = "row" style="margin-top: 2%;"> <div> <input type="file" class="form-control-file" name="arquivo'+numeroArquivos+'" id="file'+numeroArquivos+'" style="margin-top:2%;" required> </div>  <div> <a style="margin-left: 10px; color:white;" class="btn btn-danger" onclick="deletarArquivo('+numeroArquivos+')">X</a> </div> </div>');
          });
+
+
+         deletarArquivo = function(id){
+            document.getElementById("div"+id).remove();
+         }
 
     });
 </script>
