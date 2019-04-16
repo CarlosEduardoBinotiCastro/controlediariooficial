@@ -243,7 +243,7 @@ class DiarioDataController extends Controller
 
         // validando
 
-        if(((filesize($request->arquivo) / 1024)/1024) > 30){
+        if(((filesize($request->arquivo) / 1024)/1024) > 50){
             return redirect()->back()->with('erro', 'Tamanho do arquivo excedido!');
         }
 
