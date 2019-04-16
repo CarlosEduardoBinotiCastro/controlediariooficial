@@ -897,7 +897,7 @@ class FaturaController extends Controller
 
             if($faturasAceita->where('situacao.situacaoNome', '=', 'Aceita')->count() && ($situacao == "tudo" || $situacao == "Aceita" || $situacao == null)){
 
-                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
+                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>=', date('Y-m-d'))->get();
                 // vericar datas limites para os diários
                 $diariosDatasLimites = Collection::make([]);
 
@@ -1030,7 +1030,7 @@ class FaturaController extends Controller
             if($fatura->situacaoNome == "Aceita"){
 
                 $horaEnvio = Auth::user()->horaEnvio;
-                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>', date('Y-m-d'))->get();
+                $diariosDatas = DiarioData::orderBy('diarioData')->where('diarioData', '>=', date('Y-m-d'))->get();
                 // vericar datas limites para os diários
                 $diariosDatasLimites = Collection::make([]);
 

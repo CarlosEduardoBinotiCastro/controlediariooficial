@@ -438,6 +438,7 @@
                     if(element.diarioDataID == $("#"+idDiario).val()){
 
                         var podeEnviar = false;
+                        var diarioDeHoje = false;
 
                         var horaEnvio =  "<?php echo Auth::user()->horaEnvio; ?>";
                         horaEnvio = horaEnvio.split(':');
@@ -467,6 +468,11 @@
                                 }else{
                                     podeEnviar = true;
                                 }
+                            } else{
+                                // Se o diário é da data de hoje (e teoricamente já foi publicado)
+                                // Essa alteração é para a pessoa poder aceitar uma fatura para o diário que foi publicado hoje (no caso de ter esquecido de clicar no botão "publicar" antes)
+                                podeEnviar = true;
+                                diarioDeHoje = true;
                             }
                         }
                         $("#"+idDivLimite).css('display', 'block');
@@ -476,11 +482,16 @@
                         if(podeEnviar){
                             $('#'+idLabel).css('display', 'none');
                             $('#'+idBotao).css('display', 'block');
-                            $("#"+idTextoLimite).text('Para esse diário, você pode enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' ás: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
+
+                            if(diarioDeHoje){
+                                $("#"+idTextoLimite).text('Atenção! Esse diário já foi publicado, portanto tenha cuidado ao aceitar essa fatura. O prazo limite para envio de faturas para esse diário era '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' às: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
+                            } else{
+                                $("#"+idTextoLimite).text('Para esse diário, você pode enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' às: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
+                            }
                         }else{
                             $('#'+idBotao).css('display', 'none');
                             $('#'+idLabel).css('display', 'block');
-                            $("#"+idTextoLimite).text('Para esse diário, você poderia enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' ás: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
+                            $("#"+idTextoLimite).text('Para esse diário, você poderia enviar até o dia: '+dataLimite[2]+'/'+dataLimite[1]+'/'+dataLimite[0]+' às: '+ horaEnvio[0]+':'+ horaEnvio[1] + ' Horas');
                             $('#'+idTextLabel).text('Horário de envio ultrapassado!');
                         }
 
