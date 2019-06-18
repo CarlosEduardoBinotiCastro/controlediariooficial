@@ -102,7 +102,7 @@
 
                             <tbody>
                                 <tr style="background-color:transparent;">
-                                    <td style="border-color:transparent;"><input style="resize:none; width: 175px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usário"></td>
+                                    <td style="border-color:transparent;"><input style="resize:none; width: 175px;" type="text" class="form-control" name="nomeUsuario" placeholder="Nome do usuário"></td>
                                     <td><input style="resize:none; width: 175px;" type="text" class="form-control" name="protocolo" placeholder="Protocolo"></td>
                                     <td><input style="resize:none; width: 175px;" type="text" class="form-control" name="titulo" placeholder="Título"></td>
                                     <td>

@@ -1056,16 +1056,29 @@ class FaturaController extends Controller
                 }
                 // fim dos limites para os diarios
 
-                // @mudar
-                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
-                return view('fatura.ver', ['diarioDatas' => json_encode($diariosDatasLimites), 'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
+                if($fatura->arquivoFormatado == null){
+                    
+                    return view('fatura.verExterno', ['diarioDatas' => json_encode($diariosDatasLimites), 'fatura' => $fatura, 'faturaConfig' => $faturaConfig]);
+                } else{
+                    // @mudar
+                    $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
+                    return view('fatura.ver', ['diarioDatas' => json_encode($diariosDatasLimites), 'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
+                }
+
             }
 
             if($fatura->situacaoNome != "Apagada"){
 
-                //@mudar
-                $formatada =  \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
-                return view('fatura.ver', ['diarioDatas' => json_encode("vazio"),'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
+                // Verifica se é uma fatura externa ou uma fatura normal
+                if($fatura->arquivoFormatado == null){
+                    return view('fatura.verExterno', ['diarioDatas' => json_encode("vazio"),'fatura' => $fatura, 'faturaConfig' => $faturaConfig]);
+                    
+                } else{
+                    //@mudar
+                    $formatada = \PhpOffice\PhpWord\IOFactory::load(storage_path("app/".$fatura->protocoloAno."/".$fatura->protocoloCompleto."/". $fatura->arquivoFormatado));
+
+                    return view('fatura.ver', ['diarioDatas' => json_encode("vazio"),'fatura' => $fatura, 'formatada' => $formatada, 'faturaConfig' => $faturaConfig]);
+                }
 
             }else{
 
@@ -2077,29 +2090,246 @@ class FaturaController extends Controller
     }
 
 
+    public function cadastrarExterno(){
 
+        if(Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())){
+            if(Gate::allows('cadernoFatura', Auth::user())){
+                $horaEnvio = Auth::user()->horaEnvio;
 
+                $confFatura = DB::table('configuracaofatura')->first();
 
+                if($confFatura->cadernoID != null){
+
+                    $documentos = TipoDocumento::orderBy('tipoDocumento');
+                    $documentos->join('cadernotipodocumento', 'cadernotipodocumento.tipoID', 'tipodocumento.tipoID');
+                    $documentos->join('caderno', 'caderno.cadernoID', 'cadernotipodocumento.cadernoID');
+                    $documentos->where('caderno.cadernoID', '=', $confFatura->cadernoID);
+                    $documentos = $documentos->get();
+
+                    $subcategorias = SubCategoria::orderBy('subcategoriaNome');
+                    foreach ($documentos as $documento) {
+                        $subcategorias->orWhere('tipoID', '=', $documento->tipoID);
+                    }
+                    $subcategorias = $subcategorias->get();
+
+                }else{
+                    return redirect('home')->with('erro', 'Nenhum caderno vinculado com faturas! Vincule nas configurações da fatura.');
+                }
+
+                return view('fatura.cadastrarExterno', [ 'config' => $confFatura, 'documentos' => $documentos, 'subcategorias' => $subcategorias]);
+
+            }else{
+                return redirect('home');
+            }
+        }else{
+            return redirect('home');
+        }
+
+    }
+
+    public function formatarExterno(Request $request){
+
+        // Toda Vez que formata ele verifica se existem arquivos antigos na pasta temp, se existir os deleta.
+        $path = storage_path("app/public/temp/");
+        if ($handle = opendir($path)) {
+            while (false !== ($file = readdir($handle))) {
+                $filelastmodified = filemtime($path . $file);
+                //24 hours in a day * 3600 seconds per hour
+                if((time() - $filelastmodified) > 1*3600)
+                {
+                    File::delete($path . $file);
+                }
+            }
+            closedir($handle);
+        }
+        // fim do delete
+
+        // Validação pra verificar se o arquivo é docx ou pdf
+        if(isset($request->arquivo)){
+            if((pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) != "docx") && (pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) != "pdf")){
+                return redirect()->back()->with('erro', "Arquivo na extensão incorreta!")->withInput();
+            }
+        }
+
+        switch ($this->validar($request)){
+            case 2:
+                return redirect()->back()->with('erro', "Arquivo com tamanho maior que 30MB!")->withInput();
+            break;
+
+            case 5:
+                return redirect()->back()->with('erro', "Fatura Já enviada Para o Sistema!")->withInput();
+            break;
+
+            case 6:
+                return redirect()->back()->with('erro', "Arquivo temporário não existe mais!")->withInput();
+            break;
+
+            case 7:
+                return redirect()->back()->with('erro', "Observação com tamanho excedido!")->withInput();
+            break;
+
+            case 8:
+                return redirect()->back()->with('erro', "Empresa com tamanho excedido!")->withInput();
+            break;
+
+            case 9:
+                return redirect()->back()->with('erro', "Requisitante com tamanho excedido!")->withInput();
+            break;
+
+            case 10:
+                return redirect('home')->with('erro', "Parece que algumas informações vieram desformatadas, verifique se o navegador esta com javascript funcionando (aperte f12), ou tente mudar de navegador!")->withInput();
+            break;
+
+            default:
+                // carrega configurações da fatura
+                $faturaConfig = DB::table('configuracaofatura')->get();
+
+                // cria o nome dos arquivos temporarios da fatura
+                $fileName = $request->cpfCnpj.'-'.date('Y-m-d-H-i-s')."_temp".'.'.pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION);
+
+                $request->arquivo->storeAs("public/temp/", $fileName);
+
+                try {
+                    // cria um array com todas as informações da fatura para carrega-la na pagina de visualização
+                    $filtro = $request->all();
+                    unset($filtro['arquivo']);
+
+                    $arquivosArray = array('arquivoOriginal' => $fileName);
+
+                    $filtro += $arquivosArray;
+                    // fim da criação do array da fatura
+
+                    // carrega informações para carregar a pagina de visualização
+
+                    $documento = TipoDocumento::orderBy('tipoDocumento');
+                    $documento->where('tipoID', '=', intval($filtro['tipoID']));
+                    $documento = $documento->first();
+
+                    if($filtro['subcategoriaID'] != "NaoPossui"){
+                        $subcategoria = SubCategoria::orderBy('subcategoriaNome');
+                        $subcategoria = $subcategoria->where('subcategoriaID', '=', intval($filtro['subcategoriaID']))->first();
+                    }else{
+                        $subcategoria = null;
+                    }
+
+                    if($subcategoria != null){
+                        $infoArray = array('subcategoriaNome' => $subcategoria->subcategoriaNome, 'tipoDocumento' => $documento->tipoDocumento);
+                    }else{
+                        $infoArray = array('subcategoriaNome' => "Não Possui", 'tipoDocumento' => $documento->tipoDocumento);
+                    }
+
+                    $filtro += $infoArray;
+
+                    // fim das informações
+                    
+                    $centimetragem = $request->centimetragem;
+                    
+                    // necessario criar um json para se entendido pelo javascript
+                    return view('fatura.formatadaExterno', ['faturaConfig' => $faturaConfig, 'fatura' => $filtro, 'centimetragem' => $centimetragem]);
+
+                } catch (\Exception $e) {
+
+                    return redirect()->back()->with('erro', 'Falha na formatação do arquivo, verifique se está usando o template e tente novamente. Erro: '.$e->getMessage()->withInput());
+                }
+
+            break;
+        }
+    }
+
+    public function salvarExterno(Request $request){
+        
+        // Validação pra verificar se o arquivo é docx ou pdf
+        if(isset($request->arquivo)){
+            if((pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) != "docx") && (pathinfo($request->arquivo->getClientOriginalName(), PATHINFO_EXTENSION) != "pdf")){
+                return redirect()->back()->with('erro', "Arquivo na extensão incorreta!")->withInput();
+            }
+        }
+
+        switch ($this->validar($request)){
+            case 2:
+                return redirect('home')->with('erro', "Arquivo com tamanho maior que 30MB!");
+            break;
+
+            case 5:
+                return redirect('home')->with('erro', "Fatura Já enviada Para o Sistema!");
+            break;
+
+            case 6:
+                return redirect('home')->with('erro', "Arquivo temporário não existe mais!");
+            break;
+
+            case 7:
+                return redirect('home')->with('erro', "Observação com tamanho excedido!")->withInput();
+            break;
+
+            case 8:
+                return redirect('home')->with('erro', "Empresa com tamanho excedido!")->withInput();
+            break;
+
+            case 9:
+                return redirect('home')->with('erro', "Requisitante com tamanho excedido!")->withInput();
+            break;
+
+            case 10:
+                return redirect('home')->with('erro', "Parece que algumas informações vieram desformatadas, verifique se o navegador esta com javascript funcionando (aperte f12), ou tente mudar de navegador!")->withInput();
+            break;
+
+            default:
+
+                $this->fileOriginal = str_replace('_temp','',$request->arquivoOriginal);
+                
+                try {
+
+                    $copiaOriginal = File::move(storage_path("app/public/temp/".$request->arquivoOriginal),storage_path("app/".$this->fileOriginal));
+                    
+                    if(DB::table('fatura')->where('protocoloAno', '=', date('Y'))->count() ){
+                        $protocolo = DB::table('fatura')->where('protocoloAno', '=', date('Y'))->max('protocolo') + 1;
+                    }else{
+                        $protocolo = 0;
+                    }
+                    DB::beginTransaction();
+                    $this->verificaProtocoloExterno($protocolo, $request);
+                    return redirect('/fatura/listar')->with('sucesso', 'Fatura Externa Enviada com Sucesso');
+                } catch (\Exception $e) {
+
+                    if(file_exists(storage_path("app/".$this->fileOriginal))){
+                        Storage::delete([$this->fileOriginal]);
+                    }
+
+                    if(file_exists(storage_path("app/".$this->diretorio))){
+                        Storage::delete($this->diretorio);
+                    }
+
+                    DB::rollBack();
+
+                    return redirect('home')->with('erro', "Um erro durante a operação ocorreu! ".$e->getMessage());
+                }
+
+            break;
+
+        }
+    }
+
+    public function verificaProtocoloExterno($protocolo, $request){
+
+        if(DB::table('fatura')->where('protocoloAno', '=', date('Y'))->where('protocolo', '=', $protocolo)->count()){
+            $protocolo++;
+            $this->verificaProtocoloExterno($protocolo, $request);
+        }else {
+            if($request->subcategoriaID == "NaoPossui"){
+                $request->subcategoriaID = null;
+            }
+            DB::table('fatura')->insert(['situacaoID' => 4, 'subcategoriaID' => $request->subcategoriaID, 'tipoID' => $request->tipoID, 'diarioDataID' => $request->diarioDataID, 'dataEnvioFatura' => date('Y-m-d H:i:s'), 'arquivoOriginal' => $this->fileOriginal, 'largura' => $request->largura, 'centimetragem' => $request->centimetragem, 'valorColuna' => $request->valorColuna, 'valor' => $request->valor, 'observacao' => $request->observacao, 'cpfCnpj' => $request->cpfCnpj, 'empresa' => $request->empresa, 'requisitante' => $request->requisitante, 'protocolo' => $protocolo, 'protocoloAno' => date('Y'), 'protocoloCompleto' => $protocolo.date('Y').'FAT', 'usuarioID' => Auth::user()->id, 'telefoneFixo' => $request->telefoneFixo, 'telefoneCelular' => $request->telefoneCelular, 'email' => $request->email]);
+            
+            $this->diretorio = date('Y').'/'.$protocolo.date('Y').'FAT';
+
+            File::makeDirectory(storage_path("app/".$this->diretorio));
+
+            $copiaOriginal = File::move(storage_path("app/".$this->fileOriginal),storage_path("app/".$this->diretorio."/".$this->fileOriginal));
+            DB::table('log')->orderBy('logData')->insert(['logData' => date('Y-m-d H:i:s'), 'usuarioID' =>  Auth::user()->id , 'logDescricao' => 'Usuario: '.Auth::user()->name.'(id:'.Auth::user()->id.')  Cadastrou uma Fatura Externa de protocolo '.$protocolo.date('Y').'FAT']);
+
+            DB::commit();
+        }
+    }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

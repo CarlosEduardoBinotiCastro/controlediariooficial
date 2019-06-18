@@ -99,6 +99,12 @@
             margin-left: -1px!important;
         }
 
+        .inputNumber::-webkit-inner-spin-button,
+        .inputNumber::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
     </style>
 
 
@@ -111,7 +117,7 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel" style="background: #F1F1F2; padding: 0px">
 
             <div style="font-size: 14px; color:#1872B3;" class="col-md-5">
-               <b>SISPUDIO - Sistemas de Publicações do Diário Oficial de Cachoeiro de Itapemirim</b>
+               <b>SISPUDIO - Sistema de Publicações do Diário Oficial de Cachoeiro de Itapemirim</b>
             </div>
 
             <div class="col-md-7">
@@ -170,6 +176,7 @@
                                           <a class="dropdown-item" href="{{url('/fatura/listar')}}">Listar</a>
                                           <a class="dropdown-item" href="{{url('/fatura/cadastrar')}}">Cadastrar</a>
                                             @if (Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user()))
+                                                <a class="dropdown-item" href="{{url('/fatura/cadastrarExterno')}}">Cadastrar Externo</a>
                                                 <a class="dropdown-item" href="{{url('/fatura/configuracao')}}">Configurações</a>
                                             @endif
 
@@ -230,7 +237,7 @@
                     <div class="container">
                         <div class="col-md-12 row" >
                             <img src="{{url('/logo')}}" alt="home" width="130" height="60">
-                            <h4 style="text-align: center; color:white; margin-top:15px; margin-left: 1%;"><strong>SISPUDIO - Sistemas de Publicações do Diário Oficial de Cachoeiro de Itapemirim</strong></h4>
+                            <h4 style="text-align: center; color:white; margin-top:15px; margin-left: 1%;"><strong>SISPUDIO - Sistema de Publicações do Diário Oficial de Cachoeiro de Itapemirim</strong></h4>
                         </div>
                     @endauth
                 </div>

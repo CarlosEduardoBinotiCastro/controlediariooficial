@@ -150,8 +150,11 @@ Route::group(['prefix' => 'fatura'], function () {
     Route::post('/salvarConfiguracao', 'FaturaController@salvarConfiguracao');
 
     Route::get('/cadastrar', 'FaturaController@cadastrar');
+    Route::get('/cadastrarExterno', 'FaturaController@cadastrarExterno');
     Route::post('/salvar', 'FaturaController@salvar');
+    Route::post('/salvarExterno', 'FaturaController@salvarExterno');
     Route::post('/formatar', 'FaturaController@formatar');
+    Route::post('/formatarExterno', 'FaturaController@formatarExterno');
     Route::get('/ver/{protocolo}', 'FaturaController@ver');
     Route::post('/rejeitar', 'FaturaController@rejeitar');
     Route::post('/aceitar', 'FaturaController@aceitar');

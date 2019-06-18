@@ -17,14 +17,14 @@
 <br>
 
 <div id="DAM" class="container">
-        <div class="col-md-8 offset-md-2">
-            @if(session()->has('DAM'))
-                <br>
-                <div class="form-group row mb-0 alert alert-success" style="font-size:20px">
-                    {{ session()->get('DAM') }}
-                </div>
-            @endif
+    <div class="col-md-8 offset-md-2">
+        @if(session()->has('DAM'))
+            <br>
+            <div class="form-group row mb-0 alert alert-success" style="font-size:20px">
+                {{ session()->get('DAM') }}
             </div>
+        @endif
+    </div>
 </div>
 
 <br>
@@ -43,79 +43,75 @@
                                 </div>
                             </div>
 
-
-
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Empresa: <strong>{{$fatura->empresa}} </strong></p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>Empresa: <strong>{{$fatura->empresa}} </strong></p>
+                                </div>
                             </div>
 
-
-
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Requisitante: <strong>{{$fatura->requisitante}} </strong></p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>Requisitante: <strong>{{$fatura->requisitante}} </strong></p>
+                                </div>
                             </div>
 
                             @if ($fatura->email != null)
                                 <div class="form-group row">
-                                        <div class="col-md-10">
-                                            <p>Email: <strong>{{$fatura->email}} </strong></p>
-                                        </div>
+                                    <div class="col-md-10">
+                                        <p>Email: <strong>{{$fatura->email}} </strong></p>
+                                    </div>
                                 </div>
                             @endif
 
                             @if ($fatura->telefoneFixo != null)
                                 <div class="form-group row">
-                                        <div class="col-md-10">
-                                            <p>Telefone Fixo: <strong>{{$fatura->telefoneFixo}}</strong></p>
-                                        </div>
+                                    <div class="col-md-10">
+                                        <p>Telefone Fixo: <strong>{{$fatura->telefoneFixo}}</strong></p>
+                                    </div>
                                 </div>
                             @endif
 
                             @if ($fatura->telefoneCelular != null)
 
                                 <div class="form-group row">
-                                        <div class="col-md-10">
-                                            <p>Telefone Celular: <strong>{{$fatura->telefoneCelular}}</strong></p>
-                                        </div>
+                                    <div class="col-md-10">
+                                        <p>Telefone Celular: <strong>{{$fatura->telefoneCelular}}</strong></p>
+                                    </div>
                                 </div>
                             @endif
 
                             @php
-                                    // Calculo da mascara do cpf ou cnpj
+                                // Calculo da mascara do cpf ou cnpj
 
-                                    if(strlen($fatura->cpfCnpj) > 11){
-                                        $mask = '##.###.###/####-##';
-                                    }else{
-                                        $mask ='###.###.###-##';
-                                    }
+                                if(strlen($fatura->cpfCnpj) > 11){
+                                    $mask = '##.###.###/####-##';
+                                }else{
+                                    $mask ='###.###.###-##';
+                                }
 
-                                    $val = $fatura->cpfCnpj;
-                                    $maskared = '';
-                                    $k = 0;
-                                    for($i = 0; $i<=strlen($mask)-1; $i++)
+                                $val = $fatura->cpfCnpj;
+                                $maskared = '';
+                                $k = 0;
+                                for($i = 0; $i<=strlen($mask)-1; $i++)
+                                {
+                                    if($mask[$i] == '#')
                                     {
-                                        if($mask[$i] == '#')
-                                        {
-                                            if(isset($val[$k]))
-                                                $maskared .= $val[$k++];
-                                        }
-                                        else
-                                        {
-                                            if(isset($mask[$i]))
-                                                $maskared .= $mask[$i];
-                                        }
+                                        if(isset($val[$k]))
+                                            $maskared .= $val[$k++];
                                     }
+                                    else
+                                    {
+                                        if(isset($mask[$i]))
+                                            $maskared .= $mask[$i];
+                                    }
+                                }
 
-                                @endphp
+                            @endphp
 
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>CPF / CNPJ: <strong>{{$maskared}}</strong> </p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>CPF / CNPJ: <strong>{{$maskared}}</strong> </p>
+                                </div>
                             </div>
 
                             @php
@@ -123,68 +119,62 @@
                                 $dataEnvio = $dataEnvio->format('d/m/Y');
                             @endphp
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Data Envio: <strong>{{$dataEnvio}}</strong> </p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>Data Envio: <strong>{{$dataEnvio}}</strong> </p>
+                                </div>
                             </div>
 
                             <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <p style="float:left !important;">Usuário Que Emitiu: <strong style="text-transform:capitalize;">{{$fatura->usuarioNome}}</strong> </p>
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalContatos" style="margin-left:2%;">Contato</button>
-                                    </div>
-
+                                <div class="col-md-12">
+                                    <p style="float:left !important;">Usuário Que Emitiu: <strong style="text-transform:capitalize;">{{$fatura->usuarioNome}}</strong> </p>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#modalContatos" style="margin-left:2%;">Contato</button>
+                                </div>
                             </div>
 
 
                             <div class="form-group row">
 
-                                    <div class="col-md-10">
-                                        <span>Observações: </span>
-                                    </div>
-                                    <div class="col-md-8">
-                                            @if(session()->has('sucesso'))
+                                <div class="col-md-10">
+                                    <span>Observações: </span>
+                                </div>
+                                <div class="col-md-8">
+                                        @if(session()->has('sucesso'))
 
-                                                <div class="alert alert-success" style="font-size:15px;">
-                                                    {{ session()->get('sucesso') }}
-                                                </div>
-                                            @endif
-                                    </div>
-                                    @if (Gate::allows('administrador', Auth::user()) && $fatura->situacaoID == 4)
-
-                                        <form action="{{ url("/fatura/editarAnotacao") }}" method="POST">
-                                            @csrf
-                                            <div class="col-md-10">
-                                                <textarea cols="60" rows="4" class="form-control" name="observacao"> {{$fatura->observacao}} </textarea>
-                                                <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
-                                                <input type="submit" value="Adicionar Anotação" name="enviar" class="btn btn-primary" style="margin-top:2%; margin-left:2%;">
+                                            <div class="alert alert-success" style="font-size:15px;">
+                                                {{ session()->get('sucesso') }}
                                             </div>
+                                        @endif
+                                </div>
+                                @if (Gate::allows('administrador', Auth::user()) && $fatura->situacaoID == 4)
 
-                                        </form>
-                                    @else
+                                    <form action="{{ url("/fatura/editarAnotacao") }}" method="POST">
+                                        @csrf
                                         <div class="col-md-10">
-                                            <textarea disabled cols="60" rows="4" class="form-control"> {{$fatura->observacao}} </textarea>
+                                            <textarea cols="60" rows="4" class="form-control" name="observacao"> {{$fatura->observacao}} </textarea>
+                                            <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
+                                            <input type="submit" value="Adicionar Anotação" name="enviar" class="btn btn-primary" style="margin-top:2%; margin-left:2%;">
                                         </div>
-                                    @endif
+
+                                    </form>
+                                @else
+                                    <div class="col-md-10">
+                                        <textarea disabled cols="60" rows="4" class="form-control"> {{$fatura->observacao}} </textarea>
+                                    </div>
+                                @endif
 
                             </div>
-
-
 
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Matéria: <strong>{{$fatura->tipoDocumento}}</strong> </p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>Matéria: <strong>{{$fatura->tipoDocumento}}</strong> </p>
+                                </div>
                             </div>
-
 
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Subcategoria: <strong> @if($fatura->subcategoriaNome != null) {{$fatura->subcategoriaNome}} @else Não Possui @endif </strong> </p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>Subcategoria: <strong> @if($fatura->subcategoriaNome != null) {{$fatura->subcategoriaNome}} @else Não Possui @endif </strong> </p>
+                                </div>
                             </div>
-
-
 
                             @if($fatura->diarioData != null)
                                 @php
@@ -193,9 +183,9 @@
                                 @endphp
 
                                 <div class="form-group row">
-                                        <div class="col-md-10">
-                                            <p>Diário: <strong> N° {{$fatura->numeroDiario}}  Data: {{$data}}</strong> </p>
-                                        </div>
+                                    <div class="col-md-10">
+                                        <p>Diário: <strong> N° {{$fatura->numeroDiario}}  Data: {{$data}}</strong> </p>
+                                    </div>
                                 </div>
                             @else
 
@@ -207,69 +197,65 @@
 
                             @endif
 
-
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Largura Coluna: <strong>{{$fatura->largura}} cm </strong> </p>
-                                    </div>
-                            </div>
-
-
-
-                            <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Valor Coluna: <strong>R$ {{$fatura->valorColuna}} </strong> </p>
-                                    </div>
-                            </div>
-
-
-
-                            <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Centimetragem: <strong>{{$fatura->centimetragem}} cm </strong> </p>
-                                    </div>
-                            </div>
-
-
-                            <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Valor da Fatura: <strong>R$ {{$fatura->valor}} </strong> </p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>Largura Coluna: <strong>{{$fatura->largura}} cm </strong> </p>
+                                </div>
                             </div>
 
                             <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <p>Situação: <strong> @if ($fatura->situacaoNome == "Aceita")
-                                                                    Paga
-                                                                @else
-                                                                    @if ($fatura->situacaoNome == "Enviada")
-                                                                        Cadastrada
-                                                                    @else
-                                                                        {{$fatura->situacaoNome}}
-                                                                    @endif
-                                                                @endif
-                                                    </strong>
-                                        </p>
-                                    </div>
+                                <div class="col-md-10">
+                                    <p>Valor Coluna: <strong>R$ {{$fatura->valorColuna}} </strong> </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-10">
+                                    <p>Centimetragem: <strong>{{$fatura->centimetragem}} cm </strong> </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-10">
+                                    <p>Valor da Fatura: <strong>R$ {{$fatura->valor}} </strong> </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-10">
+                                    <p>Situação: 
+                                        <strong> 
+                                            @if ($fatura->situacaoNome == "Aceita")
+                                                Paga
+                                            @else
+                                                @if ($fatura->situacaoNome == "Enviada")
+                                                    Cadastrada
+                                                @else
+                                                    {{$fatura->situacaoNome}}
+                                                @endif
+                                            @endif
+                                        </strong>
+                                    </p>
+                                </div>
                             </div>
 
                             @if ($fatura->situacaoNome == "Apagada")
 
                                 <div class="form-group row">
-                                        <div class="col-md-10">
-                                                <p>Apagada por: <strong>{{$fatura->usuarioNomeApagou}}</strong> </p>
-                                        </div>
+                                    <div class="col-md-10">
+                                            <p>Apagada por: <strong>{{$fatura->usuarioNomeApagou}}</strong> </p>
+                                    </div>
                                 </div>
 
                             @endif
 
                             @if ($fatura->situacaoNome == "Publicada")
 
-                            <div class="form-group row">
+                                <div class="form-group row">
                                     <div class="col-md-10">
                                             <p>Publicada por: <strong>{{$fatura->usuarioNomePublicou}}</strong> </p>
                                     </div>
-                            </div>
+                                </div>
 
                             @endif
 
@@ -277,35 +263,35 @@
                             @if ($fatura->situacaoNome == "Rejeitada")
 
                                 <div class="form-group row">
-                                        <div class="col-md-10">
-                                            <span>Descrição: </span>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <textarea disabled cols="60" rows="4" class="form-control"> {{$fatura->descricaoCancelamento}} </textarea>
-                                        </div>
+                                    <div class="col-md-10">
+                                        <span>Descrição: </span>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <textarea disabled cols="60" rows="4" class="form-control"> {{$fatura->descricaoCancelamento}} </textarea>
+                                    </div>
                                 </div>
 
                             @endif
 
 
-                            @if ($fatura->dam == null && Gate::allows('faturas', Auth::user()) && $fatura->situacaoID == 4)
+                            @if ($fatura->dam == null && (Gate::allows('faturas', Auth::user()) || Gate::allows('administrador', Auth::user()) || Gate::allows('publicador', Auth::user())) && $fatura->situacaoID == 4)
 
                                 <form action="{{ url("/fatura/anexarDam") }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group row">
                                         <div class="col-md-10">
-                                                <p><b> Anexar DAM: </b></p>
+                                            <p><b> Anexar DAM: </b></p>
                                         </div>
                                         <div class="col-md-10">
                                             <input type="file" name="arquivo" required>
                                         </div>
                                         <div class="col-md-10">
-                                                <strong><sub style="font-size:90%;">Tamanho máximo: 30 MB</sub></strong>
-                                                <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
+                                            <strong><sub style="font-size:90%;">Tamanho máximo: 30 MB</sub></strong>
+                                            <input type="hidden" name="protocolo" value="{{$fatura->protocoloCompleto}}">
                                         </div>
                                         <div class="col-md-10">
-                                                <input type="submit" value="Anexar" name="enviar" class="btn btn-primary" style="margin-top:2%;">
-                                                <a target="_blank" href="http://www.cachoeiro.es.gov.br/servicos/site.php?nomePagina=SERDAMTP" class="btn btn-primary" style="color:white; margin-top:2%;" >Emitir DAM</a>
+                                            <input type="submit" value="Anexar" name="enviar" class="btn btn-primary" style="margin-top:2%;">
+                                            <a target="_blank" href="http://www.cachoeiro.es.gov.br/servicos/site.php?nomePagina=SERDAMTP" class="btn btn-primary" style="color:white; margin-top:2%;" >Emitir DAM</a>
                                         </div>
                                     </div>
                                 </form>
@@ -314,222 +300,84 @@
 
                             <div class="form-group row">
 
+                                @php
+                                    $modalPublicar = false;
+                                    $modalAceitar = false;
+                                    $modalRejeitar = false;
+                                @endphp
+
+                                @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome == "Rejeitada") && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ))
                                     @php
-                                        $modalPublicar = false;
-                                        $modalAceitar = false;
-                                        $modalRejeitar = false;
+                                        $modalAceitar = true;
                                     @endphp
+                                    <div class="col-md-2" style="min-width:100px;">
+                                        <a class="btn btn-success" style="width:100px; color:azure; " data-toggle="modal" data-target="#modalAceitar">Aceitar</a>
+                                    </div>
+                                @endif
 
-                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome == "Rejeitada") && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ))
-                                        @php
-                                            $modalAceitar = true;
-                                        @endphp
-                                        <div class="col-md-2" style="min-width:100px;">
-                                            <a class="btn btn-success" style="width:100px; color:azure; " data-toggle="modal" data-target="#modalAceitar">Aceitar</a>
-                                        </div>
-                                    @endif
+                                @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome =="Aceita")  && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ) )
+                                    @php
+                                        $modalRejeitar = true;
+                                    @endphp
+                                    <div class="col-md-2" style="min-width:100px;">
+                                        <a class="btn btn-danger" style="width:100px; color:azure; " data-toggle="modal" data-target="#modalRejeitar">Rejeitar</a>
+                                    </div>
+                                @endif
 
-                                    @if ( ($fatura->situacaoNome == "Enviada" || $fatura->situacaoNome =="Aceita")  && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ) )
-                                        @php
-                                            $modalRejeitar = true;
-                                        @endphp
-                                        <div class="col-md-2" style="min-width:100px;">
-                                            <a class="btn btn-danger" style="width:100px; color:azure; " data-toggle="modal" data-target="#modalRejeitar">Rejeitar</a>
-                                        </div>
-                                    @endif
-
-                                    @if ($fatura->situacaoNome == "Aceita" && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ))
-                                        @php
-                                            $modalPublicar = true;
-                                        @endphp
-                                        <div class="col-md-2" style="min-width:100px;">
-                                            <a class="btn btn-success" style="width:100px; color:azure; " data-toggle="modal" data-target="#modalPublicar">Publicar</a>
-                                        </div>
-                                    @endif
+                                @if ($fatura->situacaoNome == "Aceita" && ( Gate::allows('administrador', Auth::user()) ||  Gate::allows('publicador', Auth::user()) ))
+                                    @php
+                                        $modalPublicar = true;
+                                    @endphp
+                                    <div class="col-md-2" style="min-width:100px;">
+                                        <a class="btn btn-success" style="width:100px; color:azure; " data-toggle="modal" data-target="#modalPublicar">Publicar</a>
+                                    </div>
+                                @endif
 
                             </div>
 
                             <br>
 
-                                @if ( isset($formatada) )
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <a href="{{ url("/fatura/downloadOriginal") }}/{{$fatura->protocoloCompleto}}" class="btn btn-primary" style="width:150px; float:right;">Arquivo Original</a>
+                                </div>
+                            </div>
 
-                                    <div class="form-group row">
-                                            <div class="col-md-6 offset-md-4">
-                                                <a href="{{ url("/fatura/downloadFormatado") }}/{{$fatura->protocoloCompleto}}" class="btn btn-primary" style="width:150px; float:right;">Arquivo Formatado</a>
-                                            </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                            <div class="col-md-6 offset-md-4">
-                                                <a href="{{ url("/fatura/downloadOriginal") }}/{{$fatura->protocoloCompleto}}" class="btn btn-primary" style="width:150px; float:right;">Arquivo Original</a>
-                                            </div>
-                                    </div>
-
-
-                                    @if ($fatura->situacaoNome == "Aceita" || $fatura->situacaoNome == "Publicada" )
-                                        <div class="form-group row">
-                                                <div class="col-md-6 offset-md-4">
-                                                    <a href="{{ url("/fatura/downloadComprovantePago") }}/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Comprovante Pago</a>
-                                                </div>
-                                        </div>
-                                    @endif
-
-                                    @if ($fatura->dam != null)
-                                        <div class="form-group row">
-                                                <div class="col-md-6 offset-md-4">
-                                                    <a href="{{ url("/fatura/downloadDAM") }}/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Download DAM</a>
-                                                </div>
-                                        </div>
-                                    @endif
-
-                                @endif
-
+                            @if ($fatura->situacaoNome == "Aceita" || $fatura->situacaoNome == "Publicada" )
                                 <div class="form-group row">
-                                        <div class="col-md-6 offset-md-4">
-                                            <a href="{{ url("/fatura/gerarComprovante") }}/{{$fatura->protocoloCompleto}}"  target="_blank" class="btn btn-primary" style="width:150px; float:right;">Comprovante Envio</a>
-                                        </div>
+                                    <div class="col-md-6 offset-md-4">
+                                        <a href="{{ url("/fatura/downloadComprovantePago") }}/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Comprovante Pago</a>
+                                    </div>
                                 </div>
+                            @endif
 
-                                <br>
-
-                                <div style="float:right; margin-bottom:1%;">
-                                        <button type="button" class="btn btn-primary" id="btnVoltar">
-                                            Voltar
-                                        </button>
+                            @if ($fatura->dam != null)
+                                <div class="form-group row">
+                                    <div class="col-md-6 offset-md-4">
+                                        <a href="{{ url("/fatura/downloadDAM") }}/{{$fatura->protocoloCompleto}}" style="width:150px; float:right;" class="btn btn-primary">Download DAM</a>
+                                    </div>
                                 </div>
+                            @endif
+                                
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <a href="{{ url("/fatura/gerarComprovante") }}/{{$fatura->protocoloCompleto}}"  target="_blank" class="btn btn-primary" style="width:150px; float:right;">Comprovante Envio</a>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div style="float:right; margin-bottom:1%;">
+                                <button type="button" class="btn btn-primary" id="btnVoltar">
+                                    Voltar
+                                </button>
+                            </div>
 
                 </div>
 
             </div>
         </div>
-        @if (isset($formatada))
-            <div class="col-md-5">
-                    <div class="card" style="text-align:center;"> {{-- Coluna da visualização  --}}
-                        <div class="card-header"> {{ __('Visualização') }}</div>
-                    <div class="card-body table-responsive">
-
-                        {{-- RESPONSAVEL POR GERAR UM VISUALIZAÇÃO DO ARQUIVO FORMATADO --}}
-                    @php
-                    $size = 10;              // | Muda de acordo com a necessidade
-                    $family = "Times";      // | Muda de acordo com a necessidade
-                    @endphp
-
-                    <div id="fatura" style="width:{{$faturaConfig[0]->largura}}cm; font-family:{{$family}}; line-height:{{$size+1}}pt; ">  {{-- Propriedade line height alterada 1 pt a mais que o pt da letra --}}
-                            @php
-                                $contaTexto = 0;
-                                $paragrafo = false;
-                               foreach ($formatada->getSections()[0]->getElements() as $txtRunOuTxt) {
-
-                                   if(get_class($txtRunOuTxt) == "PhpOffice\PhpWord\Element\TextRun" ){
-
-                                    if($paragrafo){
-
-                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt;">';
-
-                                        foreach ($txtRunOuTxt->getElements() as $txt) {
-
-                                            if($txt->fontStyle->bold){
-                                                echo '<b>'.$txt->getText().'</b>';
-                                            }else{
-                                                echo $txt->getText();
-                                            }
-
-                                        }
-
-                                        echo "</p>";
-
-                                    }else{
-
-                                        if($contaTexto == 0){
-
-                                            echo '<div id="titulo">';
-                                            echo '<p style="text-align:center; font-size:'.$size.'pt; margin:1pt;">';
-
-                                            foreach ($txtRunOuTxt->getElements() as $txt) {
-
-                                                if($txt->fontStyle->bold){
-                                                    echo '<b>'.$txt->getText().'</b>';
-                                                }else{
-                                                    echo $txt->getText();
-                                                }
-
-                                            }
-
-                                            echo "</p>";
-                                            echo "</div>";
-
-                                        }else{
-
-                                            echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt;">';
-
-                                            foreach ($txtRunOuTxt->getElements() as $txt) {
-
-                                                if($txt->fontStyle->bold){
-                                                    echo '<b>'.$txt->getText().'</b>';
-                                                }else{
-                                                    echo $txt->getText();
-                                                }
-
-                                            }
-
-                                            echo "</p>";
-
-                                            $paragrafo = true;
-
-                                        }
-
-                                    }
-
-                                   }else{
-                                       if($txtRunOuTxt->getText() == "" || $txtRunOuTxt->getText() == " "){
-                                            // texto vazio de vez em quando
-                                       }else{
-                                        if($contaTexto == 0){
-
-                                            echo '<div id="titulo">';
-                                                echo '<p style="text-align:center; font-size:'.$size.'pt; font-weight:bold;">'.$txtRunOuTxt->getText()."</p>";
-                                            echo '</div>';
-
-                                            }else{
-                                                if($txtRunOuTxt->fontStyle->bold){
-                                                    if($paragrafo){
-                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt; font-weight:bold;">'.$txtRunOuTxt->getText()."</p>";
-                                                    }else{
-                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; font-weight:bold;">'.$txtRunOuTxt->getText()."</p>";
-                                                        $paragrafo = true;
-                                                    }
-                                                }else{
-
-                                                    if($paragrafo){
-                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt; margin:1pt;">'.$txtRunOuTxt->getText()."</p>";
-                                                    }else{
-                                                        echo '<p id="'.$contaTexto.'" style="text-align:justify; font-size:'.$size.'pt;">'.$txtRunOuTxt->getText()."</p>";
-                                                        $paragrafo = true;
-                                                    }
-                                                }
-                                            }
-                                       }
-
-                                   }
-
-                                   $contaTexto += 1;
-                               }
-                            @endphp
-                    </div>
-
-                    {{-- FIM DA VISUALIZAÇÃO DO ARQUIVO FORMATADO --}}
-                    <br>
-
-                    <div>
-                    <a href="{{ url("/fatura/visualizacao") }}/{{$fatura->arquivoVisualizacao}}/{{$fatura->protocoloCompleto}}" type="button" class="btn btn-primary col-md-12" data-dismiss="modal">
-                            Arquivo Base Centimetragem
-                        </a>
-                    </div>
-
-                    </div>
-                    </div>
-                </div>
-        @endif
+        
     </div>
 
 
